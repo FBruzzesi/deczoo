@@ -1,5 +1,5 @@
 from typing import Callable, Any
-from functools import wraps
+from functools import wraps, partial
 from datetime import datetime
 import inspect
 import time
@@ -65,18 +65,18 @@ def retry(
 
     @wraps(func)
     def wrapper(*args, **kwargs) -> Callable:
+
         attempt = 0
 
         while attempt < n_tries:
-            msg = f" Attempt {attempt+1} out of {n_tries}"
 
             try:
                 res = func(*args, **kwargs)
-                logging_fn(":heavy_check_mark:" + msg, style="good")
+                logging_fn(f"Attempt {attempt+1}/{n_tries}: Successed")
                 return res
 
             except Exception as e:
-                logging_fn(":x:" + msg, style="bad")
+                logging_fn(f"Attempt {attempt+1}/{n_tries}: Failed with error: {e}")
 
                 time.sleep(delay)
                 attempt += 1
@@ -107,48 +107,60 @@ def log(
     def wrapper(*args, **kwargs) -> Callable:
 
         tic = datetime.now()
-        optional_strings = []
+
+        if log_args:
+
+            func_args = inspect.signature(func).bind(*args, **kwargs).arguments
+            func_args_str = ", ".join(f"{k}={v}" for k, v in func_args.items())
+
+            optional_strings = [f"args=({func_args_str})"]
+
+        else:
+            optional_strings = []
+
         try:
             res = func(*args, **kwargs)
-
-            optional_strings = [
-                f"time={datetime.now() - tic}" if log_time else None,
+            toc = datetime.now()
+            optional_strings += [
+                f"time={toc- tic}" if log_time else None,
             ]
+
             return res
 
         except Exception as e:
-            optional_strings = [
-                f"time={datetime.now() - tic}" if log_time else None,
-                "FAILED" + (f" with error: {e}" if log_error else ""),
+
+            toc = datetime.now()
+            optional_strings += [
+                f"time={toc - tic}" if log_time else None,
+                "Failed" + (f" with error: {e}" if log_error else ""),
             ]
             raise e
 
         finally:
-            combined = " ".join([s for s in optional_strings if s])
-
-            if log_args:
-
-                func_args = inspect.signature(func).bind(*args, **kwargs).arguments
-                func_args_str = "".join(
-                    ", {} = {!r}".format(*item) for item in list(func_args.items())[1:]
-                )
-                logging_fn(
-                    f"[{func.__name__}(df{func_args_str})] " + combined,
-                )
-
-            else:
-                logging_fn(
-                    f"[{func.__name__}]" + combined,
-                )
+            log_string = (
+                f"{func.__name__} {' '.join([s for s in optional_strings if s])}"
+            )
+            logging_fn(log_string)
 
     return wrapper
 
 
-def timer(func):
-    """Times func"""
-    pass
+timer = partial(log, log_time=True, log_args=False, log_error=False)
 
 
 def call_counter(func):
-    """Counts how many times func is called"""
-    pass
+    """
+    Counts how many times a function has been called
+    """
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        wrapper._calls += 1
+        return func(*args, **kwargs)
+
+    wrapper._calls = 0
+
+    for attribute in set(dir(func)) - set(dir(wrapper)):
+        setattr(wrapper, attribute, getattr(func, attribute))
+
+    return wrapper
