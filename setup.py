@@ -7,12 +7,11 @@ from setuptools import setup, find_packages
 # dev_packages = all_packages + test_packages
 
 setup(
-    name="bodec",
+    name="deczoo",
     version="0.1.0",
     author="Francesco Bruzzesi",
     packages=find_packages(exclude=["notebooks", "docs"]),
-    package_data={"": ["*.yaml", "*.yml"]},
-    # description="",
+    description="a zoo for decorators",
     # install_requires=base_packages,
     # extras_require={"dev": dev_packages},
 )

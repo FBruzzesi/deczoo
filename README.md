@@ -1,3 +1,5 @@
-# bodec - a Bunch Of DECorators
+# deczoo - a zoo for decorators
 
-## TODO
+A list of functions and class decorators I am using and re-implementing over and over in multiple projects, now in the same place
+
+## Remark - This is a WIP

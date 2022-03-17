@@ -1,15 +1,15 @@
 black:
-	black --target-version py38 bodec
+	black --target-version py38 deczoo
 
 flake:
-	flake8 bodec
+	flake8 deczoo
 
 test:
 	pytest tests
 
 interrogate:
 	interrogate -vv --ignore-nested-functions --ignore-semiprivate --ignore-private --ignore-magic --ignore-module --ignore-init-method --fail-under 80 tests
-	interrogate -vv --ignore-nested-functions --ignore-semiprivate --ignore-private --ignore-magic --ignore-module --ignore-init-method --fail-under 80 bodec
+	interrogate -vv --ignore-nested-functions --ignore-semiprivate --ignore-private --ignore-magic --ignore-module --ignore-init-method --fail-under 80 deczoo
 
 clean-nb:
 	jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace notebooks/*.ipynb

@@ -1,3 +1,7 @@
+# Notebooks
+notebooks/
+*.ipynb
+
 # Files
 *.json
 *.csv
