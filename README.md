@@ -1,5 +1,13 @@
-# deczoo - a zoo for decorators
+# deczoo
+> A zoo for decorators
 
-A list of functions and class decorators I am using and re-implementing over and over in multiple projects, now in the same place
+There are many great decorators out there that we use everyday. However there are few of them that I found myself re-implementing over and over in multiple projects - the hope is to gather them here and use this codebase
 
-## Remark - This is a WIP
+## Alpha Notice
+This package is really new and there are edge cases that probably doesn't cover (yet).
+
+## Installation
+
+## Features
+
+## Examples
