@@ -18,7 +18,7 @@ def call_counter(
     func: Callable = None,
     seed: int = 0,
     log_counter: bool = False,
-    logging_fn: Callable = LOGGING_FN,
+    logging_fn: Callable = None,
 ) -> Callable:
     """
     Stores how many times many times a function has been called in the `_calls` attribute
@@ -27,7 +27,7 @@ def call_counter(
         func: function to decorate
         seed: counter start, default=0
         log_counter: whether display count number, default=False
-        logging_fn: function to use to display log_counter
+        logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
 
@@ -44,6 +44,9 @@ def call_counter(
     3
     ```
     """
+
+    if logging_fn is None:
+        logging_fn = LOGGING_FN
 
     @wraps(func)
     def wrapper(*args, **kwargs) -> Callable:
@@ -64,7 +67,7 @@ def catch(
     func: Callable = None,
     return_on_exception: Any = None,
     raise_on_execption: Any = None,
-    logging_fn: Callable = LOGGING_FN,
+    logging_fn: Callable = None,
 ) -> Callable:
     """
     Wraps a function in a try-except block,
@@ -74,7 +77,7 @@ def catch(
         func: function to decorate
         raise_on_exception: error to raise on exception
         return_on_exception: value to return on exception
-        logging_fn: log function (e.g. print, logger.info, console.log), defualt=console.log
+        logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     ```python
     from deczoo import catch
@@ -89,6 +92,9 @@ def catch(
     -999
     ```
     """
+
+    if logging_fn is None:
+        logging_fn = LOGGING_FN
 
     @wraps(func)
     def wrapper(*args, **kwargs) -> Callable:
@@ -118,7 +124,7 @@ def check_args(func: Callable = None, **rules) -> Callable:
     Checks that arguments passed to func satisfy given rules
 
     Arguments:
-        func: function to be decorated
+        func: function to decorate
         rules: rules to be satisfied
 
     Usage:
@@ -162,8 +168,8 @@ def chime_on_end(func: Callable = None, theme: str = None) -> Callable:
     Notify with chime sound on function end
 
     Arguments:
-        - func: function to decorate
-        - theme: chime theme to use
+        func: function to decorate
+        theme: chime theme to use
 
     Usage:
 
@@ -174,7 +180,7 @@ def chime_on_end(func: Callable = None, theme: str = None) -> Callable:
     def add(a, b): return a+b
 
     _ = add(1, 2)
-    > you should hear a sound now!
+    # you should hear a sound now!
     ```
     """
     chime.theme(theme)
@@ -201,7 +207,7 @@ def dump_result(
     include_args: bool = False,
     include_time: bool = True,
     time_fmt: str = "%Y%m%d_%H%M%S",
-    logging_fn: Callable = LOGGING_FN,
+    logging_fn: Callable = None,
 ) -> Callable:
     """
     Saves function result in a pickle file
@@ -212,7 +218,7 @@ def dump_result(
         include_args: whether to add arguments the function run with in the filename, default=False
         include_time: whether to add when the function run in the filename, default=True
         time_fmt: time format, used only if include_time=True, default="%Y%m%d_%H%M%S"
-        logging_fn: log function (e.g. print, logger.info, console.log), defualt=console.log
+        logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
 
@@ -223,9 +229,13 @@ def dump_result(
     def add(a, b): return a+b
 
     _ = add(1, 2)
-    > will save the result in results/add_%Y%m%d_%H%M%S.pickle
+    # will save the result in results/add_%Y%m%d_%H%M%S.pickle
     ```
     """
+
+    if logging_fn is None:
+        logging_fn = LOGGING_FN
+
     if not os.path.exists(result_path):
         os.makedirs(result_path)
 
@@ -261,7 +271,7 @@ def log(
     log_time: bool = True,
     log_args: bool = True,
     log_error: bool = True,
-    logging_fn: Callable = LOGGING_FN,
+    logging_fn: Callable = None,
 ) -> Callable:
     """
     Tracks function time taken, arguments and errors
@@ -271,7 +281,7 @@ def log(
         log_time: whether to log time taken or not, default=True
         log_args: whether to log arguments or not, default=True
         log_error: whether to log error or not, default=True
-        logging_fn: log function (e.g. print, logger.info, console.log), default=print
+        logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
 
@@ -282,9 +292,12 @@ def log(
     def add(a, b): return a+b
 
     _ = add(1, 2)
-    add args=(a=1, b=2) time=0:00:00.000111
+    # add args=(a=1, b=2) time=0:00:00.000111
     ```
     """
+
+    if logging_fn is None:
+        logging_fn = LOGGING_FN
 
     @wraps(func)
     def wrapper(*args, **kwargs) -> Callable:
@@ -336,7 +349,7 @@ def retry(
     func: Callable = None,
     n_tries: int = 1,
     delay: float = 0.0,
-    logging_fn: Callable = LOGGING_FN,
+    logging_fn: Callable = None,
 ) -> Callable:
     """
     Decorates a function with a retry block
@@ -345,7 +358,7 @@ def retry(
         func: function to decorate
         n_tries: max number of attempts to try, default=1
         delay: time to wait before a retry, default=0
-        logging_fn: log function (e.g. print, logger.info, console.log), defualt=console.log
+        logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
 
@@ -356,13 +369,16 @@ def retry(
     def add(a, b): return a+b
 
     _ = add(1, 2)
-    Attempt 1/2: Successed
+    # Attempt 1/2: Successed
 
     _ = add(1, "a")
-    Attempt 1/2: Failed with error: unsupported operand type(s) for +: 'int' and 'str'
-    Attempt 2/2: Failed with error: unsupported operand type(s) for +: 'int' and 'str'
+    # Attempt 1/2: Failed with error: unsupported operand type(s) for +: 'int' and 'str'
+    # Attempt 2/2: Failed with error: unsupported operand type(s) for +: 'int' and 'str'
     ```
     """
+
+    if logging_fn is None:
+        logging_fn = LOGGING_FN
 
     @wraps(func)
     def wrapper(*args, **kwargs) -> Callable:

@@ -1,3 +1,5 @@
+from ._core import add_partial
+
 from .decorators import (
     call_counter,
     catch,

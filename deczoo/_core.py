@@ -1,11 +1,11 @@
 from typing import Callable
-from functools import partial
+from functools import partial, wraps
 
 
 def add_partial(decorator: Callable) -> Callable:
     """
     Decorates a decorator function in order to deal with its optional arguments
-    In such a way decorator can be called both as:
+    In such a way decorator can be called both with or without params:
 
     ```python
     # `decorator` called default params
@@ -20,6 +20,7 @@ def add_partial(decorator: Callable) -> Callable:
     ```
     """
 
+    @wraps(decorator)
     def wrapper(func: Callable = None, *args, **kwargs) -> Callable:
 
         if func is None:

@@ -12,9 +12,9 @@ test_packages = [
 ]
 
 docs_packages = [
-    "mkdocs==1.1",
+    "mkdocs==1.2.3",
     "mkdocs-material==4.6.3",
-    "mkdocstrings==0.8.0",
+    "mkdocstrings==0.18.1",
     "mktestdocs==0.1.2",
 ]
 

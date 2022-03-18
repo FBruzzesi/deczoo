@@ -1,14 +1,10 @@
 black:
-	black --target-version py38 deczoo
+	black --target-version py38 deczoo tests
 
 flake:
 	flake8 deczoo
 
-test:
-	pytest tests
-
 interrogate:
-	interrogate -vv --ignore-nested-functions --ignore-semiprivate --ignore-private --ignore-magic --ignore-module --ignore-init-method --fail-under 80 tests
 	interrogate -vv --ignore-nested-functions --ignore-semiprivate --ignore-private --ignore-magic --ignore-module --ignore-init-method --fail-under 80 deczoo
 
 clean-nb:
@@ -20,8 +16,10 @@ clean-folders:
 init-env:
 	pip install -r requirements.txt --no-cache-dir
 
-init-dev-env:
-	init-env
+init-develop: init-env
 	pip install -r requirements-dev.txt --no-cache-dir
 
 precommit: clean-folders black interrogate clean-nb clean-folders
+
+test:
+	pytest tests
