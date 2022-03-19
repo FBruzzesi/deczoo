@@ -1,10 +1,11 @@
-from typing import Callable, Any
+from typing import Callable, Any, Union
 from functools import wraps, partial
 from datetime import datetime
-
+from enum import Enum
 import inspect
 import os
 import pickle
+import signal
 import time
 
 import chime
@@ -49,7 +50,7 @@ def call_counter(
         logging_fn = LOGGING_FN
 
     @wraps(func)
-    def wrapper(*args, **kwargs) -> Callable:
+    def wrapper(*args, **kwargs):
         wrapper._calls += 1
 
         if log_counter:
@@ -66,7 +67,7 @@ def call_counter(
 def catch(
     func: Callable = None,
     return_on_exception: Any = None,
-    raise_on_execption: Any = None,
+    raise_on_exception: Any = None,
     logging_fn: Callable = None,
 ) -> Callable:
     """
@@ -75,8 +76,8 @@ def catch(
 
     Arguments:
         func: function to decorate
-        raise_on_exception: error to raise on exception
         return_on_exception: value to return on exception
+        raise_on_exception: error to raise on exception
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     ```python
@@ -97,7 +98,7 @@ def catch(
         logging_fn = LOGGING_FN
 
     @wraps(func)
-    def wrapper(*args, **kwargs) -> Callable:
+    def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
 
@@ -107,9 +108,9 @@ def catch(
                 logging_fn(f"Failed with error {e}, returning {return_on_exception}")
                 return return_on_exception
 
-            elif raise_on_execption is not None:
+            elif raise_on_exception is not None:
                 logging_fn(f"Failed with error {e}")
-                raise raise_on_execption
+                raise raise_on_exception
 
             else:
                 logging_fn(f"Failed with error {e}")
@@ -186,7 +187,7 @@ def chime_on_end(func: Callable = None, theme: str = None) -> Callable:
     chime.theme(theme)
 
     @wraps(func)
-    def wrapper(*args, **kwargs) -> Callable:
+    def wrapper(*args, **kwargs):
 
         try:
             res = func(*args, **kwargs)
@@ -240,7 +241,7 @@ def dump_result(
         os.makedirs(result_path)
 
     @wraps(func)
-    def wrapper(*args, **kwargs) -> Callable:
+    def wrapper(*args, **kwargs):
 
         res = func(*args, **kwargs)
 
@@ -300,7 +301,7 @@ def log(
         logging_fn = LOGGING_FN
 
     @wraps(func)
-    def wrapper(*args, **kwargs) -> Callable:
+    def wrapper(*args, **kwargs):
 
         tic = datetime.now()
 
@@ -381,7 +382,7 @@ def retry(
         logging_fn = LOGGING_FN
 
     @wraps(func)
-    def wrapper(*args, **kwargs) -> Callable:
+    def wrapper(*args, **kwargs):
 
         attempt = 0
 
@@ -399,5 +400,73 @@ def retry(
                 attempt += 1
                 if attempt == n_tries:
                     raise e
+
+    return wrapper
+
+
+@add_partial
+def timeout(
+    func=None,
+    time_limit: int = 0,
+    signal_handler: Callable = None,
+    signum: Union[int, Enum] = signal.SIGALRM,
+    logging_fn: Callable = None,
+) -> Callable:
+    """
+    Adds a time limit to a function, terminates the process if it hasn't finished within the time limit.
+    Remark that it uses the signal library (https://docs.python.org/3/library/signal.html) which fully supported only on UNIX.
+
+    Arguments:
+        func: function to decorate
+        time_limit: max time (in seconds) for function to run, 0 means no time limit, default=0
+        signal_handler: custom signal handler
+        signum: signal number to be used, default=signal.SIGALRM (14)
+        logging_fn: log function (e.g. print, logger.info, rich console.print)
+
+    Usage:
+
+    ```python
+    import time
+    from deczoo import timeout
+
+    @timeout(time_limit=3)
+    def add(a, b):
+        time.sleep(2)
+        return a+b
+
+    add(1, 2)
+    3
+
+    @timeout(time_limit=1)
+    def add(a, b):
+        time.sleep(2)
+        return a+b
+
+    add(1, 2)
+    # Exception: Reached time limit, terminating add
+    ```
+    """
+
+    if logging_fn is None:
+        logging_fn = LOGGING_FN
+
+    if signal_handler is None:
+
+        def signal_handler(signum, frame):
+            raise Exception(f"Reached time limit, terminating {func.__name__}")
+
+        signal.signal(signum, signal_handler)
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+
+        signal.alarm(time_limit)
+
+        try:
+            res = func(*args, **kwargs)
+            signal.alarm(0)
+            return res
+        except Exception as e:
+            raise e
 
     return wrapper
