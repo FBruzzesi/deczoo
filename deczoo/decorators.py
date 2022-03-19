@@ -319,7 +319,7 @@ def log(
             res = func(*args, **kwargs)
             toc = datetime.now()
             optional_strings += [
-                f"time={toc- tic}" if log_time else None,
+                f"time={toc - tic}" if log_time else None,
             ]
 
             return res
