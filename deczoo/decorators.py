@@ -22,7 +22,7 @@ def call_counter(
     logging_fn: Callable = None,
 ) -> Callable:
     """
-    Stores how many times many times a function has been called in the `_calls` attribute
+    Counts how many times a function has been called in the `_calls` attribute
 
     Arguments:
         func: function to decorate
@@ -122,7 +122,7 @@ def catch(
 @add_partial
 def check_args(func: Callable = None, **rules) -> Callable:
     """
-    Checks that arguments passed to func satisfy given rules
+    Checks that function arguments satisfy given rules
 
     Arguments:
         func: function to decorate
@@ -353,7 +353,7 @@ def retry(
     logging_fn: Callable = None,
 ) -> Callable:
     """
-    Decorates a function with a retry block
+    Wraps a function with a retry block
 
     Arguments:
         func: function to decorate
@@ -413,7 +413,7 @@ def timeout(
     logging_fn: Callable = None,
 ) -> Callable:
     """
-    Adds a time limit to a function, terminates the process if it hasn't finished within the time limit.
+    Adds a time limit to a function, terminates the process if it hasn't finished within such time limit.
     Remark that it uses the signal library (https://docs.python.org/3/library/signal.html) which fully supported only on UNIX.
 
     Arguments:
