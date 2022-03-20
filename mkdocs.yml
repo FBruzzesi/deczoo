@@ -1,4 +1,4 @@
-site_name: deczoo
+site_name: deczoo docs
 repo_url: https://github.com/FBruzzesi/deczoo
 site_url: https://fbruzzesi.github.io/deczoo/
 site_description: Deczoo - A zoo for decorators
@@ -6,20 +6,19 @@ site_author: Francesco Bruzzesi
 
 nav:
   - Home: index.md
-  # - Getting Started:
-  #   - Quickstart: quickstart/index.md
-  #   - FAQ: quickstart/faq.md
-  - Examples:
-    - Usage: examples.md
   - API:
-    - decorators: api/decorators.md
+    - Decorators: api/decorators.md
+    - Utils: api/utils.md
+  # - Getting Started:
+  #   - Quickstart: quickstart/examples.md
+
 plugins:
   - search
   - mkdocstrings
 theme:
   name: material
-  # favicon: icon.png
-  # logo: icon.png
+  favicon: img/icon.png
+  logo: img/icon.png
   font:
     text: Ubuntu
     code: Ubuntu Mono

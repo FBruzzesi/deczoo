@@ -19,7 +19,7 @@ init-env:
 init-develop: init-env
 	python3 -m pip install -r requirements-dev.txt --no-cache-dir
 
-precommit: clean-folders black interrogate clean-nb clean-folders
+precommit: clean-folders black interrogate clean-folders
 
 test:
 	pytest tests

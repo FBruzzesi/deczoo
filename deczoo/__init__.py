@@ -1,4 +1,4 @@
-from ._core import add_partial
+from ._utils import check_parens
 
 from .decorators import (
     call_counter,
@@ -12,6 +12,7 @@ from .decorators import (
 )
 
 __all__ = [
+    "check_parens",
     "call_counter",
     "catch",
     "check_args",

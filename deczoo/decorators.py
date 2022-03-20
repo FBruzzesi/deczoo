@@ -1,20 +1,20 @@
-from typing import Callable, Any, Union
-from functools import wraps, partial
+from typing import Any, Dict, Callable, Union
+from functools import partial, wraps
 from datetime import datetime
 from enum import Enum
 import inspect
 import os
 import pickle
+import resource
 import signal
 import time
 
 import chime
 
-from ._core import add_partial
-from ._logging_fn import LOGGING_FN
+from ._utils import check_parens, LOGGING_FN
 
 
-@add_partial
+@check_parens
 def call_counter(
     func: Callable = None,
     seed: int = 0,
@@ -63,7 +63,7 @@ def call_counter(
     return wrapper
 
 
-@add_partial
+@check_parens
 def catch(
     func: Callable = None,
     return_on_exception: Any = None,
@@ -119,8 +119,8 @@ def catch(
     return wrapper
 
 
-@add_partial
-def check_args(func: Callable = None, **rules) -> Callable:
+@check_parens
+def check_args(func: Callable = None, **rules: Dict[str, Callable]) -> Callable:
     """
     Checks that function arguments satisfy given rules
 
@@ -140,7 +140,7 @@ def check_args(func: Callable = None, **rules) -> Callable:
     3
 
     add(-2, 2)
-    ValueError: Argument a doesn't satisfy its rule
+    # ValueError: Argument a doesn't satisfy its rule
     ```
     """
 
@@ -163,7 +163,7 @@ def check_args(func: Callable = None, **rules) -> Callable:
     return wrapper
 
 
-@add_partial
+@check_parens
 def chime_on_end(func: Callable = None, theme: str = None) -> Callable:
     """
     Notify with chime sound on function end
@@ -201,7 +201,7 @@ def chime_on_end(func: Callable = None, theme: str = None) -> Callable:
     return wrapper
 
 
-@add_partial
+@check_parens
 def dump_result(
     func: Callable = None,
     result_path: str = "results",
@@ -250,7 +250,7 @@ def dump_result(
 
         if include_args:
             func_args = inspect.signature(func).bind(*args, **kwargs).arguments
-            func_args_str = "_" + "_".join(f"{v}" for k, v in func_args.items())
+            func_args_str = "_" + "_".join(f"{v}" for v in func_args.values())
 
         if include_time:
             func_time_str = f"_{datetime.now().strftime(time_fmt)}"
@@ -266,7 +266,7 @@ def dump_result(
     return wrapper
 
 
-@add_partial
+@check_parens
 def log(
     func: Callable = None,
     log_time: bool = True,
@@ -345,7 +345,79 @@ def log(
 timer = partial(log, log_time=True, log_args=False, log_error=False)
 
 
-@add_partial
+def _get_free_memory() -> int:
+    with open("/proc/meminfo", "r") as mem:
+        free_memory = 0
+        for i in mem:
+            sline = i.split()
+            if str(sline[0]) in ("MemFree:", "Buffers:", "Cached:"):
+                free_memory += int(sline[1])
+    return free_memory
+
+
+@check_parens
+def memory_limit(
+    func: Callable = None, percentage: float = 0.99, logging_fn: Callable = print
+) -> Callable:
+    """
+    Sets a memory limit for a function
+
+    Arguments:
+        func: function to decorate
+        percentage: percentage of the currently available memory to use, default=0.99
+        logging_fn: log function (e.g. print, logger.info, rich console.print)
+
+    Usage:
+
+    ```python
+    from deczoo import memory_limit
+
+    # Running on WSL2 with 12 Gb RAM
+
+    @memory_limit(percentage=0.2)
+    def limited():
+        for i in list(range(10 ** 8)):
+            _ = 1 + 1
+        return "done"
+
+    def unlimited():
+        for i in list(range(10 ** 8)):
+            _ = 1 + 1
+        return "done"
+
+    limited()
+    # MemoryError: Reached memory limit
+
+    unlimited()
+    done
+    ```
+    """
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+
+        _, hard = resource.getrlimit(resource.RLIMIT_AS)
+        free_memory = _get_free_memory() * 1024
+
+        logging_fn(
+            f"Setting memory limit for {func.__name__} to {int(free_memory * percentage)}"
+        )
+
+        resource.setrlimit(resource.RLIMIT_AS, (int(free_memory * percentage), hard))
+
+        try:
+            return func(*args, **kwargs)
+
+        except MemoryError:
+            raise MemoryError("Reached memory limit")
+
+        finally:
+            resource.setrlimit(resource.RLIMIT_AS, (int(free_memory), hard))
+
+    return wrapper
+
+
+@check_parens
 def retry(
     func: Callable = None,
     n_tries: int = 1,
@@ -404,16 +476,16 @@ def retry(
     return wrapper
 
 
-@add_partial
+@check_parens
 def timeout(
-    func=None,
+    func: Callable = None,
     time_limit: int = 0,
     signal_handler: Callable = None,
     signum: Union[int, Enum] = signal.SIGALRM,
     logging_fn: Callable = None,
 ) -> Callable:
     """
-    Adds a time limit to a function, terminates the process if it hasn't finished within such time limit.
+    Sets a time limit to a function, terminates the process if it hasn't finished within such time limit.
     Remark that it uses the signal library (https://docs.python.org/3/library/signal.html) which fully supported only on UNIX.
 
     Arguments:
