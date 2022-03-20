@@ -21,6 +21,8 @@ docs_packages = [
 
 dev_packages = test_packages + docs_packages
 
+all_packages = dev_packages + base_packages + optional_packages
+
 setup(
     name="deczoo",
     version="0.1.0",
@@ -37,5 +39,9 @@ setup(
     },
     license_files=("LICENSE",),
     install_requires=base_packages,
-    extras_require={"optional": optional_packages, "dev": dev_packages},
+    extras_require={
+        "all": all_packages,
+        "optional": optional_packages,
+        "dev": dev_packages,
+    },
 )
