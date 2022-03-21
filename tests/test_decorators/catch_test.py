@@ -14,16 +14,16 @@ def test_catch_return_on_exception(base_func, a, b, return_on_exception, expecte
 
 
 @pytest.mark.parametrize(
-    "a, b, raise_on_execption, expected",
+    "a, b, raise_on_exception, expected",
     [
         (1, "a", ValueError, ValueError),
         (1, "a", Exception, Exception),
         (1, "a", None, Exception),
     ],
 )
-def test_catch_raise_on_exception(base_func, a, b, raise_on_execption, expected):
+def test_catch_raise_on_exception(base_func, a, b, raise_on_exception, expected):
     """Tests that catch raises the raise_on_execption exception"""
-    add = catch(base_func, raise_on_execption=raise_on_execption)
+    add = catch(base_func, raise_on_exception=raise_on_exception)
 
     with pytest.raises(expected):
         add(a, b)

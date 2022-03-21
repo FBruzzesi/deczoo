@@ -4,11 +4,13 @@ from .decorators import (
     call_counter,
     catch,
     check_args,
+    chime_on_end,
     dump_result,
     log,
     timer,
-    chime_on_end,
+    memory_limit,
     retry,
+    timeout,
 )
 
 __all__ = [
@@ -16,9 +18,11 @@ __all__ = [
     "call_counter",
     "catch",
     "check_args",
+    "chime_on_end",
     "dump_result",
     "log",
     "timer",
-    "chime_on_end",
+    "memory_limit",
     "retry",
+    "timeout",
 ]

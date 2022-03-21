@@ -272,6 +272,7 @@ def log(
     log_time: bool = True,
     log_args: bool = True,
     log_error: bool = True,
+    log_file: str = None,
     logging_fn: Callable = None,
 ) -> Callable:
     """
@@ -282,6 +283,7 @@ def log(
         log_time: whether to log time taken or not, default=True
         log_args: whether to log arguments or not, default=True
         log_error: whether to log error or not, default=True
+        log_file: filepath where to write log, default=None
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
@@ -338,6 +340,11 @@ def log(
                 f"{func.__name__} {' '.join([s for s in optional_strings if s])}"
             )
             logging_fn(log_string)
+
+            if log_file is not None:
+
+                with open(log_file, "a") as f:
+                    f.write(f"{tic} {log_string}\n")
 
     return wrapper
 
