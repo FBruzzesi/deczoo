@@ -304,6 +304,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    Getting started
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#features" class="md-nav__link">
     Features
   </a>
@@ -311,8 +318,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#feedbacks-and-contributing" class="md-nav__link">
-    Feedbacks and Contributing
+  <a href="#feedbacks" class="md-nav__link">
+    Feedbacks
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    Contributing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#licence" class="md-nav__link">
+    Licence
   </a>
   
 </li>
@@ -411,6 +432,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    Getting started
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#features" class="md-nav__link">
     Features
   </a>
@@ -418,8 +446,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#feedbacks-and-contributing" class="md-nav__link">
-    Feedbacks and Contributing
+  <a href="#feedbacks" class="md-nav__link">
+    Feedbacks
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    Contributing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#licence" class="md-nav__link">
+    Licence
   </a>
   
 </li>
@@ -443,18 +485,35 @@
                   <a href="https://github.com/FBruzzesi/deczoo/edit/master/docs/index.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <p><img src="img/icon.png" width=185 height=185 align="right"></p>
+                <p><img src="docs/img/icon.png" width=185 height=185 align="right"></p>
 <h1 id="deczoo">deczoo<a class="headerlink" href="#deczoo" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>A zoo for decorators</p>
 </blockquote>
-<p>There are many great decorators out there that we use everyday.</p>
-<p>However there are also few decorators that I found myself implementing over and over in different projects. The hope is to gather them here and use this codebase.</p>
+<p>There are many great decorators out there that we use everyday. Why don't collect few of them?</p>
+<p>I found myself implementing over and over in different projects. The hope is to gather them here and use this codebase.</p>
 <h2 id="alpha-notice">Alpha Notice<a class="headerlink" href="#alpha-notice" title="Permanent link">&para;</a></h2>
 <p>This package is really new and there are edge cases that probably doesn't cover (yet).</p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <p>You can install the library using <code>pip</code>:</p>
 <div class="highlight"><pre><span></span><code>python -m pip install deczoo
+</code></pre></div>
+<h2 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
+<p>We have a <a href="https://fbruzzesi.github.io/deczoo/">documentation page</a> that explains how each feature works.</p>
+<p>Each function here is a decorator with a specific objective in mind.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">deczoo</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="nd">@log</span> <span class="c1"># equivalent to @log(log_time=True, log_args=True, log_error=True, logging_fn=print)</span>
+<span class="k">def</span> <span class="nf">my_add_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds all arguments together&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">])</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">my_add_function</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="c1"># my_add_function args=(a=1, b=2, args=(3, 4)) time=0:00:00.000062</span>
+
+ <span class="n">_</span> <span class="o">=</span> <span class="n">my_add_function</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1"># my_add_function args=(a=1, b=a, args=(2,)) time=0:00:00.000064 Failed with error: unsupported</span>
+<span class="c1"># operand type(s) for +: &#39;int&#39; and &#39;str&#39;</span>
 </code></pre></div>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <p>The library implements few (function) decorators:</p>
@@ -470,13 +529,17 @@
 <li><code>retry</code>: Wraps a function with a retry block</li>
 <li><code>timeout</code>: Sets a time limit to a function to run</li>
 </ul>
-<h2 id="feedbacks-and-contributing">Feedbacks and Contributing<a class="headerlink" href="#feedbacks-and-contributing" title="Permanent link">&para;</a></h2>
-<p>Any feedback, improvement/enhancement or issue is welcome in the <a href="https://github.com/FBruzzesi/deczoo/issues">issue list</a> of the repo.</p>
-<p>To get started locally, you can clone the repo and quickly get started using the <code>Makefile</code>.</p>
+<h2 id="feedbacks">Feedbacks<a class="headerlink" href="#feedbacks" title="Permanent link">&para;</a></h2>
+<p>Any feedback, improvement/enhancement or issue is welcome in the <a href="https://github.com/FBruzzesi/deczoo/issues">issue page</a> of the repo.</p>
+<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h2>
+<p>Make sure to check the <a href="https://github.com/FBruzzesi/deczoo/issues">issue list</a> beforehand.</p>
+<p>To get started locally, you can clone the repo and quickly get started using the <code>Makefile</code>:</p>
 <div class="highlight"><pre><span></span><code>git clone git@github.com:FBruzzesi/deczoo.git
-cd deczoo
+<span class="nb">cd</span> deczoo
 make init-develop
 </code></pre></div>
+<h2 id="licence">Licence<a class="headerlink" href="#licence" title="Permanent link">&para;</a></h2>
+<p>This repository has a MIT Licence</p>
                 
                   
                 
