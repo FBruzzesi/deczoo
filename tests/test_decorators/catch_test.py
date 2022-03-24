@@ -6,9 +6,9 @@ from deczoo import catch
     "a, b, return_on_exception, expected",
     [(1, 2, -999, 3), (1, "a", -999, -999), (1, "a", 0, 0)],
 )
-def test_catch_return_on_exception(base_func, a, b, return_on_exception, expected):
+def test_catch_return_on_exception(base_add, a, b, return_on_exception, expected):
     """Tests that catch returns return_on_exception value"""
-    add = catch(base_func, return_on_exception=return_on_exception)
+    add = catch(base_add, return_on_exception=return_on_exception)
 
     assert add(a, b) == expected
 
@@ -21,9 +21,9 @@ def test_catch_return_on_exception(base_func, a, b, return_on_exception, expecte
         (1, "a", None, Exception),
     ],
 )
-def test_catch_raise_on_exception(base_func, a, b, raise_on_exception, expected):
+def test_catch_raise_on_exception(base_add, a, b, raise_on_exception, expected):
     """Tests that catch raises the raise_on_execption exception"""
-    add = catch(base_func, raise_on_exception=raise_on_exception)
+    add = catch(base_add, raise_on_exception=raise_on_exception)
 
     with pytest.raises(expected):
         add(a, b)
