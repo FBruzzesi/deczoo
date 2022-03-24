@@ -1,9 +1,8 @@
 site_name: deczoo docs
 repo_url: https://github.com/FBruzzesi/deczoo
-site_url: https://fbruzzesi.github.io/deczoo/
+site_url: https://fbruzzesi.github.io/deczoo
 site_description: Deczoo - A zoo for decorators
 site_author: Francesco Bruzzesi
-
 nav:
   - Home: index.md
   - API:
