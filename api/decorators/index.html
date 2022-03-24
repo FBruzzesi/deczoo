@@ -1,0 +1,1817 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Deczoo - A zoo for decorators">
+      
+      
+        <link rel="canonical" href="https://fbruzzesi.github.io/deczoo/api/decorators/">
+      
+      
+        <meta name="author" content="Francesco Bruzzesi">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../img/icon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>Decorators - deczoo docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.adb8469c.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="">
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,400i,700%7CUbuntu+Mono&display=fallback">
+        <style>body,input{font-family:"Ubuntu","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="white" data-md-color-accent="blue">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#available-decorators" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://fbruzzesi.github.io/deczoo/" title="deczoo docs" aria-label="deczoo docs" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../../img/icon.png" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              deczoo docs
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Decorators
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/FBruzzesi/deczoo/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+        
+
+  
+
+<nav class="md-tabs md-tabs--active" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  <li class="md-tabs__item">
+    
+      <a href="../.." class="md-tabs__link">
+        Home
+      </a>
+    
+  </li>
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="./" class="md-tabs__link md-tabs__link--active">
+          API
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://fbruzzesi.github.io/deczoo/" title="deczoo docs" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../../img/icon.png" width="48" height="48">
+      
+    </a>
+    deczoo docs
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/FBruzzesi/deczoo/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      API
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Decorators
+      </label>
+    
+    <a href="./" title="Decorators" class="md-nav__link md-nav__link--active">
+      Decorators
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators" class="md-nav__link">
+    deczoo.decorators
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.call_counter" class="md-nav__link">
+    call_counter()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.catch" class="md-nav__link">
+    catch()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.check_args" class="md-nav__link">
+    check_args()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.chime_on_end" class="md-nav__link">
+    chime_on_end()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.dump_result" class="md-nav__link">
+    dump_result()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.log" class="md-nav__link">
+    log()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.memory_limit" class="md-nav__link">
+    memory_limit()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.retry" class="md-nav__link">
+    retry()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.timeout" class="md-nav__link">
+    timeout()
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../utils/" title="Utils" class="md-nav__link">
+      Utils
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators" class="md-nav__link">
+    deczoo.decorators
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.call_counter" class="md-nav__link">
+    call_counter()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.catch" class="md-nav__link">
+    catch()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.check_args" class="md-nav__link">
+    check_args()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.chime_on_end" class="md-nav__link">
+    chime_on_end()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.dump_result" class="md-nav__link">
+    dump_result()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.log" class="md-nav__link">
+    log()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.memory_limit" class="md-nav__link">
+    memory_limit()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.retry" class="md-nav__link">
+    retry()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deczoo.decorators.timeout" class="md-nav__link">
+    timeout()
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/FBruzzesi/deczoo/edit/master/docs/api/decorators.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <h1 id="available-decorators">Available Decorators<a class="headerlink" href="#available-decorators" title="Permanent link">&para;</a></h1>
+
+
+  <div class="doc doc-object doc-module">
+
+<a id="deczoo.decorators"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="deczoo.decorators.call_counter" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">call_counter</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">log_counter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">logging_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#deczoo.decorators.call_counter" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Counts how many times a function has been called in the <code>_calls</code> attribute</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>func</code></td>
+        <td><code>Callable</code></td>
+        <td><p>function to decorate</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>seed</code></td>
+        <td><code>int</code></td>
+        <td><p>counter start, default=0</p></td>
+        <td><code>0</code></td>
+      </tr>
+      <tr>
+        <td><code>log_counter</code></td>
+        <td><code>bool</code></td>
+        <td><p>whether display count number, default=False</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>logging_fn</code></td>
+        <td><code>Callable</code></td>
+        <td><p>log function (e.g. print, logger.info, rich console.print)</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">deczoo</span> <span class="kn">import</span> <span class="n">call_counter</span>
+
+<span class="nd">@call_counter</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span> <span class="k">return</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">add</span><span class="o">.</span><span class="n">_calls</span>
+<span class="mi">3</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>deczoo/decorators.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="nd">@check_parens</span>
+<span class="k">def</span> <span class="nf">call_counter</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">log_counter</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">logging_fn</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Counts how many times a function has been called in the `_calls` attribute</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        func: function to decorate</span>
+<span class="sd">        seed: counter start, default=0</span>
+<span class="sd">        log_counter: whether display count number, default=False</span>
+<span class="sd">        logging_fn: log function (e.g. print, logger.info, rich console.print)</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    from deczoo import call_counter</span>
+
+<span class="sd">    @call_counter</span>
+<span class="sd">    def add(a, b): return a+b</span>
+
+<span class="sd">    for _ in range(3):</span>
+<span class="sd">        add(1,2)</span>
+
+<span class="sd">    add._calls</span>
+<span class="sd">    3</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">logging_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logging_fn</span> <span class="o">=</span> <span class="n">LOGGING_FN</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">wrapper</span><span class="o">.</span><span class="n">_calls</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">log_counter</span><span class="p">:</span>
+            <span class="n">logging_fn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> called </span><span class="si">{</span><span class="n">wrapper</span><span class="o">.</span><span class="n">_calls</span><span class="si">}</span><span class="s2"> times&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">_calls</span> <span class="o">=</span> <span class="n">seed</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="deczoo.decorators.catch" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">catch</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_on_exception</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">raise_on_exception</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">logging_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#deczoo.decorators.catch" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Wraps a function in a try-except block,
+potentially prevent exception to be raised or raises custom exception</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>func</code></td>
+        <td><code>Callable</code></td>
+        <td><p>function to decorate</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>return_on_exception</code></td>
+        <td><code>Any</code></td>
+        <td><p>value to return on exception</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>raise_on_exception</code></td>
+        <td><code>Any</code></td>
+        <td><p>error to raise on exception</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>logging_fn</code></td>
+        <td><code>Callable</code></td>
+        <td><p>log function (e.g. print, logger.info, rich console.print)</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>      <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">deczoo</span> <span class="kn">import</span> <span class="n">catch</span>
+
+<span class="nd">@catch</span><span class="p">(</span><span class="n">return_on_exception</span><span class="o">=-</span><span class="mi">999</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span> <span class="k">return</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
+
+<span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="mi">3</span>
+
+<span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="o">-</span><span class="mi">999</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>deczoo/decorators.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="nd">@check_parens</span>
+<span class="k">def</span> <span class="nf">catch</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_on_exception</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">raise_on_exception</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">logging_fn</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wraps a function in a try-except block,</span>
+<span class="sd">    potentially prevent exception to be raised or raises custom exception</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        func: function to decorate</span>
+<span class="sd">        return_on_exception: value to return on exception</span>
+<span class="sd">        raise_on_exception: error to raise on exception</span>
+<span class="sd">        logging_fn: log function (e.g. print, logger.info, rich console.print)</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    from deczoo import catch</span>
+
+<span class="sd">    @catch(return_on_exception=-999)</span>
+<span class="sd">    def add(a, b): return a+b</span>
+
+<span class="sd">    add(1, 2)</span>
+<span class="sd">    3</span>
+
+<span class="sd">    add(1, &quot;a&quot;)</span>
+<span class="sd">    -999</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">logging_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logging_fn</span> <span class="o">=</span> <span class="n">LOGGING_FN</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">return_on_exception</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logging_fn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed with error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">, returning </span><span class="si">{</span><span class="n">return_on_exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">return_on_exception</span>
+
+            <span class="k">elif</span> <span class="n">raise_on_exception</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logging_fn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed with error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">raise_on_exception</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging_fn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed with error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="deczoo.decorators.check_args" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">check_args</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">rules</span><span class="p">)</span></code>
+
+
+<a href="#deczoo.decorators.check_args" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Checks that function arguments satisfy given rules</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>func</code></td>
+        <td><code>Callable</code></td>
+        <td><p>function to decorate</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>rules</code></td>
+        <td><code>Dict[str, Callable]</code></td>
+        <td><p>rules to be satisfied</p></td>
+        <td><code>{}</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">deczoo</span> <span class="kn">import</span> <span class="n">check_args</span>
+
+<span class="nd">@check_args</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span> <span class="k">return</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
+
+<span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="mi">3</span>
+
+<span class="n">add</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1"># ValueError: Argument a doesn&#39;t satisfy its rule</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>deczoo/decorators.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="nd">@check_parens</span>
+<span class="k">def</span> <span class="nf">check_args</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">rules</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks that function arguments satisfy given rules</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        func: function to decorate</span>
+<span class="sd">        rules: rules to be satisfied</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    from deczoo import check_args</span>
+
+<span class="sd">    @check_args(a=lambda t: t&gt;0)</span>
+<span class="sd">    def add(a, b): return a+b</span>
+
+<span class="sd">    add(1,2)</span>
+<span class="sd">    3</span>
+
+<span class="sd">    add(-2, 2)</span>
+<span class="sd">    # ValueError: Argument a doesn&#39;t satisfy its rule</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+
+        <span class="n">func_args</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">arguments</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">func_args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="n">rules</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">rule</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Argument </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> doesn&#39;t satisfy its rule&quot;</span><span class="p">)</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="deczoo.decorators.chime_on_end" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">chime_on_end</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#deczoo.decorators.chime_on_end" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Notify with chime sound on function end</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>func</code></td>
+        <td><code>Callable</code></td>
+        <td><p>function to decorate</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>theme</code></td>
+        <td><code>str</code></td>
+        <td><p>chime theme to use</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">deczoo</span> <span class="kn">import</span> <span class="n">chime_on_end</span>
+
+<span class="nd">@chime_on_end</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span> <span class="k">return</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1"># you should hear a sound now!</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>deczoo/decorators.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="nd">@check_parens</span>
+<span class="k">def</span> <span class="nf">chime_on_end</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Notify with chime sound on function end</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        func: function to decorate</span>
+<span class="sd">        theme: chime theme to use</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    from deczoo import chime_on_end</span>
+
+<span class="sd">    @chime_on_end</span>
+<span class="sd">    def add(a, b): return a+b</span>
+
+<span class="sd">    _ = add(1, 2)</span>
+<span class="sd">    # you should hear a sound now!</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">chime</span><span class="o">.</span><span class="n">theme</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">chime</span><span class="o">.</span><span class="n">success</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">res</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">chime</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="deczoo.decorators.dump_result" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">dump_result</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result_path</span><span class="o">=</span><span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="n">include_args</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">time_fmt</span><span class="o">=</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">_%H%M%S&#39;</span><span class="p">,</span> <span class="n">logging_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#deczoo.decorators.dump_result" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Saves function result in a pickle file</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>func</code></td>
+        <td><code>Callable</code></td>
+        <td><p>function to decorate</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>result_path</code></td>
+        <td><code>str</code></td>
+        <td><p>path to folder where to save the result, default="results"</p></td>
+        <td><code>&#39;results&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>include_args</code></td>
+        <td><code>bool</code></td>
+        <td><p>whether to add arguments the function run with in the filename, default=False</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>include_time</code></td>
+        <td><code>bool</code></td>
+        <td><p>whether to add when the function run in the filename, default=True</p></td>
+        <td><code>True</code></td>
+      </tr>
+      <tr>
+        <td><code>time_fmt</code></td>
+        <td><code>str</code></td>
+        <td><p>time format, used only if include_time=True, default="%Y%m%d_%H%M%S"</p></td>
+        <td><code>&#39;%Y%m%d_%H%M%S&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>logging_fn</code></td>
+        <td><code>Callable</code></td>
+        <td><p>log function (e.g. print, logger.info, rich console.print)</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">deczoo</span> <span class="kn">import</span> <span class="n">dump_result</span>
+
+<span class="nd">@dump_result</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span> <span class="k">return</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1"># will save the result in results/add_%Y%m%d_%H%M%S.pickle</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>deczoo/decorators.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="nd">@check_parens</span>
+<span class="k">def</span> <span class="nf">dump_result</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">result_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;results&quot;</span><span class="p">,</span>
+    <span class="n">include_args</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">include_time</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">time_fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">,</span>
+    <span class="n">logging_fn</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves function result in a pickle file</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        func: function to decorate</span>
+<span class="sd">        result_path: path to folder where to save the result, default=&quot;results&quot;</span>
+<span class="sd">        include_args: whether to add arguments the function run with in the filename, default=False</span>
+<span class="sd">        include_time: whether to add when the function run in the filename, default=True</span>
+<span class="sd">        time_fmt: time format, used only if include_time=True, default=&quot;%Y%m%d_%H%M%S&quot;</span>
+<span class="sd">        logging_fn: log function (e.g. print, logger.info, rich console.print)</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    from deczoo import dump_result</span>
+
+<span class="sd">    @dump_result</span>
+<span class="sd">    def add(a, b): return a+b</span>
+
+<span class="sd">    _ = add(1, 2)</span>
+<span class="sd">    # will save the result in results/add_%Y%m%d_%H%M%S.pickle</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">logging_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logging_fn</span> <span class="o">=</span> <span class="n">LOGGING_FN</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">result_path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">result_path</span><span class="p">)</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">func_args_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">func_time_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">include_args</span><span class="p">:</span>
+            <span class="n">func_args</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">arguments</span>
+            <span class="n">func_args_str</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">func_args</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="n">include_time</span><span class="p">:</span>
+            <span class="n">func_time_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">time_fmt</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">result_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="n">func_args_str</span><span class="si">}{</span><span class="n">func_time_str</span><span class="si">}</span><span class="s2">.pickle&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">_file</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outp</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">outp</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+            <span class="n">logging_fn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result of </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> saved at </span><span class="si">{</span><span class="n">_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="deczoo.decorators.log" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">log</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_args</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">logging_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#deczoo.decorators.log" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Tracks function time taken, arguments and errors</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>func</code></td>
+        <td><code>Callable</code></td>
+        <td><p>function to decorate</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>log_time</code></td>
+        <td><code>bool</code></td>
+        <td><p>whether to log time taken or not, default=True</p></td>
+        <td><code>True</code></td>
+      </tr>
+      <tr>
+        <td><code>log_args</code></td>
+        <td><code>bool</code></td>
+        <td><p>whether to log arguments or not, default=True</p></td>
+        <td><code>True</code></td>
+      </tr>
+      <tr>
+        <td><code>log_error</code></td>
+        <td><code>bool</code></td>
+        <td><p>whether to log error or not, default=True</p></td>
+        <td><code>True</code></td>
+      </tr>
+      <tr>
+        <td><code>log_file</code></td>
+        <td><code>str</code></td>
+        <td><p>filepath where to write log, default=None</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>logging_fn</code></td>
+        <td><code>Callable</code></td>
+        <td><p>log function (e.g. print, logger.info, rich console.print)</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">deczoo</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="nd">@log</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span> <span class="k">return</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1"># add args=(a=1, b=2) time=0:00:00.000111</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>deczoo/decorators.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="nd">@check_parens</span>
+<span class="k">def</span> <span class="nf">log</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">log_time</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">log_args</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">log_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">log_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">logging_fn</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tracks function time taken, arguments and errors</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        func: function to decorate</span>
+<span class="sd">        log_time: whether to log time taken or not, default=True</span>
+<span class="sd">        log_args: whether to log arguments or not, default=True</span>
+<span class="sd">        log_error: whether to log error or not, default=True</span>
+<span class="sd">        log_file: filepath where to write log, default=None</span>
+<span class="sd">        logging_fn: log function (e.g. print, logger.info, rich console.print)</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    from deczoo import log</span>
+
+<span class="sd">    @log</span>
+<span class="sd">    def add(a, b): return a+b</span>
+
+<span class="sd">    _ = add(1, 2)</span>
+<span class="sd">    # add args=(a=1, b=2) time=0:00:00.000111</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">logging_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logging_fn</span> <span class="o">=</span> <span class="n">LOGGING_FN</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">tic</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">log_args</span><span class="p">:</span>
+
+            <span class="n">func_args</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">arguments</span>
+            <span class="n">func_args_str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">func_args</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+            <span class="n">optional_strings</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;args=(</span><span class="si">{</span><span class="n">func_args_str</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">optional_strings</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">toc</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="n">optional_strings</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;time=</span><span class="si">{</span><span class="n">toc</span> <span class="o">-</span> <span class="n">tic</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">log_time</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">res</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+            <span class="n">toc</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="n">optional_strings</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;time=</span><span class="si">{</span><span class="n">toc</span> <span class="o">-</span> <span class="n">tic</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">log_time</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;Failed&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot; with error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">log_error</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="p">]</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">log_string</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">optional_strings</span> <span class="k">if</span> <span class="n">s</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="n">logging_fn</span><span class="p">(</span><span class="n">log_string</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tic</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">log_string</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="deczoo.decorators.memory_limit" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">memory_limit</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">percentage</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">logging_fn</span><span class="o">=&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">function</span> <span class="nb">print</span><span class="o">&gt;</span><span class="p">)</span></code>
+
+
+<a href="#deczoo.decorators.memory_limit" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Sets a memory limit for a function</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>func</code></td>
+        <td><code>Callable</code></td>
+        <td><p>function to decorate</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>percentage</code></td>
+        <td><code>float</code></td>
+        <td><p>percentage of the currently available memory to use, default=0.99</p></td>
+        <td><code>0.99</code></td>
+      </tr>
+      <tr>
+        <td><code>logging_fn</code></td>
+        <td><code>Callable</code></td>
+        <td><p>log function (e.g. print, logger.info, rich console.print)</p></td>
+        <td><code>&lt;built-in function print&gt;</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">deczoo</span> <span class="kn">import</span> <span class="n">memory_limit</span>
+
+<span class="c1"># Running on WSL2 with 12 Gb RAM</span>
+
+<span class="nd">@memory_limit</span><span class="p">(</span><span class="n">percentage</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">limited</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">)):</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="s2">&quot;done&quot;</span>
+
+<span class="k">def</span> <span class="nf">unlimited</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">)):</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="s2">&quot;done&quot;</span>
+
+<span class="n">limited</span><span class="p">()</span>
+<span class="c1"># MemoryError: Reached memory limit</span>
+
+<span class="n">unlimited</span><span class="p">()</span>
+<span class="n">done</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>deczoo/decorators.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="nd">@check_parens</span>
+<span class="k">def</span> <span class="nf">memory_limit</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">percentage</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.99</span><span class="p">,</span> <span class="n">logging_fn</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="nb">print</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets a memory limit for a function</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        func: function to decorate</span>
+<span class="sd">        percentage: percentage of the currently available memory to use, default=0.99</span>
+<span class="sd">        logging_fn: log function (e.g. print, logger.info, rich console.print)</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    from deczoo import memory_limit</span>
+
+<span class="sd">    # Running on WSL2 with 12 Gb RAM</span>
+
+<span class="sd">    @memory_limit(percentage=0.2)</span>
+<span class="sd">    def limited():</span>
+<span class="sd">        for i in list(range(10 ** 8)):</span>
+<span class="sd">            _ = 1 + 1</span>
+<span class="sd">        return &quot;done&quot;</span>
+
+<span class="sd">    def unlimited():</span>
+<span class="sd">        for i in list(range(10 ** 8)):</span>
+<span class="sd">            _ = 1 + 1</span>
+<span class="sd">        return &quot;done&quot;</span>
+
+<span class="sd">    limited()</span>
+<span class="sd">    # MemoryError: Reached memory limit</span>
+
+<span class="sd">    unlimited()</span>
+<span class="sd">    done</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">hard</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">getrlimit</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">RLIMIT_AS</span><span class="p">)</span>
+        <span class="n">free_memory</span> <span class="o">=</span> <span class="n">_get_free_memory</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1024</span>
+
+        <span class="n">logging_fn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Setting memory limit for </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">free_memory</span> <span class="o">*</span> <span class="n">percentage</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">resource</span><span class="o">.</span><span class="n">setrlimit</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">RLIMIT_AS</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">free_memory</span> <span class="o">*</span> <span class="n">percentage</span><span class="p">),</span> <span class="n">hard</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">MemoryError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">MemoryError</span><span class="p">(</span><span class="s2">&quot;Reached memory limit&quot;</span><span class="p">)</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">setrlimit</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">RLIMIT_AS</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">free_memory</span><span class="p">),</span> <span class="n">hard</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="deczoo.decorators.retry" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">retry</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_tries</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">logging_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#deczoo.decorators.retry" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Wraps a function with a retry block</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>func</code></td>
+        <td><code>Callable</code></td>
+        <td><p>function to decorate</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>n_tries</code></td>
+        <td><code>int</code></td>
+        <td><p>max number of attempts to try, default=1</p></td>
+        <td><code>1</code></td>
+      </tr>
+      <tr>
+        <td><code>delay</code></td>
+        <td><code>float</code></td>
+        <td><p>time to wait before a retry, default=0</p></td>
+        <td><code>0.0</code></td>
+      </tr>
+      <tr>
+        <td><code>logging_fn</code></td>
+        <td><code>Callable</code></td>
+        <td><p>log function (e.g. print, logger.info, rich console.print)</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">deczoo</span> <span class="kn">import</span> <span class="n">retry</span>
+
+<span class="nd">@retry</span><span class="p">(</span><span class="n">n_tries</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span> <span class="k">return</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1"># Attempt 1/2: Successed</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="c1"># Attempt 1/2: Failed with error: unsupported operand type(s) for +: &#39;int&#39; and &#39;str&#39;</span>
+<span class="c1"># Attempt 2/2: Failed with error: unsupported operand type(s) for +: &#39;int&#39; and &#39;str&#39;</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>deczoo/decorators.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="nd">@check_parens</span>
+<span class="k">def</span> <span class="nf">retry</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">n_tries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">delay</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">logging_fn</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wraps a function with a retry block</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        func: function to decorate</span>
+<span class="sd">        n_tries: max number of attempts to try, default=1</span>
+<span class="sd">        delay: time to wait before a retry, default=0</span>
+<span class="sd">        logging_fn: log function (e.g. print, logger.info, rich console.print)</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    from deczoo import retry</span>
+
+<span class="sd">    @retry(n_tries=2, delay=1.)</span>
+<span class="sd">    def add(a, b): return a+b</span>
+
+<span class="sd">    _ = add(1, 2)</span>
+<span class="sd">    # Attempt 1/2: Successed</span>
+
+<span class="sd">    _ = add(1, &quot;a&quot;)</span>
+<span class="sd">    # Attempt 1/2: Failed with error: unsupported operand type(s) for +: &#39;int&#39; and &#39;str&#39;</span>
+<span class="sd">    # Attempt 2/2: Failed with error: unsupported operand type(s) for +: &#39;int&#39; and &#39;str&#39;</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">logging_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logging_fn</span> <span class="o">=</span> <span class="n">LOGGING_FN</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">attempt</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">n_tries</span><span class="p">:</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">logging_fn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt </span><span class="si">{</span><span class="n">attempt</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_tries</span><span class="si">}</span><span class="s2">: Successed&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">res</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging_fn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt </span><span class="si">{</span><span class="n">attempt</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_tries</span><span class="si">}</span><span class="s2">: Failed with error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+                <span class="n">attempt</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">attempt</span> <span class="o">==</span> <span class="n">n_tries</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="deczoo.decorators.timeout" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">timeout</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_limit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">signal_handler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">signum</span><span class="o">=&lt;</span><span class="n">Signals</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">:</span> <span class="mi">14</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">logging_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#deczoo.decorators.timeout" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Sets a time limit to a function, terminates the process if it hasn't finished within such time limit.
+Remark that it uses the signal library (https://docs.python.org/3/library/signal.html) which fully supported only on UNIX.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>func</code></td>
+        <td><code>Callable</code></td>
+        <td><p>function to decorate</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>time_limit</code></td>
+        <td><code>int</code></td>
+        <td><p>max time (in seconds) for function to run, 0 means no time limit, default=0</p></td>
+        <td><code>0</code></td>
+      </tr>
+      <tr>
+        <td><code>signal_handler</code></td>
+        <td><code>Callable</code></td>
+        <td><p>custom signal handler</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>signum</code></td>
+        <td><code>Union[int, enum.Enum]</code></td>
+        <td><p>signal number to be used, default=signal.SIGALRM (14)</p></td>
+        <td><code>&lt;Signals.SIGALRM: 14&gt;</code></td>
+      </tr>
+      <tr>
+        <td><code>logging_fn</code></td>
+        <td><code>Callable</code></td>
+        <td><p>log function (e.g. print, logger.info, rich console.print)</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>      <p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">deczoo</span> <span class="kn">import</span> <span class="n">timeout</span>
+
+<span class="nd">@timeout</span><span class="p">(</span><span class="n">time_limit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
+
+<span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="mi">3</span>
+
+<span class="nd">@timeout</span><span class="p">(</span><span class="n">time_limit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
+
+<span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1"># Exception: Reached time limit, terminating add</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>deczoo/decorators.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="nd">@check_parens</span>
+<span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">time_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">signal_handler</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">signum</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">,</span>
+    <span class="n">logging_fn</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets a time limit to a function, terminates the process if it hasn&#39;t finished within such time limit.</span>
+<span class="sd">    Remark that it uses the signal library (https://docs.python.org/3/library/signal.html) which fully supported only on UNIX.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        func: function to decorate</span>
+<span class="sd">        time_limit: max time (in seconds) for function to run, 0 means no time limit, default=0</span>
+<span class="sd">        signal_handler: custom signal handler</span>
+<span class="sd">        signum: signal number to be used, default=signal.SIGALRM (14)</span>
+<span class="sd">        logging_fn: log function (e.g. print, logger.info, rich console.print)</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    import time</span>
+<span class="sd">    from deczoo import timeout</span>
+
+<span class="sd">    @timeout(time_limit=3)</span>
+<span class="sd">    def add(a, b):</span>
+<span class="sd">        time.sleep(2)</span>
+<span class="sd">        return a+b</span>
+
+<span class="sd">    add(1, 2)</span>
+<span class="sd">    3</span>
+
+<span class="sd">    @timeout(time_limit=1)</span>
+<span class="sd">    def add(a, b):</span>
+<span class="sd">        time.sleep(2)</span>
+<span class="sd">        return a+b</span>
+
+<span class="sd">    add(1, 2)</span>
+<span class="sd">    # Exception: Reached time limit, terminating add</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">logging_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logging_fn</span> <span class="o">=</span> <span class="n">LOGGING_FN</span>
+
+    <span class="k">if</span> <span class="n">signal_handler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">def</span> <span class="nf">signal_handler</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reached time limit, terminating </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">signal_handler</span><span class="p">)</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="n">time_limit</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+                  
+                
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../.." title="Home" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Home
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../utils/" title="Utils" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Utils
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.2.3",url:{base:"../.."}})</script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
