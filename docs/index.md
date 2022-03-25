@@ -1,4 +1,4 @@
-<img src="docs/img/icon.png" width=185 height=185 align="right">
+<img src="img/icon.png" width=185 height=185 align="right">
 
 # deczoo
 
