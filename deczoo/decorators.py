@@ -11,6 +11,7 @@ import time
 
 import chime
 
+from ._base_notifier import BaseNotifier
 from ._utils import check_parens, LOGGING_FN
 
 
@@ -364,7 +365,7 @@ def _get_free_memory() -> int:
 
 @check_parens
 def memory_limit(
-    func: Callable = None, percentage: float = 0.99, logging_fn: Callable = print
+    func: Callable = None, percentage: float = 0.99, logging_fn: Callable = None
 ) -> Callable:
     """
     Sets a memory limit for a function
@@ -400,6 +401,9 @@ def memory_limit(
     ```
     """
 
+    if logging_fn is None:
+        logging_fn = LOGGING_FN
+
     @wraps(func)
     def wrapper(*args, **kwargs):
 
@@ -420,6 +424,48 @@ def memory_limit(
 
         finally:
             resource.setrlimit(resource.RLIMIT_AS, (int(free_memory), hard))
+
+    return wrapper
+
+
+@check_parens
+def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Callable:
+    """
+    Notify when func has finished running using the notifier `notify` method
+
+    Arguments:
+        func: function to decorate
+        notifier: class that implements notification
+
+    Usage:
+
+    ```python
+    from deczoo import notify_on_end
+    from deczoo._base_notifier import BaseNotifier
+
+    class DummyNotifier(BaseNotifier):
+        def notify(self):
+            print("Function has finished")
+
+    @notify_on_end(notifier = DummyNotifier())
+    def add(a, b): return a + b
+
+    _ = add(1, 2)
+    # Function has finished
+    ```
+    """
+    if not hasattr(notifier, "notify"):
+        raise AttributeError("notifier must have `notify` method")
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            raise e
+        finally:
+            notifier.notify()
 
     return wrapper
 
