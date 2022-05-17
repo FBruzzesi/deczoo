@@ -1,4 +1,4 @@
-from typing import Any, Dict, Callable, Union
+from typing import Any, Dict, Callable, Union, Optional
 from functools import partial, wraps
 from datetime import datetime
 from enum import Enum
@@ -17,10 +17,10 @@ from ._utils import check_parens, LOGGING_FN
 
 @check_parens
 def call_counter(
-    func: Callable = None,
-    seed: int = 0,
-    log_counter: bool = False,
-    logging_fn: Callable = None,
+    func: Optional[Callable] = None,
+    seed: Optional[int] = 0,
+    log_counter: Optional[bool] = False,
+    logging_fn: Optional[Callable] = None,
 ) -> Callable:
     """
     Counts how many times a function has been called in the `_calls` attribute
@@ -66,10 +66,10 @@ def call_counter(
 
 @check_parens
 def catch(
-    func: Callable = None,
-    return_on_exception: Any = None,
-    raise_on_exception: Any = None,
-    logging_fn: Callable = None,
+    func: Optional[Callable] = None,
+    return_on_exception: Optional[Any] = None,
+    raise_on_exception: Optional[Any] = None,
+    logging_fn: Optional[Callable] = None,
 ) -> Callable:
     """
     Wraps a function in a try-except block,
@@ -121,7 +121,9 @@ def catch(
 
 
 @check_parens
-def check_args(func: Callable = None, **rules: Dict[str, Callable]) -> Callable:
+def check_args(
+    func: Optional[Callable] = None, **rules: Dict[str, Callable]
+) -> Callable:
     """
     Checks that function arguments satisfy given rules
 
@@ -165,7 +167,9 @@ def check_args(func: Callable = None, **rules: Dict[str, Callable]) -> Callable:
 
 
 @check_parens
-def chime_on_end(func: Callable = None, theme: str = None) -> Callable:
+def chime_on_end(
+    func: Optional[Callable] = None, theme: Optional[str] = None
+) -> Callable:
     """
     Notify with chime sound on function end
 
@@ -204,12 +208,12 @@ def chime_on_end(func: Callable = None, theme: str = None) -> Callable:
 
 @check_parens
 def dump_result(
-    func: Callable = None,
-    result_path: str = "results",
-    include_args: bool = False,
-    include_time: bool = True,
-    time_fmt: str = "%Y%m%d_%H%M%S",
-    logging_fn: Callable = None,
+    func: Optional[Callable] = None,
+    result_path: Optional[str] = "results",
+    include_args: Optional[bool] = False,
+    include_time: Optional[bool] = True,
+    time_fmt: Optional[str] = "%Y%m%d_%H%M%S",
+    logging_fn: Optional[Callable] = None,
 ) -> Callable:
     """
     Saves function result in a pickle file
@@ -269,12 +273,12 @@ def dump_result(
 
 @check_parens
 def log(
-    func: Callable = None,
-    log_time: bool = True,
-    log_args: bool = True,
-    log_error: bool = True,
-    log_file: str = None,
-    logging_fn: Callable = None,
+    func: Optional[Callable] = None,
+    log_time: Optional[bool] = True,
+    log_args: Optional[bool] = True,
+    log_error: Optional[bool] = True,
+    log_file: Optional[str] = None,
+    logging_fn: Optional[Callable] = None,
 ) -> Callable:
     """
     Tracks function time taken, arguments and errors
@@ -365,7 +369,9 @@ def _get_free_memory() -> int:
 
 @check_parens
 def memory_limit(
-    func: Callable = None, percentage: float = 0.99, logging_fn: Callable = None
+    func: Optional[Callable] = None,
+    percentage: Optional[float] = 0.99,
+    logging_fn: Optional[Callable] = None,
 ) -> Callable:
     """
     Sets a memory limit for a function
@@ -431,11 +437,12 @@ def memory_limit(
 @check_parens
 def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Callable:
     """
-    Notify when func has finished running using the notifier `notify` method
+    Notify when func has finished running using the notifier `notify` method.
+    `notifier` object should inherit from BaseNotifier
 
     Arguments:
         func: function to decorate
-        notifier: class that implements notification
+        notifier: instance of a Notifier that implements `notify` method
 
     Usage:
 
@@ -447,15 +454,14 @@ def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Calla
         def notify(self):
             print("Function has finished")
 
-    @notify_on_end(notifier = DummyNotifier())
+    notifier = DummyNotifier()
+    @notify_on_end(notifier=notifier)
     def add(a, b): return a + b
 
     _ = add(1, 2)
     # Function has finished
     ```
     """
-    if not hasattr(notifier, "notify"):
-        raise AttributeError("notifier must have `notify` method")
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -472,10 +478,10 @@ def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Calla
 
 @check_parens
 def retry(
-    func: Callable = None,
-    n_tries: int = 1,
-    delay: float = 0.0,
-    logging_fn: Callable = None,
+    func: Optional[Callable] = None,
+    n_tries: Optional[int] = 1,
+    delay: Optional[float] = 0.0,
+    logging_fn: Optional[Callable] = None,
 ) -> Callable:
     """
     Wraps a function with a retry block
@@ -531,11 +537,11 @@ def retry(
 
 @check_parens
 def timeout(
-    func: Callable = None,
-    time_limit: int = 0,
-    signal_handler: Callable = None,
-    signum: Union[int, Enum] = signal.SIGALRM,
-    logging_fn: Callable = None,
+    func: Optional[Callable] = None,
+    time_limit: Optional[int] = 0,
+    signal_handler: Optional[Callable] = None,
+    signum: Optional[Union[int, Enum]] = signal.SIGALRM,
+    logging_fn: Optional[Callable] = None,
 ) -> Callable:
     """
     Sets a time limit to a function, terminates the process if it hasn't finished within such time limit.
