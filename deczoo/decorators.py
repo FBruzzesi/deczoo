@@ -1,17 +1,17 @@
-from typing import Any, Dict, Callable, Union
-from functools import partial, wraps
-from datetime import datetime
-from enum import Enum
 import inspect
 import os
 import pickle
 import resource
 import signal
 import time
+from datetime import datetime
+from enum import Enum
+from functools import partial, wraps
+from typing import Any, Callable, Dict, Union
 
 import chime
 
-from ._utils import check_parens, LOGGING_FN
+from ._utils import LOGGING_FN, check_parens
 
 
 @check_parens
@@ -336,9 +336,7 @@ def log(
             raise e
 
         finally:
-            log_string = (
-                f"{func.__name__} {' '.join([s for s in optional_strings if s])}"
-            )
+            log_string = f"{func.__name__} {' '.join([s for s in optional_strings if s])}"
             logging_fn(log_string)
 
             if log_file is not None:

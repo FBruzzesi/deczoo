@@ -1,5 +1,5 @@
-from typing import Callable
 from functools import partial, wraps
+from typing import Callable
 
 try:
     from rich.console import Console

@@ -12,22 +12,28 @@ repos:
     -   id: check-yaml
     -   id: check-ast
     -   id: check-added-large-files
+-   repo: https://github.com/pycqa/isort
+    rev: 5.11.2
+    hooks:
+      - id: isort
+        name: isort (python)
+        args: [--profile, black, -l, "90", deczoo, tests]
 -   repo: https://github.com/psf/black
-    rev: 21.12b0
+    rev: 22.12.0
     hooks:
       - id: black
         language_version: python3.8
-        args: [--target-version, py38, deczoo, tests]
+        args: [--target-version, py38, --line-length, "90", deczoo, tests]
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
     rev: v1.0.5
     hooks:
     -   id: python-bandit-vulnerability-check
-        args: [--skip, "B101,B403", --recursive, deczoo, tests]
+        args: [--skip, "B101",--severity-level, medium,  --recursive, deczoo]
 -   repo: https://github.com/econchick/interrogate
     rev: 1.5.0
     hooks:
     -   id: interrogate
-        args: [-vv, --ignore-module, --ignore-init-method, --ignore-private, --ignore-magic, --ignore-nested-functions, --fail-under=80, deczoo]
+        args: [-vv, --ignore-nested-functions, --ignore-module, --ignore-init-method, --ignore-private, --ignore-magic, --ignore-property-decorators, --fail-under=90, deczoo, tests]
 -   repo: https://github.com/pre-commit/pygrep-hooks
     rev: 7638d0035a770dd67283b7d464e4db3c0043f609
     hooks:

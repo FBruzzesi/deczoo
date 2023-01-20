@@ -1,4 +1,5 @@
 import pytest
+
 from deczoo import check_args
 
 
