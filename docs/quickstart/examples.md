@@ -1,6 +1,7 @@
 # Example Usage
 
-##  `call_counter`
+##  call_counter
+
 Counts how many times a function has been called, stores such values in the `_calls` attribute.
 
 ```python
