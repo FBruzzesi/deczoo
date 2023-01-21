@@ -1,10 +1,10 @@
+<img src="docs/img/deczoo-logo.png" width=185 height=185 align="right">
+
 ![](https://img.shields.io/github/license/FBruzzesi/deczoo)
 <img src ="docs/img/interrogate-shield.svg">
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-<img src="docs/img/icon.png" width=185 height=185 align="right">
-
-# deczoo
+# Deczoo
 
 > A zoo for decorators
 
@@ -12,25 +12,36 @@ There are many great decorators out there that we use everyday. Why don't collec
 
 I found myself implementing over and over in different projects. The hope is to gather them here and use this codebase.
 
+---
+
+**Documentation**: https://fbruzzesi.github.io/deczoo
+
+**Source Code**: https://github.com/fbruzzesi/deczoo
+
+---
+
 ## Alpha Notice
 
-This package is really new and there are edge cases that probably doesn't cover (yet).
+This codebase is experimental and is working for my use cases. It is very probable that there are cases not covered and for which it breaks (badly). If you find them, please feel free to open an issue in the [issue page](https://github.com/FBruzzesi/deczoo/issues) of the repo.
 
 ## Installation
 
-You can install the library using `pip`:
+**deczoo** is published as a Python package on [pypi](https://pypi.org/), and it can be installed with pip, ideally by using a virtual environment (suggested option), or directly from source using git, or with a local clone:
 
-```bash
-python -m pip install deczoo
-```
+- **pip**: `python -m pip install deczoo`
+- **source/git**: `python -m pip install git+https://github.com/FBruzzesi/deczoo.git`
+- **local clone**:
+    ```bash
+    git clone https://github.com/FBruzzesi/deczoo.git
+    cd deczoo
+    python -m pip install .
+    ```
 
 ## Getting started
 
-We have a [documentation page](https://fbruzzesi.github.io/deczoo/) that explains how each feature works.
+The idea is kind of simple: each function in the library is a (function) decorator with a specific objective in mind.
 
-Each function here is a decorator with a specific objective in mind.
-
-```python
+```python title="Example: log decorator"
 from deczoo import log
 
 @log # equivalent to @log(log_time=True, log_args=True, log_error=True, logging_fn=print)
@@ -46,9 +57,9 @@ _ = my_add_function(1, 2, 3, 4)
 # operand type(s) for +: 'int' and 'str'
 ```
 
-## Features
+### Features
 
-The library implements few (function) decorators:
+The library implements the following decorators:
 
 - `call_counter`: Counts how many times a function has been called
 - `catch`: Wraps a function in a try-except block
@@ -58,25 +69,18 @@ The library implements few (function) decorators:
 - `log`: Tracks function time taken, arguments and errors
 - `timer`: Tracks function time taken
 - `memory_limit`: Sets a memory limit for a function
+- `notify_on_end`: notifies you when a function finished with a custom notifier
 - `retry`: Wraps a function with a retry block
 - `timeout`: Sets a time limit to a function to run
 
-## Feedbacks
+### Examples
 
-Any feedback, improvement/enhancement or issue is welcome in the [issue page](https://github.com/FBruzzesi/deczoo/issues) of the repo.
+Please refer to the [api page](https://fbruzzesi.github.io/deczoo/api/decorators/) to see a basic example for each decorator.
 
 ## Contributing
 
-Make sure to check the [issue list](https://github.com/FBruzzesi/deczoo/issues) beforehand.
+Please read the [Contributing guidelines](https://fbruzzesi.github.io/deczoo/contribute/) in the documentation site.
 
- To get started locally, you can clone the repo and quickly get started using the `Makefile`:
+## License
 
-```bash
-git clone git@github.com:FBruzzesi/deczoo.git
-cd deczoo
-make init-develop
-```
-
-## Licence
-
-This repository has a MIT Licence
+The project has a [MIT Licence](https://github.com/FBruzzesi/deczoo/blob/main/LICENSE)
