@@ -28,14 +28,24 @@ This codebase is experimental and is working for my use cases. It is very probab
 
 **deczoo** is published as a Python package on [pypi](https://pypi.org/), and it can be installed with pip, ideally by using a virtual environment (suggested option), or directly from source using git, or with a local clone:
 
-- **pip**: `python -m pip install deczoo`
-- **source/git**: `python -m pip install git+https://github.com/FBruzzesi/deczoo.git`
-- **local clone**:
-    ```bash
-    git clone https://github.com/FBruzzesi/deczoo.git
-    cd deczoo
-    python -m pip install .
-    ```
+### pip
+
+```bash
+python -m pip install deczoo
+```
+
+### source/git
+
+```bash
+python -m pip install git+https://github.com/FBruzzesi/deczoo.git
+```
+
+### local clone
+```bash
+git clone https://github.com/FBruzzesi/deczoo.git
+cd deczoo
+python -m pip install .
+```
 
 ## Getting started
 
