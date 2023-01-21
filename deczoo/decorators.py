@@ -18,17 +18,17 @@ from ._utils import LOGGING_FN, check_parens
 @check_parens
 def call_counter(
     func: Optional[Callable] = None,
-    seed: Optional[int] = 0,
-    log_counter: Optional[bool] = False,
-    logging_fn: Optional[Callable] = None,
+    seed: int = 0,
+    log_counter: bool = False,
+    logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
     Counts how many times a function has been called in the `_calls` attribute
 
     Arguments:
         func: function to decorate
-        seed: counter start, default=0
-        log_counter: whether display count number, default=False
+        seed: counter start
+        log_counter: whether display count number
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
@@ -47,11 +47,9 @@ def call_counter(
     ```
     """
 
-    if logging_fn is None:
-        logging_fn = LOGGING_FN
-
     @wraps(func)
     def wrapper(*args, **kwargs):
+
         wrapper._calls += 1
 
         if log_counter:
@@ -69,7 +67,7 @@ def catch(
     func: Optional[Callable] = None,
     return_on_exception: Optional[Any] = None,
     raise_on_exception: Optional[Any] = None,
-    logging_fn: Optional[Callable] = None,
+    logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
     Wraps a function in a try-except block,
@@ -94,9 +92,6 @@ def catch(
     -999
     ```
     """
-
-    if logging_fn is None:
-        logging_fn = LOGGING_FN
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -207,21 +202,21 @@ def chime_on_end(
 @check_parens
 def dump_result(
     func: Optional[Callable] = None,
-    result_path: Optional[str] = "results",
-    include_args: Optional[bool] = False,
-    include_time: Optional[bool] = True,
-    time_fmt: Optional[str] = "%Y%m%d_%H%M%S",
-    logging_fn: Optional[Callable] = None,
+    result_path: str = "results",
+    include_args: bool = False,
+    include_time: bool = True,
+    time_fmt: str = "%Y%m%d_%H%M%S",
+    logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
     Saves function result in a pickle file
 
     Arguments:
         func: function to decorate
-        result_path: path to folder where to save the result, default="results"
-        include_args: whether to add arguments the function run with in the filename, default=False
-        include_time: whether to add when the function run in the filename, default=True
-        time_fmt: time format, used only if include_time=True, default="%Y%m%d_%H%M%S"
+        result_path: path to folder where to save the result
+        include_args: whether to add arguments the function run with in the filename
+        include_time: whether to add when the function run in the filename
+        time_fmt: time format, used only if include_time=True
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
@@ -236,9 +231,6 @@ def dump_result(
     # will save the result in results/add_%Y%m%d_%H%M%S.pickle
     ```
     """
-
-    if logging_fn is None:
-        logging_fn = LOGGING_FN
 
     if not os.path.exists(result_path):
         os.makedirs(result_path)
@@ -272,21 +264,21 @@ def dump_result(
 @check_parens
 def log(
     func: Optional[Callable] = None,
-    log_time: Optional[bool] = True,
-    log_args: Optional[bool] = True,
-    log_error: Optional[bool] = True,
+    log_time: bool = True,
+    log_args: bool = True,
+    log_error: bool = True,
     log_file: Optional[str] = None,
-    logging_fn: Optional[Callable] = None,
+    logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
     Tracks function time taken, arguments and errors
 
     Arguments:
         func: function to decorate
-        log_time: whether to log time taken or not, default=True
-        log_args: whether to log arguments or not, default=True
-        log_error: whether to log error or not, default=True
-        log_file: filepath where to write log, default=None
+        log_time: whether or not to log time taken
+        log_args: whether or not to log arguments
+        log_error: whether or not to log error
+        log_file: filepath where to write log
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
@@ -301,9 +293,6 @@ def log(
     # add args=(a=1, b=2) time=0:00:00.000111
     ```
     """
-
-    if logging_fn is None:
-        logging_fn = LOGGING_FN
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -354,6 +343,12 @@ timer = partial(log, log_time=True, log_args=False, log_error=False)
 
 
 def _get_free_memory() -> int:
+    """
+    Computes machine free memory
+
+    !Warning: Currently supports linux only
+    """
+
     with open("/proc/meminfo", "r") as mem:
         free_memory = 0
         for i in mem:
@@ -366,15 +361,15 @@ def _get_free_memory() -> int:
 @check_parens
 def memory_limit(
     func: Optional[Callable] = None,
-    percentage: Optional[float] = 0.99,
-    logging_fn: Optional[Callable] = None,
+    percentage: float = 0.99,
+    logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
     Sets a memory limit for a function
 
     Arguments:
         func: function to decorate
-        percentage: percentage of the currently available memory to use, default=0.99
+        percentage: percentage of the currently available memory to use
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
@@ -402,9 +397,6 @@ def memory_limit(
     done
     ```
     """
-
-    if logging_fn is None:
-        logging_fn = LOGGING_FN
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -475,17 +467,17 @@ def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Calla
 @check_parens
 def retry(
     func: Optional[Callable] = None,
-    n_tries: Optional[int] = 1,
-    delay: Optional[float] = 0.0,
-    logging_fn: Optional[Callable] = None,
+    n_tries: int = 2,
+    delay: float = 0.0,
+    logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
     Wraps a function with a retry block
 
     Arguments:
         func: function to decorate
-        n_tries: max number of attempts to try, default=1
-        delay: time to wait before a retry, default=0
+        n_tries: max number of attempts to try
+        delay: time to wait before a retry
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
@@ -504,9 +496,6 @@ def retry(
     # Attempt 2/2: Failed with error: unsupported operand type(s) for +: 'int' and 'str'
     ```
     """
-
-    if logging_fn is None:
-        logging_fn = LOGGING_FN
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -534,18 +523,21 @@ def retry(
 @check_parens
 def timeout(
     func: Optional[Callable] = None,
-    time_limit: Optional[int] = 0,
+    time_limit: int = 0,
     signal_handler: Optional[Callable] = None,
-    signum: Optional[Union[int, Enum]] = signal.SIGALRM,
-    logging_fn: Optional[Callable] = None,
+    signum: Union[int, Enum] = signal.SIGALRM,
+    logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
-    Sets a time limit to a function, terminates the process if it hasn't finished within such time limit.
-    Remark that it uses the signal library (https://docs.python.org/3/library/signal.html) which fully supported only on UNIX.
+    Sets a time limit to a function, terminates the process if it hasn't finished within
+    such time limit.
+
+    Remark that it uses the signal library (https://docs.python.org/3/library/signal.html)
+    which fully supported only on UNIX.
 
     Arguments:
         func: function to decorate
-        time_limit: max time (in seconds) for function to run, 0 means no time limit, default=0
+        time_limit: max time (in seconds) for function to run, 0 means no time limit
         signal_handler: custom signal handler
         signum: signal number to be used, default=signal.SIGALRM (14)
         logging_fn: log function (e.g. print, logger.info, rich console.print)
@@ -573,9 +565,6 @@ def timeout(
     # Exception: Reached time limit, terminating add
     ```
     """
-
-    if logging_fn is None:
-        logging_fn = LOGGING_FN
 
     if signal_handler is None:
 

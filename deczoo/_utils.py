@@ -16,8 +16,13 @@ except:
 
 def check_parens(decorator: Callable) -> Callable:
     """
-    Decorates a decorator function in order to check if it gets called with or without parens, and therefore deal with its optional arguments.
-    In such a way decorator can be called both with or without params:
+    Decorates a decorator function in order to check whether or not it gets called with
+    parens, and therefore deal with its optional arguments.
+
+    Arguments:
+        decorator: decorator to wrap
+
+    Usage:
 
     ```python
     # `decorator` called default params, and without parens
