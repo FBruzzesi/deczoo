@@ -41,6 +41,7 @@ python -m pip install git+https://github.com/FBruzzesi/deczoo.git
 ```
 
 ### local clone
+
 ```bash
 git clone https://github.com/FBruzzesi/deczoo.git
 cd deczoo
