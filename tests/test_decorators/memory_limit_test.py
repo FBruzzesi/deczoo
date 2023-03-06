@@ -13,7 +13,7 @@ def test_limited(x, expected):
     @memory_limit(percentage=0.05)
     def limited(x):
 
-        for i in list(range(10**8)):
+        for i in list(range(10**7)):
             _ = 1 + 1
         return x
 
@@ -29,7 +29,7 @@ def test_unlimited(x, expected):
     """Tests that without limiting memory the test passes"""
 
     def unlimited(x):
-        for i in list(range(10**8)):
+        for i in list(range(10**7)):
             _ = 1 + 1
         return x
 

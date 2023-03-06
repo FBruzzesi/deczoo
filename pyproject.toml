@@ -1,3 +1,56 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "deczoo"
+version = "0.3.0"
+description = "Zoo for Python decorators"
+
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [{name = "Francesco Bruzzesi"}]
+
+
+dependencies = ["chime"]
+
+[project.urls]
+documentation = "https://fbruzzesi.github.io/deczoo/"
+repository = "https://github.com/fbruzzesi/deczoo"
+issue-tracker = "https://github.com/fbruzzesi/deczoo/issues"
+
+
+[project.optional-dependencies]
+rich = ["rich>=12.0.0"]
+
+dev = [
+    "black==22.12.0",
+    "interrogate==1.5.0",
+    "isort==5.10.1",
+    "pre-commit==2.21.0",
+    "pytest==7.2.0",
+]
+
+docs = [
+    "mkdocs==1.4.2",
+    "mkdocs-material==9.0.0",
+    "mkdocstrings==0.19.1",
+]
+
+[tool.setuptools.packages.find]
+include = ["deczoo*"]
+exclude = ["docs", "tests", "data", "docker", "results", "notebooks", "kubernetes"]
+
+
+[tool.black]
+line-length = 90
+target_version = ['py38']
+
+[tool.isort]
+py_version = 310
+profile = "black"
+line_length = 90
+
+[tool.ruff]
+line-length = 90
