@@ -1,6 +1,8 @@
 from functools import partial, wraps
 from typing import Callable
 
+LOGGING_FN: Callable[[str], None]
+
 try:
     from rich.console import Console
     from rich.theme import Theme
@@ -8,9 +10,10 @@ try:
     custom_theme = Theme({"good": "bold green", "bad": "bold red"})
     console = Console(theme=custom_theme)
 
-    LOGGING_FN = console.print
+    LOGGING_FN = console.log
 
-except:
+except ImportError:
+
     LOGGING_FN = print
 
 
@@ -46,26 +49,3 @@ def check_parens(decorator: Callable) -> Callable:
             return decorator(func, *args, **kwargs)
 
     return wrapper
-
-
-'''
-def set_logging_fn(func: Callable = None):
-    """
-    Set the global value of logging_fn.
-
-    Argument:
-        func: The change will be switched if a valid name is provided. The current theme is
-            returned if `None`.
-    Raises:
-        ValueError: If the theme is unknown.
-    """
-
-    global LOGGING_FN
-
-    if func is None:
-        return LOGGING_FN
-    elif not isinstance(func, Callable):
-        raise ValueError("func is not callable, please provide a callable logging function")
-    else:
-        LOGGING_FN = func
-'''

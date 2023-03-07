@@ -20,9 +20,20 @@ def test_within_time_limit(sleepy_add, a, b, expected):
     "a, b, expected",
     [(1, 1, Exception), (1, 2, Exception)],
 )
-def test_within_time_limit(sleepy_add, a, b, expected):
+def test_out_of_limit(sleepy_add, a, b, expected):
     """Tests that if the function doesn't make it in time, an Exception is raised"""
     add = timeout(sleepy_add, time_limit=1)
 
     with pytest.raises(expected):
         add(a, b)
+
+
+@pytest.mark.parametrize(
+    "time_limit",
+    [None, -1, "a"],
+)
+def test_argumnets_raise(sleepy_add, time_limit):
+    """Tests that ValueError is raised if time_limit is not a positive number"""
+
+    with pytest.raises(ValueError):
+        timeout(sleepy_add, time_limit=time_limit)

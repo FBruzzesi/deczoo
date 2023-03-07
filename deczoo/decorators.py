@@ -31,6 +31,9 @@ def call_counter(
         log_counter: whether display count number
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
+    Raises:
+        ValueError: if seed is not an int
+
     Usage:
 
     ```python
@@ -47,7 +50,10 @@ def call_counter(
     ```
     """
 
-    @wraps(func)
+    if not isinstance(seed, int):
+        raise TypeError("`seed` argument must be an int")
+
+    @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
 
         wrapper._calls += 1
@@ -57,7 +63,8 @@ def call_counter(
 
         return func(*args, **kwargs)
 
-    wrapper._calls = seed
+    # set counter dynamically
+    wrapper._calls = seed  # type: ignore
 
     return wrapper
 
@@ -93,8 +100,9 @@ def catch(
     ```
     """
 
-    @wraps(func)
+    @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
+
         try:
             return func(*args, **kwargs)
 
@@ -116,13 +124,16 @@ def catch(
 
 
 @check_parens
-def check_args(func: Optional[Callable] = None, **rules: Dict[str, Callable]) -> Callable:
+def check_args(
+    func: Optional[Callable] = None, **rules: Callable[[Any], bool]
+) -> Callable:
     """
-    Checks that function arguments satisfy given rules
+    Checks that function arguments satisfy given rules, if not raises a ValueError
 
     Arguments:
         func: function to decorate
-        rules: rules to be satisfied
+        rules: rules to be satisfied, each rule is a function that takes the argument value
+            and returns a boolean
 
     Usage:
 
@@ -140,10 +151,10 @@ def check_args(func: Optional[Callable] = None, **rules: Dict[str, Callable]) ->
     ```
     """
 
-    @wraps(func)
+    @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs) -> Callable:
 
-        func_args = inspect.signature(func).bind(*args, **kwargs).arguments
+        func_args = inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
 
         for k, v in func_args.items():
             rule = rules.get(k)
@@ -153,7 +164,7 @@ def check_args(func: Optional[Callable] = None, **rules: Dict[str, Callable]) ->
                 if not rule(v):
                     raise ValueError(f"Argument {k} doesn't satisfy its rule")
 
-        res = func(*args, **kwargs)
+        res = func(*args, **kwargs)  # type: ignore
         return res
 
     return wrapper
@@ -184,7 +195,7 @@ def chime_on_end(
     """
     chime.theme(theme)
 
-    @wraps(func)
+    @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
 
         try:
@@ -195,68 +206,6 @@ def chime_on_end(
         except Exception as e:
             chime.error()
             raise e
-
-    return wrapper
-
-
-@check_parens
-def dump_result(
-    func: Optional[Callable] = None,
-    result_path: str = "results",
-    include_args: bool = False,
-    include_time: bool = True,
-    time_fmt: str = "%Y%m%d_%H%M%S",
-    logging_fn: Callable = LOGGING_FN,
-) -> Callable:
-    """
-    Saves function result in a pickle file
-
-    Arguments:
-        func: function to decorate
-        result_path: path to folder where to save the result
-        include_args: whether to add arguments the function run with in the filename
-        include_time: whether to add when the function run in the filename
-        time_fmt: time format, used only if include_time=True
-        logging_fn: log function (e.g. print, logger.info, rich console.print)
-
-    Usage:
-
-    ```python
-    from deczoo import dump_result
-
-    @dump_result
-    def add(a, b): return a+b
-
-    _ = add(1, 2)
-    # will save the result in results/add_%Y%m%d_%H%M%S.pickle
-    ```
-    """
-
-    if not os.path.exists(result_path):
-        os.makedirs(result_path)
-
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-
-        res = func(*args, **kwargs)
-
-        func_args_str = ""
-        func_time_str = ""
-
-        if include_args:
-            func_args = inspect.signature(func).bind(*args, **kwargs).arguments
-            func_args_str = "_" + "_".join(f"{v}" for v in func_args.values())
-
-        if include_time:
-            func_time_str = f"_{datetime.now().strftime(time_fmt)}"
-
-        _file = f"{result_path}/{func.__name__}{func_args_str}{func_time_str}.pickle"
-
-        with open(_file, "wb") as outp:
-            pickle.dump(res, outp, pickle.HIGHEST_PROTOCOL)
-            logging_fn(f"Result of {func.__name__} saved at {_file}")
-
-        return res
 
     return wrapper
 
@@ -294,7 +243,7 @@ def log(
     ```
     """
 
-    @wraps(func)
+    @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
 
         tic = datetime.now()
@@ -344,8 +293,7 @@ timer = partial(log, log_time=True, log_args=False, log_error=False)
 
 def _get_free_memory() -> int:
     """
-    Computes machine free memory
-
+    Computes machine free memory via /proc/meminfo (linux only)
     !Warning: Currently supports linux only
     """
 
@@ -397,8 +345,13 @@ def memory_limit(
     done
     ```
     """
+    if not isinstance(percentage, float):
+        raise TypeError("percentage should be a float")
 
-    @wraps(func)
+    if not 0 <= percentage <= 1:
+        raise ValueError("percentage should be between 0 and 1")
+
+    @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
 
         _, hard = resource.getrlimit(resource.RLIMIT_AS)
@@ -451,7 +404,7 @@ def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Calla
     ```
     """
 
-    @wraps(func)
+    @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
 
         try:
@@ -467,7 +420,7 @@ def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Calla
 @check_parens
 def retry(
     func: Optional[Callable] = None,
-    n_tries: int = 2,
+    n_tries: int = 3,
     delay: float = 0.0,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
@@ -496,8 +449,13 @@ def retry(
     # Attempt 2/2: Failed with error: unsupported operand type(s) for +: 'int' and 'str'
     ```
     """
+    if not isinstance(n_tries, int) or n_tries < 1:
+        raise ValueError("`n_tries` should be a positive integer")
 
-    @wraps(func)
+    if not isinstance(delay, (int, float)) or delay < 0:
+        raise ValueError("`delay` should be a positive number")
+
+    @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
 
         attempt = 0
@@ -523,7 +481,7 @@ def retry(
 @check_parens
 def timeout(
     func: Optional[Callable] = None,
-    time_limit: int = 0,
+    time_limit: Optional[int] = None,
     signal_handler: Optional[Callable] = None,
     signum: Union[int, Enum] = signal.SIGALRM,
     logging_fn: Callable = LOGGING_FN,
@@ -566,14 +524,17 @@ def timeout(
     ```
     """
 
+    if not isinstance(time_limit, (int, float)) or time_limit < 0:
+        raise ValueError("`time_limit` should be a positive number")
+
     if signal_handler is None:
 
         def signal_handler(signum, frame):
             raise Exception(f"Reached time limit, terminating {func.__name__}")
 
-        signal.signal(signum, signal_handler)
+        signal.signal(signum, signal_handler)  # type: ignore
 
-    @wraps(func)
+    @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
 
         signal.alarm(time_limit)
