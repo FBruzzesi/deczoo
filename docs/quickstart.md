@@ -27,7 +27,6 @@ The library implements the following decorators:
 - `catch`: Wraps a function in a try-except block
 - `check_args`: Checks that function arguments satisfy given rules
 - `chime_on_end`: Notify with chime sound on function end
-- `dump_result`: Saves function result in a pickle file
 - `log`: Tracks function time taken, arguments and errors
 - `timer`: Tracks function time taken
 - `memory_limit`: Sets a memory limit for a function

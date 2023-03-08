@@ -68,20 +68,6 @@ _ = add(1, 2)
 # you should hear a sound now!
 ```
 
-##  `dump_result`
-
-Saves function result in a pickle file, eventually creates a results folder if doesn't exist.
-
-```python
-from deczoo import dump_result
-
-@dump_result(include_args=True)
-def add(a, b):
-    return a+b
-
-_ = add(1, 2)# will save the result in results/add_1_2_%Y%m%d_%H%M%S.pickle
-```
-
 ##  `log`
 Tracks function time taken, arguments and errors
 
