@@ -2,32 +2,32 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://fbruzzesi.github.io/deczoo/</loc>
-         <lastmod>2023-01-23</lastmod>
+         <lastmod>2023-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://fbruzzesi.github.io/deczoo/contribute/</loc>
-         <lastmod>2023-01-23</lastmod>
+         <lastmod>2023-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://fbruzzesi.github.io/deczoo/quickstart/</loc>
-         <lastmod>2023-01-23</lastmod>
+         <lastmod>2023-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://fbruzzesi.github.io/deczoo/api/decorators/</loc>
-         <lastmod>2023-01-23</lastmod>
+         <lastmod>2023-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://fbruzzesi.github.io/deczoo/api/utils/</loc>
-         <lastmod>2023-01-23</lastmod>
+         <lastmod>2023-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://fbruzzesi.github.io/deczoo/quickstart/examples/</loc>
-         <lastmod>2023-01-23</lastmod>
+         <lastmod>2023-03-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
