@@ -8,6 +8,7 @@ from .decorators import (
     chime_on_end,
     log,
     memory_limit,
+    notify_on_end,
     retry,
     timeout,
     timer,
@@ -25,6 +26,7 @@ __all__ = (
     "log",
     "timer",
     "memory_limit",
+    "notify_on_end",
     "retry",
     "timeout",
 )

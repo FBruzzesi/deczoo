@@ -9,6 +9,6 @@ class BaseNotifier(metaclass=abc.ABCMeta):
     """
 
     @abc.abstractmethod
-    def notify(self, *args, **kwargs):
+    def notify(self, *args, **kwargs) -> None:
         """Method used to notify"""
-        pass
+        ...

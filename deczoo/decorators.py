@@ -1,13 +1,11 @@
 import inspect
-import os
-import pickle
 import resource
 import signal
 import time
 from datetime import datetime
 from enum import Enum
 from functools import partial, wraps
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 import chime
 
@@ -246,7 +244,7 @@ def log(
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
 
-        tic = datetime.now()
+        tic = time.perf_counter()
 
         if log_args:
 
@@ -260,7 +258,7 @@ def log(
 
         try:
             res = func(*args, **kwargs)
-            toc = datetime.now()
+            toc = time.perf_counter()
             optional_strings += [
                 f"time={toc - tic}" if log_time else None,
             ]
@@ -269,7 +267,7 @@ def log(
 
         except Exception as e:
 
-            toc = datetime.now()
+            toc = time.perf_counter()
             optional_strings += [
                 f"time={toc - tic}" if log_time else None,
                 "Failed" + (f" with error: {e}" if log_error else ""),
