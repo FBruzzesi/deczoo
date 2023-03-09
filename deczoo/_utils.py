@@ -1,5 +1,5 @@
 from functools import partial, wraps
-from typing import Callable
+from typing import Callable, Protocol, Tuple
 
 LOGGING_FN: Callable[[str], None]
 
@@ -49,3 +49,33 @@ def check_parens(decorator: Callable) -> Callable:
             return decorator(func, *args, **kwargs)
 
     return wrapper
+
+
+def _get_free_memory() -> int:
+    """
+    Computes machine free memory via /proc/meminfo (linux only)
+    !Warning: Currently supports linux only
+    """
+
+    with open("/proc/meminfo", "r") as mem:
+        free_memory = 0
+        for i in mem:
+            sline = i.split()
+            if str(sline[0]) in ("MemFree:", "Buffers:", "Cached:"):
+                free_memory += int(sline[1])
+    return free_memory
+
+
+class HasShape(Protocol):
+    """
+    Protocol for objects that have a shape attribute.
+    In this context, a "dataframe"-like object.
+    """
+
+    @property
+    def shape(self) -> Tuple[int, int]:
+        pass
+
+
+class EmptyDataFrameError(Exception):
+    ...

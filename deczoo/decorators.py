@@ -4,12 +4,18 @@ import signal
 import time
 from enum import Enum
 from functools import partial, wraps
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional, Sequence, Union
 
 import chime
 
 from ._base_notifier import BaseNotifier
-from ._utils import LOGGING_FN, check_parens
+from ._utils import (
+    LOGGING_FN,
+    EmptyDataFrameError,
+    HasShape,
+    _get_free_memory,
+    check_parens,
+)
 
 
 @check_parens
@@ -288,21 +294,6 @@ def log(
 timer = partial(log, log_time=True, log_args=False, log_error=False)
 
 
-def _get_free_memory() -> int:
-    """
-    Computes machine free memory via /proc/meminfo (linux only)
-    !Warning: Currently supports linux only
-    """
-
-    with open("/proc/meminfo", "r") as mem:
-        free_memory = 0
-        for i in mem:
-            sline = i.split()
-            if str(sline[0]) in ("MemFree:", "Buffers:", "Cached:"):
-                free_memory += int(sline[1])
-    return free_memory
-
-
 @check_parens
 def memory_limit(
     func: Optional[Callable] = None,
@@ -476,12 +467,52 @@ def retry(
 
 
 @check_parens
+def shape_tracker(
+    func: Optional[Callable[[HasShape, Sequence[Any]], HasShape]] = None,
+    shape_in: bool = False,
+    shape_out: bool = True,
+    shape_delta: bool = False,
+    raise_if_empty: bool = True,
+    logging_fn: Callable = LOGGING_FN,
+) -> Callable:
+    """
+    Tracks the shape of a dataframe, in input, output, delta from input and output
+    """
+
+    @wraps(func)  # type: ignore
+    def wrapper(*args: Any, **kwargs: Any) -> HasShape:
+
+        input_shape = args[0].shape
+        if shape_in:
+            logging_fn(f"Input shape: {input_shape}")
+
+        res = func(*args, **kwargs)  # type: ignore
+
+        output_shape = res.shape
+
+        if shape_out:
+            logging_fn(f"Output shape: {output_shape}")
+
+        if shape_delta:
+            logging_fn(
+                f"Shape delta: ({input_shape[0] - output_shape[0]}, \
+                       {input_shape[1] - output_shape[1]})"
+            )
+
+        if raise_if_empty and output_shape[0] == 0:
+            raise EmptyDataFrameError(f"Result from {func.__name__} is empty")  # type: ignore
+
+        return res
+
+    return wrapper
+
+
+@check_parens
 def timeout(
     func: Optional[Callable] = None,
     time_limit: Optional[int] = None,
     signal_handler: Optional[Callable] = None,
     signum: Union[int, Enum] = signal.SIGALRM,
-    logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
     Sets a time limit to a function, terminates the process if it hasn't finished within
