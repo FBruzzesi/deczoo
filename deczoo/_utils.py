@@ -73,7 +73,7 @@ class HasShape(Protocol):
     """
 
     @property
-    def shape(self) -> Tuple[int, int]:
+    def shape(self) -> Tuple[int, ...]:
         pass
 
 

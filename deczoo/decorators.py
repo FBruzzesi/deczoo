@@ -4,6 +4,7 @@ import signal
 import time
 from enum import Enum
 from functools import partial, wraps
+from itertools import zip_longest
 from typing import Any, Callable, Optional, Sequence, Union
 
 import chime
@@ -482,22 +483,24 @@ def shape_tracker(
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
 
-        input_shape = args[0].shape
         if shape_in:
+            input_shape = args[0].shape
             logging_fn(f"Input shape: {input_shape}")
 
         res = func(*args, **kwargs)  # type: ignore
 
-        output_shape = res.shape
-
         if shape_out:
+            output_shape = res.shape
             logging_fn(f"Output shape: {output_shape}")
 
         if shape_delta:
-            logging_fn(
-                f"Shape delta: ({input_shape[0] - output_shape[0]}, \
-                       {input_shape[1] - output_shape[1]})"
+            input_shape = args[0].shape
+            output_shape = res.shape
+            delta = tuple(
+                d1 - d2 for d1, d2 in zip_longest(input_shape, output_shape, fillvalue=0)
             )
+
+            logging_fn(f"Shape delta: {delta}")
 
         if raise_if_empty and output_shape[0] == 0:
             raise EmptyDataFrameError(f"Result from {func.__name__} is empty")  # type: ignore
