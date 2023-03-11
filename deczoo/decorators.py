@@ -476,6 +476,7 @@ def shape_tracker(
     shape_out: bool = True,
     shape_delta: bool = False,
     raise_if_empty: bool = True,
+    _indx_to_track: Optional[int] = 0,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -490,13 +491,36 @@ def shape_tracker(
         shape_delta: track shape delta between input and output
         raise_if_empty: raise error if output is empty
         logging_fn: log function (e.g. print, logger.info, rich console.print)
+
+    Raises:
+        TypeError: if any of the parameters is not of the correct type
+        EmptyDataFrameError: if output is empty and `raise_if_empty` is True
+    # TODO: Add usage example
+    # TODO: Add tests
     """
+    if not isinstance(shape_in, bool):
+        raise TypeError("shape_in should be a boolean")
+
+    if not isinstance(shape_out, bool):
+        raise TypeError("shape_out should be a boolean")
+
+    if not isinstance(shape_delta, bool):
+        raise TypeError("shape_delta should be a boolean")
+
+    if not isinstance(raise_if_empty, bool):
+        raise TypeError("raise_if_empty should be a boolean")
+
+    if not isinstance(_indx_to_track, int) or _indx_to_track < 0:
+        raise TypeError("_indx_to_track should be a positive integer")
 
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
 
+        func_args = tuple(inspect.signature(func).bind(*args, **kwargs).arguments.items())  # type: ignore
+        arg_to_track = func_args[_indx_to_track][1]  # type: ignore
+
         if shape_in:
-            input_shape = args[0].shape
+            input_shape = arg_to_track.shape
             logging_fn(f"Input shape: {input_shape}")
 
         res = func(*args, **kwargs)  # type: ignore
@@ -506,7 +530,7 @@ def shape_tracker(
             logging_fn(f"Output shape: {output_shape}")
 
         if shape_delta:
-            input_shape = args[0].shape
+            input_shape = arg_to_track.shape
             output_shape = res.shape
             delta = tuple(
                 d1 - d2 for d1, d2 in zip_longest(input_shape, output_shape, fillvalue=0)
