@@ -9,11 +9,14 @@ repo_name: FBruzzesi/deczoo
 repo_url: https://github.com/fbruzzesi/deczoo
 
 # Configuration
+watch:
+  - deczoo
+use_directory_urls: false
 theme:
   name: material
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: Ubuntu
+    code: Ubuntu Mono
   palette:
   - media: '(prefers-color-scheme: light)'
     scheme: default
@@ -51,7 +54,9 @@ theme:
 
 # Plugins
 plugins:
-  - mkdocstrings
+  - mkdocstrings:
+      setup_commands:
+        - import deczoo
   - search:
       separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
 

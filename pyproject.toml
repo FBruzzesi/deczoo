@@ -35,8 +35,8 @@ dev = [
 
 docs = [
     "mkdocs==1.4.2",
-    "mkdocs-material==9.0.0",
-    "mkdocstrings==0.19.1",
+    "mkdocs-material==9.1.2",
+    "mkdocstrings==0.20.0",
 ]
 
 [tool.setuptools.packages.find]

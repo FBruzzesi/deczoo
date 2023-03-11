@@ -19,8 +19,12 @@ except ImportError:
 
 def check_parens(decorator: Callable) -> Callable:
     """
-    Decorates a decorator function in order to check whether or not it gets called with
-    parens, and therefore deal with its optional arguments.
+    Check whether or not a decorator function gets called with parens:
+
+    - If called with parens, the decorator is called without the function as the first
+        argument, but necessarely with decorator keyword arguments.
+    - If called without parens, the decorator is called with the function as the first
+        argument, and the decorator's default arguments.
 
     Arguments:
         decorator: decorator to wrap
@@ -28,12 +32,17 @@ def check_parens(decorator: Callable) -> Callable:
     Usage:
 
     ```python
-    # `decorator` called default params, and without parens
+    @check_parens
+    def decorator(func, k1="default1", k2="default2"):
+        ...
+        # do magic here
+
+    # `decorator` called without parens, hence default params.
     @decorator
     def func(*func_args, **func_kwargs):
         pass
 
-    # `decorator` called with custom params, of course with parens
+    # `decorator` called with custom params, necessarely using parens.
     @decorator(*args, **kwargs)
     def func(*func_args, **func_kwargs):
         pass
@@ -53,8 +62,9 @@ def check_parens(decorator: Callable) -> Callable:
 
 def _get_free_memory() -> int:
     """
-    Computes machine free memory via /proc/meminfo (linux only)
-    !Warning: Currently supports linux only
+    Computes machine free memory via `/proc/meminfo` file (linux only).
+
+    **Warning**: This functionality is supported on unix-based systems only!
     """
 
     with open("/proc/meminfo", "r") as mem:

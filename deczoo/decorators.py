@@ -302,7 +302,9 @@ def memory_limit(
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
-    Sets a memory limit for a function
+    Sets a memory limit while running a function.
+
+    **Warning**: This functionality is supported on unix-based systems only!
 
     Arguments:
         func: function to decorate
@@ -477,7 +479,17 @@ def shape_tracker(
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
-    Tracks the shape of a dataframe, in input, output, delta from input and output
+    Tracks the shape(s) of a dataframe/array-like object.
+    It's possible to track input, output shapes, delta from input and output, raise error
+    if output is empty.
+
+    Parameters:
+        func: function to decorate
+        shape_in: track input shape
+        shape_out: track output shape
+        shape_delta: track shape delta between input and output
+        raise_if_empty: raise error if output is empty
+        logging_fn: log function (e.g. print, logger.info, rich console.print)
     """
 
     @wraps(func)  # type: ignore
@@ -529,7 +541,6 @@ def timeout(
         time_limit: max time (in seconds) for function to run, 0 means no time limit
         signal_handler: custom signal handler
         signum: signal number to be used, default=signal.SIGALRM (14)
-        logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
 
