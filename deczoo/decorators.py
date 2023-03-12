@@ -10,13 +10,7 @@ from typing import Any, Callable, Optional, Sequence, Union
 import chime
 
 from ._base_notifier import BaseNotifier
-from ._utils import (
-    LOGGING_FN,
-    EmptyDataFrameError,
-    HasShape,
-    _get_free_memory,
-    check_parens,
-)
+from ._utils import LOGGING_FN, EmptyShapeError, HasShape, _get_free_memory, check_parens
 
 
 @check_parens
@@ -425,7 +419,6 @@ def retry(
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Usage:
-
     ```python
     from deczoo import retry
 
@@ -476,13 +469,13 @@ def shape_tracker(
     shape_out: bool = True,
     shape_delta: bool = False,
     raise_if_empty: bool = True,
-    _indx_to_track: Optional[int] = 0,
+    idx_to_track: Optional[int] = 0,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
     Tracks the shape(s) of a dataframe/array-like object.
-    It's possible to track input, output shapes, delta from input and output, raise error
-    if output is empty.
+    It's possible to track input, output shapes, delta from input and output, and raise
+    and error if resulting output is empty.
 
     Parameters:
         func: function to decorate
@@ -490,13 +483,47 @@ def shape_tracker(
         shape_out: track output shape
         shape_delta: track shape delta between input and output
         raise_if_empty: raise error if output is empty
+        _indx_to_track: index of the input to track
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Raises:
         TypeError: if any of the parameters is not of the correct type
-        EmptyDataFrameError: if output is empty and `raise_if_empty` is True
-    # TODO: Add usage example
-    # TODO: Add tests
+        EmptyShapeError: if output is empty and `raise_if_empty` is True
+
+    Usage:
+    ```python
+    import numpy as np
+    from deczoo import shape_tracker
+
+    @shape_tracker(shape_in=True, shape_out=True, shape_delta=True)
+    def n_vstack(a: np.ndarray, n: int) -> np.ndarray:
+        return np.vstack(n*[a])
+
+    a = np.random.randn(10, 20, 30)
+    _ = n_vstack(a, 3)
+
+    # Input shape: (10, 20, 30)
+    # Output shape: (30, 20, 30)
+    # Shape delta: (-20, 0, 0)
+    ```
+    Now if the array to track is not the first argument, we can explicitely specify the
+    index of the argument to track using `idx_to_track` parameter:
+
+    ```python
+    import numpy as np
+    from deczoo import shape_tracker
+
+    @shape_tracker(shape_in=True, shape_out=True, shape_delta=True, idx_to_track=1)
+    def n_vstack(n: int, a: np.ndarray) -> np.ndarray:
+        return np.vstack(n*[a])
+
+    a = np.random.randn(10, 20, 30)
+    _ = n_vstack(n=3, a=a)
+
+    # Input shape: (10, 20, 30)
+    # Output shape: (30, 20, 30)
+    # Shape delta: (-20, 0, 0)
+    ```
     """
     if not isinstance(shape_in, bool):
         raise TypeError("shape_in should be a boolean")
@@ -510,14 +537,14 @@ def shape_tracker(
     if not isinstance(raise_if_empty, bool):
         raise TypeError("raise_if_empty should be a boolean")
 
-    if not isinstance(_indx_to_track, int) or _indx_to_track < 0:
+    if not isinstance(idx_to_track, int) or idx_to_track < 0:
         raise TypeError("_indx_to_track should be a positive integer")
 
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
 
         func_args = tuple(inspect.signature(func).bind(*args, **kwargs).arguments.items())  # type: ignore
-        arg_to_track = func_args[_indx_to_track][1]  # type: ignore
+        arg_to_track = func_args[idx_to_track][1]  # type: ignore
 
         if shape_in:
             input_shape = arg_to_track.shape
@@ -525,13 +552,13 @@ def shape_tracker(
 
         res = func(*args, **kwargs)  # type: ignore
 
+        output_shape = res.shape
+
         if shape_out:
-            output_shape = res.shape
             logging_fn(f"Output shape: {output_shape}")
 
         if shape_delta:
             input_shape = arg_to_track.shape
-            output_shape = res.shape
             delta = tuple(
                 d1 - d2 for d1, d2 in zip_longest(input_shape, output_shape, fillvalue=0)
             )
@@ -539,7 +566,7 @@ def shape_tracker(
             logging_fn(f"Shape delta: {delta}")
 
         if raise_if_empty and output_shape[0] == 0:
-            raise EmptyDataFrameError(f"Result from {func.__name__} is empty")  # type: ignore
+            raise EmptyShapeError(f"Result from {func.__name__} is empty")  # type: ignore
 
         return res
 

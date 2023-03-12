@@ -10,6 +10,7 @@ from .decorators import (
     memory_limit,
     notify_on_end,
     retry,
+    shape_tracker,
     timeout,
     timer,
 )
@@ -27,6 +28,7 @@ __all__ = (
     "timer",
     "memory_limit",
     "notify_on_end",
+    "shape_tracker",
     "retry",
     "timeout",
 )

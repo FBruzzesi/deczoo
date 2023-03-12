@@ -87,5 +87,7 @@ class HasShape(Protocol):
         pass
 
 
-class EmptyDataFrameError(Exception):
+class EmptyShapeError(Exception):
+    """Exception raised when a dataframe/array-like object has an empty shape."""
+
     ...
