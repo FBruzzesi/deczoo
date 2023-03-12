@@ -10,8 +10,9 @@ from deczoo import shape_tracker
         ("shape_out", "a"),
         ("shape_delta", (1, 2)),
         ("raise_if_empty", 1.1),
-        ("idx_to_track", "a"),
-        ("idx_to_track", -1),
+        ("arg_to_track", -1),
+        ("arg_to_track", 1.1),
+        ("arg_to_track", (1, 2)),
     ],
 )
 def test_shape_input_validation(base_add, kwarg, value):

@@ -5,7 +5,7 @@ import time
 from enum import Enum
 from functools import partial, wraps
 from itertools import zip_longest
-from typing import Any, Callable, Optional, Sequence, Union
+from typing import Any, Callable, Literal, Optional, Sequence, Tuple, Union
 
 import chime
 
@@ -469,7 +469,7 @@ def shape_tracker(
     shape_out: bool = True,
     shape_delta: bool = False,
     raise_if_empty: bool = True,
-    idx_to_track: Optional[int] = 0,
+    arg_to_track: Optional[Union[int, str]] = 0,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -537,28 +537,35 @@ def shape_tracker(
     if not isinstance(raise_if_empty, bool):
         raise TypeError("raise_if_empty should be a boolean")
 
-    if not isinstance(idx_to_track, int) or idx_to_track < 0:
-        raise TypeError("_indx_to_track should be a positive integer")
+    if (not isinstance(arg_to_track, (str, int))) or (
+        isinstance(arg_to_track, int) and arg_to_track < 0
+    ):
+        raise TypeError("arg_to_track should be a string or a positive integer")
 
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
 
-        func_args = tuple(inspect.signature(func).bind(*args, **kwargs).arguments.items())  # type: ignore
-        arg_to_track = func_args[idx_to_track][1]  # type: ignore
+        func_args = inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
+
+        if isinstance(arg_to_track, int) and arg_to_track >= 0:
+            _arg_name, _arg_value = tuple(func_args.items())[arg_to_track]
+        elif isinstance(arg_to_track, str):
+            _arg_name, _arg_value = arg_to_track, func_args[arg_to_track]
+        else:
+            raise ValueError("arg_to_track should be a string or a positive integer")
 
         if shape_in:
-            input_shape = arg_to_track.shape
-            logging_fn(f"Input shape: {input_shape}")
+            logging_fn(f"Input: {_arg_name} has shape {_arg_value.shape}")
 
         res = func(*args, **kwargs)  # type: ignore
 
         output_shape = res.shape
 
         if shape_out:
-            logging_fn(f"Output shape: {output_shape}")
+            logging_fn(f"Output: result has shape {output_shape}")
 
         if shape_delta:
-            input_shape = arg_to_track.shape
+            input_shape = _arg_value.shape
             delta = tuple(
                 d1 - d2 for d1, d2 in zip_longest(input_shape, output_shape, fillvalue=0)
             )
@@ -569,6 +576,98 @@ def shape_tracker(
             raise EmptyShapeError(f"Result from {func.__name__} is empty")  # type: ignore
 
         return res
+
+    return wrapper
+
+
+@check_parens
+def multi_shape_tracker(
+    func: Optional[Callable[[HasShape, Sequence[Any]], Tuple[HasShape, ...]]] = None,
+    shapes_in: Optional[Union[str, int, Sequence[str], Sequence[int]]] = None,
+    shapes_out: Optional[Union[int, Sequence[int], Literal["all"]]] = "all",
+    raise_if_empty: Optional[Literal["any", "all"]] = "any",
+    logging_fn: Callable = LOGGING_FN,
+) -> Callable:
+    """
+    TODO: docstring
+    TODO: Usage example
+    """
+
+    @wraps(func)  # type: ignore
+    def wrapper(*args: Any, **kwargs: Any) -> HasShape:
+
+        func_args = inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
+
+        # shape_in is a str
+        if isinstance(shapes_in, str):
+            _arg_names, _arg_values = shapes_in, func_args[shapes_in]
+
+        # shape_in is an int
+        elif isinstance(shapes_in, int) and shapes_in >= 0:
+            _arg_names, _arg_values = tuple(
+                x for x in tuple(func_args.items())[shapes_in]
+            )
+
+        # shape_in is a sequence
+        elif isinstance(shapes_in, Sequence):
+
+            # sequence of str's
+            if all(isinstance(x, str) for x in shapes_in):
+                _arg_names, _arg_values = tuple(shapes_in), tuple(  # type: ignore
+                    func_args[x] for x in shapes_in  # type: ignore
+                )
+
+            # sequence of positive int's
+            elif all(isinstance(x, int) and x >= 0 for x in shapes_in):
+                _arg_names, _arg_values = zip(  # type: ignore
+                    *(tuple(func_args.items())[x] for x in shapes_in)  # type: ignore
+                )
+
+            else:
+                raise ValueError("shapes_in values must all be str or positive int")
+
+        else:
+            raise ValueError(
+                "shapes_in must be either a str, a positive int, a sequence of str's or \
+                    a sequence of positive int's"
+            )
+
+        logging_fn(
+            "Input shapes: "
+            + " ".join(f"{k}.shape={v.shape}" for k, v in zip(_arg_names, _arg_values))
+        )
+
+        orig_res = func(*args, **kwargs)  # type: ignore
+
+        if not isinstance(orig_res, Sequence):
+            res = (orig_res,)
+
+        if isinstance(shapes_out, int) and shapes_out >= 0:
+            _res_values = (res[shapes_out].shape,)
+
+        elif isinstance(shapes_out, Sequence) and all(
+            isinstance(x, int) and x >= 0 for x in shapes_out
+        ):
+            _res_values = tuple(res[x].shape for x in shapes_out)  # type: ignore
+
+        elif shapes_out == "all":
+            _res_values = tuple(x.shape for x in res)  # type: ignore
+
+        else:
+            raise ValueError(
+                "shapes_out must be either positive int, sequence of positive int or 'all'"
+            )
+
+        logging_fn("Output shapes: " + " ".join(f"{s}" for s in _res_values))
+
+        if raise_if_empty == "any" and any(x[0] == 0 for x in _res_values):
+            raise EmptyShapeError(f"At least one result from {func.__name__} is empty")  # type: ignore
+        elif raise_if_empty == "all" and all(x[0] == 0 for x in _res_values):
+            raise EmptyShapeError(f"All results from {func.__name__} are empty")  # type: ignore
+        else:
+            pass
+
+        return orig_res
 
     return wrapper
 
