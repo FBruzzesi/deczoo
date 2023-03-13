@@ -8,9 +8,10 @@
 
 > A zoo for decorators
 
-There are many great decorators out there that we use everyday. Why don't collect few of them?
+There are many great decorators out there that we use everyday. Why don't collect a few of them?
 
-I found myself implementing over and over in different projects. The hope is to gather them here and use this codebase.
+I found myself implementing over and over some common decorators in different projects. 
+The hope is to gather them here and use this codebase.
 
 ---
 

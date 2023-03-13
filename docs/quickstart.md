@@ -1,4 +1,3 @@
-
 # Getting started
 
 The idea is kind of simple: each function in the library is a (function) decorator with a specific objective in mind.

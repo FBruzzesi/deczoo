@@ -61,7 +61,7 @@ Then:
 === "without make"
 
     ```bash
-    pip install -e ".[dev,doc]" --no-cache-dir
+    pip install -e ".[all]" --no-cache-dir
     pre-commit install
     ```
 
