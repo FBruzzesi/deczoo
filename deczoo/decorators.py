@@ -8,7 +8,6 @@ from itertools import zip_longest
 from pathlib import Path
 from typing import Any, Callable, Literal, Optional, Sequence, Tuple, Union
 
-
 from ._base_notifier import BaseNotifier
 from ._utils import LOGGING_FN, EmptyShapeError, HasShape, _get_free_memory, check_parens
 
@@ -329,7 +328,7 @@ def memory_limit(
     """
     Sets a memory limit while running a function.
 
-    **Warning**: This functionality is supported on unix-based systems only!
+    **Warning**: This decorator is supported on unix-based systems only!
 
     Arguments:
         func: function to decorate
@@ -530,7 +529,7 @@ def shape_tracker(
         shape_out: track output shape
         shape_delta: track shape delta between input and output
         raise_if_empty: raise error if output is empty
-        _indx_to_track: index of the input to track
+        arg_to_track: index or name of the argument to track
         logging_fn: log function (e.g. print, logger.info, rich console.print)
     
     Returns:
@@ -681,45 +680,49 @@ def multi_shape_tracker(
 
         func_args = inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
 
-        # shape_in is a str
+        # parse shapes_in
+        # case: str
         if isinstance(shapes_in, str):
             _arg_names, _arg_values = shapes_in, func_args[shapes_in]
 
-        # shape_in is an int
+        # case: int
         elif isinstance(shapes_in, int) and shapes_in >= 0:
             _arg_names, _arg_values = tuple(
                 x for x in tuple(func_args.items())[shapes_in]
             )
 
-        # shape_in is a sequence
+        # case: sequence
         elif isinstance(shapes_in, Sequence):
 
-            # sequence of str's
+            # case: sequence of str's
             if all(isinstance(x, str) for x in shapes_in):
                 _arg_names, _arg_values = tuple(shapes_in), tuple(  # type: ignore
                     func_args[x] for x in shapes_in  # type: ignore
                 )
 
-            # sequence of positive int's
+            # case: sequence of positive int's
             elif all(isinstance(x, int) and x >= 0 for x in shapes_in):
                 _arg_names, _arg_values = zip(  # type: ignore
                     *(tuple(func_args.items())[x] for x in shapes_in)  # type: ignore
                 )
 
+            # case: sequence of something else! (raise error)
             else:
                 raise TypeError("shapes_in values must all be str or positive int")
 
+        # case: None
         elif shapes_in is None:
-            # Nothing to do, just continue skip tracking inputs
             pass
 
+        # case: something else, not in Union[int, str, Sequence[int], Sequence[str], None]
         else:
             raise TypeError(
-                "shapes_in must be either a str, a positive int, a sequence of str's or \
-                    a sequence of positive int's"
+                "shapes_in must be either a str, a positive int, a sequence of str's, \
+                    a sequence of positive int's or None"
             )
 
         if shapes_in is not None:
+
             logging_fn(
                 "Input shapes: "
                 + " ".join(
@@ -727,28 +730,32 @@ def multi_shape_tracker(
                 )
             )
 
-        # Finally run the function!
+        # finally run the function!
         orig_res = func(*args, **kwargs)  # type: ignore
 
         # Check if the function returns a single value or a tuple
         res = (orig_res,) if not isinstance(orig_res, Sequence) else orig_res
 
-        # Parse shapes_out
+        # parse shapes_out
+        # case: positive int
         if isinstance(shapes_out, int) and shapes_out >= 0:
             _res_shapes = (res[shapes_out].shape,)
 
+        # case: sequence of positive int's
         elif isinstance(shapes_out, Sequence) and all(
             isinstance(x, int) and x >= 0 for x in shapes_out
         ):
             _res_shapes = tuple(res[x].shape for x in shapes_out)  # type: ignore
 
+        # case: "all"
         elif shapes_out == "all":
             _res_shapes = tuple(x.shape for x in res)  # type: ignore
 
+        # case: None
         elif shapes_out is None:
-            # Nothing to do, just continue skip tracking outputs
             pass
 
+        # case: something else, not in Union[int, Sequence[int], Literal["all"], None]
         else:
             raise TypeError(
                 "shapes_out must be either positive int, sequence of positive int or 'all'"
@@ -757,12 +764,17 @@ def multi_shape_tracker(
         if shapes_out is not None:
             logging_fn("Output shapes: " + " ".join(f"{s}" for s in _res_shapes))
 
+        # parse raise_if_empty
+        # case: None
         if raise_if_empty is None:
             pass
+        # case: "any"
         elif raise_if_empty == "any" and any(x[0] == 0 for x in _res_shapes):
             raise EmptyShapeError(f"At least one result from {func.__name__} is empty")  # type: ignore
+        # case: "all"
         elif raise_if_empty == "all" and all(x[0] == 0 for x in _res_shapes):
             raise EmptyShapeError(f"All results from {func.__name__} are empty")  # type: ignore
+        # case: something else, not in Union[Literal["any"], Literal["all"], None]
         else:
             raise TypeError("raise_if_empty must be either 'any', 'all' or None")
 
@@ -782,7 +794,7 @@ def timeout(
     Sets a time limit to a function, terminates the process if it hasn't finished within
     such time limit.
 
-    Remark that it uses the signal library (https://docs.python.org/3/library/signal.html)
+    **Warning**: This decorator uses the [signal library](https://docs.python.org/3/library/signal.html)
     which fully supported only on UNIX.
 
     Arguments:

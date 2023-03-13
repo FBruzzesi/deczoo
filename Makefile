@@ -2,7 +2,7 @@ init-env:
 	pip install . --no-cache-dir
 
 init-dev:
-	pip install -e ".[dev,doc,rich]" --no-cache-dir
+	pip install -e ".[all]" --no-cache-dir
 	pre-commit install
 
 clean-notebooks:

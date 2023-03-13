@@ -37,6 +37,8 @@ docs = [
     "mkdocstrings[python]==0.20.0",
 ]
 
+all = ["deczoo[chime,rich,dev,docs]"]
+
 [tool.setuptools.packages.find]
 include = ["deczoo*"]
 exclude = ["docs", "tests", "data", "docker", "results", "notebooks", "kubernetes"]
