@@ -5,6 +5,7 @@ import time
 from enum import Enum
 from functools import partial, wraps
 from itertools import zip_longest
+from pathlib import Path
 from typing import Any, Callable, Literal, Optional, Sequence, Tuple, Union
 
 import chime
@@ -17,7 +18,7 @@ from ._utils import LOGGING_FN, EmptyShapeError, HasShape, _get_free_memory, che
 def call_counter(
     func: Optional[Callable] = None,
     seed: int = 0,
-    log_counter: bool = False,
+    log_counter: bool = True,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -30,10 +31,12 @@ def call_counter(
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Raises:
-        ValueError: if seed is not an int
+        TypeError: if `seed` is not an int, or `log_counter` is not a bool
+
+    Returns:
+        decorated function
 
     Usage:
-
     ```python
     from deczoo import call_counter
 
@@ -50,6 +53,9 @@ def call_counter(
 
     if not isinstance(seed, int):
         raise TypeError("`seed` argument must be an int")
+
+    if not isinstance(log_counter, bool):
+        raise TypeError("`log_counter` argument must be a bool")
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
@@ -84,6 +90,10 @@ def catch(
         raise_on_exception: error to raise on exception
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
+    Returns:
+        decorated function
+
+    Usage:
     ```python
     from deczoo import catch
 
@@ -133,8 +143,13 @@ def check_args(
         rules: rules to be satisfied, each rule is a function that takes the argument value
             and returns a boolean
 
-    Usage:
+    Returns:
+        decorated function
 
+    Raises:
+        ValueError: if decorated function argument doesn't satisfy its rule
+
+    Usage:
     ```python
     from deczoo import check_args
 
@@ -148,6 +163,7 @@ def check_args(
     # ValueError: Argument a doesn't satisfy its rule
     ```
     """
+    # TODO: Check that rules are functions/callable
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs) -> Callable:
@@ -170,7 +186,7 @@ def check_args(
 
 @check_parens
 def chime_on_end(
-    func: Optional[Callable] = None, theme: Optional[str] = None
+    func: Optional[Callable] = None, theme: Optional[str] = "mario"
 ) -> Callable:
     """
     Notify with chime sound on function end
@@ -179,8 +195,10 @@ def chime_on_end(
         func: function to decorate
         theme: chime theme to use
 
-    Usage:
+    Returns:
+        decorated function
 
+    Usage:
     ```python
     from deczoo import chime_on_end
 
@@ -214,7 +232,7 @@ def log(
     log_time: bool = True,
     log_args: bool = True,
     log_error: bool = True,
-    log_file: Optional[str] = None,
+    log_file: Optional[Union[Path, str]] = None,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -228,8 +246,14 @@ def log(
         log_file: filepath where to write log
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
-    Usage:
+    Returns:
+        decorated function with logging capabilities
 
+    Raises:
+        TypeError: if `log_time`, `log_args` or `log_error` are not `bool` or `log_file` \
+        is not `None` or `str`
+
+    Usage:
     ```python
     from deczoo import log
 
@@ -240,6 +264,12 @@ def log(
     # add args=(a=1, b=2) time=0:00:00.000111
     ```
     """
+
+    if not all(isinstance(x, bool) for x in [log_time, log_args, log_error]):
+        raise TypeError("log_time, log_args and log_error must be bool")
+
+    if log_file is not None and not isinstance(log_file, (str, Path)):
+        raise TypeError("log_file must be either None, string or Path")
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
@@ -305,8 +335,15 @@ def memory_limit(
         percentage: percentage of the currently available memory to use
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
-    Usage:
+    Raises:
+        TypeError: if `percentage` is not a `float`
+        ValueError: if `percentage` is not between 0 and 1
+        MemoryError: if memory limit is reached when decorated function is called
 
+    Returns:
+        decorated function
+
+    Usage:
     ```python
     from deczoo import memory_limit
 
@@ -370,8 +407,10 @@ def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Calla
         func: function to decorate
         notifier: instance of a Notifier that implements `notify` method
 
-    Usage:
+    Returns:
+        decorated function
 
+    Usage:
     ```python
     from deczoo import notify_on_end
     from deczoo._base_notifier import BaseNotifier
@@ -417,7 +456,14 @@ def retry(
         n_tries: max number of attempts to try
         delay: time to wait before a retry
         logging_fn: log function (e.g. print, logger.info, rich console.print)
-
+    
+    Raises:
+        ValueError: if `n_tries` is not a positive integer, or if `delay` is not a \
+            positive number
+    
+    Returns:
+        decorated function
+    
     Usage:
     ```python
     from deczoo import retry
@@ -473,9 +519,9 @@ def shape_tracker(
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
-    Tracks the shape(s) of a dataframe/array-like object.
+    Tracks the shape of a dataframe/array-like object.
     It's possible to track input, output shapes, delta from input and output, and raise
-    and error if resulting output is empty.
+    an error if resulting output is empty.
 
     Parameters:
         func: function to decorate
@@ -485,10 +531,14 @@ def shape_tracker(
         raise_if_empty: raise error if output is empty
         _indx_to_track: index of the input to track
         logging_fn: log function (e.g. print, logger.info, rich console.print)
-
+    
+    Returns:
+        decorated function
+    
     Raises:
         TypeError: if any of the parameters is not of the correct type
-        EmptyShapeError: if output is empty and `raise_if_empty` is True
+        EmptyShapeError: if decorated function output is empty and `raise_if_empty` is\
+            `True`
 
     Usage:
     ```python
@@ -589,8 +639,40 @@ def multi_shape_tracker(
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
-    TODO: docstring
-    TODO: Usage example
+    Tracks the shape(s) of a dataframe/array-like objects both in input and output of
+    a given function.
+
+    Arguments:
+        func: function to decorate
+        shapes_in: sequence of argument positions OR argument names to track
+        shapes_out: sequence of argument positions to track, or "all" to track all
+        raise_if_empty: raise error if output is empty (strategy: "any" or "all")
+        logging_fn: log function (e.g. print, logger.info, rich console.print)
+
+    Returns:
+        decorated function
+
+    Raises:
+        TypeError: if any of the parameters is not of the correct type
+        EmptyShapeError: if decorated function output is empty and `raise_if_empty` is\
+            `all` or `any`
+
+    Usage:
+    ```python
+    import numpy as np
+    from deczoo import multi_shape_tracker
+
+    @multi_shape_tracker(shapes_in=(0,1), shapes_out="all")
+    def add_multi(a: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        return a + b, a * b
+
+    a = np.random.randn(10, 20, 30)
+    b = np.random.randn(10, 20, 30)
+    _ = add_multi(a, b)
+
+    # Input shapes: a.shape=(10, 20, 30), b.shape=(10, 20, 30)
+    # Output shapes: (10, 20, 30), (10, 20, 30)
+    ```
     """
 
     @wraps(func)  # type: ignore
@@ -624,48 +706,64 @@ def multi_shape_tracker(
                 )
 
             else:
-                raise ValueError("shapes_in values must all be str or positive int")
+                raise TypeError("shapes_in values must all be str or positive int")
+
+        elif shapes_in is None:
+            # Nothing to do, just continue skip tracking inputs
+            pass
 
         else:
-            raise ValueError(
+            raise TypeError(
                 "shapes_in must be either a str, a positive int, a sequence of str's or \
                     a sequence of positive int's"
             )
 
-        logging_fn(
-            "Input shapes: "
-            + " ".join(f"{k}.shape={v.shape}" for k, v in zip(_arg_names, _arg_values))
-        )
+        if shapes_in is not None:
+            logging_fn(
+                "Input shapes: "
+                + " ".join(
+                    f"{k}.shape={v.shape}" for k, v in zip(_arg_names, _arg_values)
+                )
+            )
 
+        # Finally run the function!
         orig_res = func(*args, **kwargs)  # type: ignore
 
-        if not isinstance(orig_res, Sequence):
-            res = (orig_res,)
+        # Check if the function returns a single value or a tuple
+        res = (orig_res,) if not isinstance(orig_res, Sequence) else orig_res
 
+        # Parse shapes_out
         if isinstance(shapes_out, int) and shapes_out >= 0:
-            _res_values = (res[shapes_out].shape,)
+            _res_shapes = (res[shapes_out].shape,)
 
         elif isinstance(shapes_out, Sequence) and all(
             isinstance(x, int) and x >= 0 for x in shapes_out
         ):
-            _res_values = tuple(res[x].shape for x in shapes_out)  # type: ignore
+            _res_shapes = tuple(res[x].shape for x in shapes_out)  # type: ignore
 
         elif shapes_out == "all":
-            _res_values = tuple(x.shape for x in res)  # type: ignore
+            _res_shapes = tuple(x.shape for x in res)  # type: ignore
+
+        elif shapes_out is None:
+            # Nothing to do, just continue skip tracking outputs
+            pass
 
         else:
-            raise ValueError(
+            raise TypeError(
                 "shapes_out must be either positive int, sequence of positive int or 'all'"
             )
 
-        logging_fn("Output shapes: " + " ".join(f"{s}" for s in _res_values))
+        if shapes_out is not None:
+            logging_fn("Output shapes: " + " ".join(f"{s}" for s in _res_shapes))
 
-        if raise_if_empty == "any" and any(x[0] == 0 for x in _res_values):
+        if raise_if_empty is None:
+            pass
+        elif raise_if_empty == "any" and any(x[0] == 0 for x in _res_shapes):
             raise EmptyShapeError(f"At least one result from {func.__name__} is empty")  # type: ignore
-        elif raise_if_empty == "all" and all(x[0] == 0 for x in _res_values):
+        elif raise_if_empty == "all" and all(x[0] == 0 for x in _res_shapes):
             raise EmptyShapeError(f"All results from {func.__name__} are empty")  # type: ignore
         else:
-            pass
+            raise TypeError("raise_if_empty must be either 'any', 'all' or None")
 
         return orig_res
 
@@ -692,8 +790,14 @@ def timeout(
         signal_handler: custom signal handler
         signum: signal number to be used, default=signal.SIGALRM (14)
 
-    Usage:
+    Returns:
+        decorated function
 
+    Raises:
+        ValueError: if `time_limit` is not a positive number
+        TypeError: if `signal_handler` is not a callable
+
+    Usage:
     ```python
     import time
     from deczoo import timeout
@@ -725,6 +829,12 @@ def timeout(
             raise Exception(f"Reached time limit, terminating {func.__name__}")
 
         signal.signal(signum, signal_handler)  # type: ignore
+
+    elif not callable(signal_handler):
+        raise TypeError("`signal_handler` should be a callable")
+
+    else:
+        pass
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
