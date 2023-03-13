@@ -8,7 +8,6 @@ from itertools import zip_longest
 from pathlib import Path
 from typing import Any, Callable, Literal, Optional, Sequence, Tuple, Union
 
-import chime
 
 from ._base_notifier import BaseNotifier
 from ._utils import LOGGING_FN, EmptyShapeError, HasShape, _get_free_memory, check_parens
@@ -209,6 +208,8 @@ def chime_on_end(
     # you should hear a sound now!
     ```
     """
+    import chime
+
     chime.theme(theme)
 
     @wraps(func)  # type: ignore
