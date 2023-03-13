@@ -55,6 +55,9 @@ def call_counter(
     if not isinstance(log_counter, bool):
         raise TypeError("`log_counter` argument must be a bool")
 
+    if not callable(logging_fn):
+        raise TypeError("`logging_fn` argument must be a callable")
+
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
 
@@ -79,8 +82,11 @@ def catch(
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
-    Wraps a function in a try-except block,
-    potentially prevent exception to be raised or raises custom exception
+    Wraps a function in a try-except block, potentially prevent exception to be raised by
+    returning a given value or raises custom exception.
+
+    Remark that if both `return_on_exception` and `raise_on_exception` are provided,
+    `return_on_exception` will be used.
 
     Arguments:
         func: function to decorate
@@ -90,6 +96,9 @@ def catch(
 
     Returns:
         decorated function
+
+    Raises:
+        TypeError: if `logging_fn` is not a callable
 
     Usage:
     ```python
@@ -105,6 +114,9 @@ def catch(
     -999
     ```
     """
+
+    if not callable(logging_fn):
+        raise TypeError("`logging_fn` argument must be a callable")
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
@@ -145,6 +157,7 @@ def check_args(
         decorated function
 
     Raises:
+        ValueError: if any rule is not a callable
         ValueError: if decorated function argument doesn't satisfy its rule
 
     Usage:
@@ -161,7 +174,8 @@ def check_args(
     # ValueError: Argument a doesn't satisfy its rule
     ```
     """
-    # TODO: Check that rules are functions/callable
+    if not all(callable(rule) for rule in rules.values()):
+        raise ValueError("All rules must be callable")
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs) -> Callable:
@@ -189,7 +203,8 @@ def chime_on_end(
     func: Optional[Callable] = None, theme: Optional[str] = "mario"
 ) -> Callable:
     """
-    Notify with chime sound on function end
+    Notify with [chime](https://github.com/MaxHalford/chime) sound on when function
+    ends successfully or fails.
 
     Arguments:
         func: function to decorate
@@ -253,7 +268,7 @@ def log(
 
     Raises:
         TypeError: if `log_time`, `log_args` or `log_error` are not `bool` or `log_file` \
-        is not `None` or `str`
+        is not `None`, `str` or `Path`
 
     Usage:
     ```python
@@ -268,10 +283,13 @@ def log(
     """
 
     if not all(isinstance(x, bool) for x in [log_time, log_args, log_error]):
-        raise TypeError("log_time, log_args and log_error must be bool")
+        raise TypeError("`log_time`, `log_args` and `log_error` must be bool")
 
     if log_file is not None and not isinstance(log_file, (str, Path)):
-        raise TypeError("log_file must be either None, string or Path")
+        raise TypeError("`log_file` must be either None, str or Path")
+
+    if not callable(logging_fn):
+        raise TypeError("`logging_fn` must be callable")
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
@@ -370,10 +388,10 @@ def memory_limit(
     ```
     """
     if not isinstance(percentage, float):
-        raise TypeError("percentage should be a float")
+        raise TypeError("`percentage` should be a float")
 
-    if not 0 <= percentage <= 1:
-        raise ValueError("percentage should be between 0 and 1")
+    if not 0.0 <= percentage <= 1.0:
+        raise ValueError("`percentage` should be between 0 and 1")
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
@@ -458,14 +476,14 @@ def retry(
         n_tries: max number of attempts to try
         delay: time to wait before a retry
         logging_fn: log function (e.g. print, logger.info, rich console.print)
-    
+
     Raises:
         ValueError: if `n_tries` is not a positive integer, or if `delay` is not a \
             positive number
-    
+
     Returns:
         decorated function
-    
+
     Usage:
     ```python
     from deczoo import retry
@@ -533,10 +551,10 @@ def shape_tracker(
         raise_if_empty: raise error if output is empty
         arg_to_track: index or name of the argument to track
         logging_fn: log function (e.g. print, logger.info, rich console.print)
-    
+
     Returns:
         decorated function
-    
+
     Raises:
         TypeError: if any of the parameters is not of the correct type
         EmptyShapeError: if decorated function output is empty and `raise_if_empty` is\

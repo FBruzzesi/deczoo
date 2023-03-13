@@ -1,6 +1,30 @@
+from contextlib import nullcontext as does_not_raise
+
 import pytest
 
 from deczoo import log
+
+
+@pytest.mark.parametrize(
+    "arg_name, value, context",
+    [
+        ("log_time", 1.1, pytest.raises(TypeError)),
+        ("log_args", "a", pytest.raises(TypeError)),
+        ("log_error", (1, 2), pytest.raises(TypeError)),
+        ("log_file", 1.1, pytest.raises(TypeError)),
+        ("logging_fn", {}, pytest.raises(TypeError)),
+        ("log_time", True, does_not_raise()),
+        ("log_args", False, does_not_raise()),
+        ("log_error", False, does_not_raise()),
+        ("log_file", "test.txt", does_not_raise()),
+        ("logging_fn", print, does_not_raise()),
+    ],
+)
+def test_params(base_add, arg_name, value, context):
+    """Tests that log raises an error if invalid parameter is passed."""
+
+    with context:
+        log(base_add, **{arg_name: value})
 
 
 @pytest.mark.parametrize(

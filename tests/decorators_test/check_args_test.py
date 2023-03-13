@@ -1,43 +1,42 @@
+from contextlib import nullcontext as does_not_raise
+
 import pytest
 
 from deczoo import check_args
 
 
 @pytest.mark.parametrize(
-    "a, b, expected",
-    [(1, 1, 2), (1, 2, 3)],
+    "rules, context",
+    [
+        ({"a": lambda t: t > 0, "b": lambda t: t < 10}, does_not_raise()),
+        ({}, does_not_raise()),
+        ({"a": True}, pytest.raises(ValueError)),
+        ({"a": lambda t: t > 0, "b": "test"}, pytest.raises(ValueError)),
+    ],
 )
-def test_check_args_no_rules(base_add, a, b, expected):
-    """Tests that check_args does nothing"""
-    add = check_args(base_add)
+def test_params(base_add, rules, context):
+    """
+    Tests that check_args raises an error if invalid parameter is passed.
+    """
 
-    assert add(a, b) == expected
+    with context:
+        check_args(base_add, **rules)
 
 
 @pytest.mark.parametrize(
-    "a, b, expected, rules",
+    "rules, context",
     [
-        (1, 1, 2, {"a": lambda t: t > 0, "b": lambda t: t < 10}),
-        (1, 2, 3, {"a": lambda t: t > 0, "b": lambda t: t < 10}),
+        ({"a": lambda t: t > 0, "b": lambda t: t > 0}, does_not_raise()),
+        ({"a": lambda t: t < 2, "b": lambda t: t > 0}, does_not_raise()),
+        ({"a": lambda t: t > 0, "b": lambda t: t < 0}, pytest.raises(ValueError)),
+        ({"a": lambda t: t < 0, "b": lambda t: t > 0}, pytest.raises(ValueError)),
     ],
 )
-def test_check_args_rules_satisfied(base_add, a, b, expected, rules):
-    """Tests that check_args allows the function to run when all rules are satisfied"""
+def test_rules(base_add, rules, context):
+    """
+    Tests that check_args applies the rules correctly.
+    """
     add = check_args(base_add, **rules)
 
-    assert add(a, b) == expected
-
-
-@pytest.mark.parametrize(
-    "a, b, expected, rules",
-    [
-        (1, 1, ValueError, {"a": lambda t: t < 0, "b": lambda t: t < 10}),
-        (1, 2, ValueError, {"a": lambda t: t > 0, "b": lambda t: t > 10}),
-    ],
-)
-def test_check_args_rules_not_satisfied(base_add, a, b, expected, rules):
-    """Tests that check_args raises a ValueError if any rule is not satisfied"""
-    add = check_args(base_add, **rules)
-
-    with pytest.raises(expected):
-        add(a, b)
+    with context:
+        add(a=1, b=1)
