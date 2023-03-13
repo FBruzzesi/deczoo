@@ -138,8 +138,8 @@ def check_args(
 
     Arguments:
         func: function to decorate
-        rules: rules to be satisfied, each rule is a function that takes the argument value
-            and returns a boolean
+        rules: rules to be satisfied, each rule is a function that takes the argument
+            value and returns a boolean
 
     Returns:
         decorated function
@@ -166,7 +166,9 @@ def check_args(
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs) -> Callable:
 
-        func_args = inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
+        func_args = (
+            inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
+        )
 
         for k, v in func_args.items():
             rule = rules.get(k)
@@ -595,7 +597,9 @@ def shape_tracker(
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
 
-        func_args = inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
+        func_args = (
+            inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
+        )
 
         if isinstance(arg_to_track, int) and arg_to_track >= 0:
             _arg_name, _arg_value = tuple(func_args.items())[arg_to_track]
@@ -678,8 +682,9 @@ def multi_shape_tracker(
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
 
-        func_args = inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
-
+        func_args = (
+            inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
+        )
         # parse shapes_in
         # case: str
         if isinstance(shapes_in, str):
@@ -758,7 +763,7 @@ def multi_shape_tracker(
         # case: something else, not in Union[int, Sequence[int], Literal["all"], None]
         else:
             raise TypeError(
-                "shapes_out must be either positive int, sequence of positive int or 'all'"
+                "shapes_out must be positive int, sequence of positive int or 'all'"
             )
 
         if shapes_out is not None:
@@ -770,10 +775,14 @@ def multi_shape_tracker(
             pass
         # case: "any"
         elif raise_if_empty == "any" and any(x[0] == 0 for x in _res_shapes):
-            raise EmptyShapeError(f"At least one result from {func.__name__} is empty")  # type: ignore
+            raise EmptyShapeError(
+                f"At least one result from {func.__name__} is empty"  # type: ignore
+            )
         # case: "all"
         elif raise_if_empty == "all" and all(x[0] == 0 for x in _res_shapes):
-            raise EmptyShapeError(f"All results from {func.__name__} are empty")  # type: ignore
+            raise EmptyShapeError(
+                f"All results from {func.__name__} are empty"  # type: ignore
+            )
         # case: something else, not in Union[Literal["any"], Literal["all"], None]
         else:
             raise TypeError("raise_if_empty must be either 'any', 'all' or None")
@@ -794,8 +803,9 @@ def timeout(
     Sets a time limit to a function, terminates the process if it hasn't finished within
     such time limit.
 
-    **Warning**: This decorator uses the [signal library](https://docs.python.org/3/library/signal.html)
-    which fully supported only on UNIX.
+    **Warning**: This decorator uses the built-in
+    [signal library](https://docs.python.org/3/library/signal.html) which fully supported
+    only on UNIX.
 
     Arguments:
         func: function to decorate
