@@ -2,6 +2,8 @@ import pytest
 
 from deczoo import shape_tracker
 
+# TODO: Add tests for shape_tracker
+
 
 @pytest.mark.parametrize(
     "kwarg, value",

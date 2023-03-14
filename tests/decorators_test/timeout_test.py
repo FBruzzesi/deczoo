@@ -1,4 +1,3 @@
-import time
 from contextlib import nullcontext as does_not_raise
 
 import pytest
@@ -40,7 +39,7 @@ def test_params(base_add, arg_name, value, context):
     [
         (1, 1, pytest.raises(TimeoutError)),
         (1, 2, pytest.raises(TimeoutError)),
-        ("a", 1, pytest.raises(TimeoutError)), # TimeoutError is raised before TypeError
+        ("a", 1, pytest.raises(TimeoutError)),  # TimeoutError is raised before TypeError
         (1, 3, does_not_raise()),
         ("a", 3, pytest.raises(TypeError)),
     ],

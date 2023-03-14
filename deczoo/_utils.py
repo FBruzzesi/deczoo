@@ -1,5 +1,5 @@
 from functools import partial, wraps
-from typing import Callable, Protocol, Tuple
+from typing import Callable, Protocol, Tuple, runtime_checkable
 
 LOGGING_FN: Callable[[str], None]
 
@@ -76,6 +76,7 @@ def _get_free_memory() -> int:
     return free_memory
 
 
+@runtime_checkable
 class HasShape(Protocol):
     """
     Protocol for objects that have a shape attribute.
