@@ -21,7 +21,7 @@ class TestNotNotifier:
 
     def notify(self, *args, **kwargs):
         """Method used to notify"""
-        print("Notified")
+        ...
 
 
 @pytest.mark.parametrize(

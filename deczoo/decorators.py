@@ -813,7 +813,7 @@ def multi_shape_tracker(
         else:
             raise TypeError("raise_if_empty must be either 'any', 'all' or None")
 
-        return orig_res
+        return orig_res  # type: ignore
 
     return wrapper
 
@@ -846,7 +846,7 @@ def timeout(
         ValueError: if `time_limit` is not a positive number
         TypeError: if `signum` is not an int or an Enum, or if `signal_handler` is not a \
             callable
-        TimeoutError: if `time_limit` is reached without decorated function finishing 
+        TimeoutError: if `time_limit` is reached without decorated function finishing
 
     Usage:
     ```python

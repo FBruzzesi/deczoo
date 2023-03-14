@@ -34,8 +34,8 @@ def check_parens(decorator: Callable) -> Callable:
     ```python
     @check_parens
     def decorator(func, k1="default1", k2="default2"):
+        # where the magic happens
         ...
-        # do magic here
 
     # `decorator` called without parens, hence default params.
     @decorator
