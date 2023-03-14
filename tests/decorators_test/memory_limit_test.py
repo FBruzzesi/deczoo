@@ -1,50 +1,57 @@
+from contextlib import nullcontext as does_not_raise
+
 import pytest
 
 from deczoo import memory_limit
 
-# TODO: improve tests
+
+@pytest.mark.parametrize(
+    "arg_name, value, context",
+    [
+        ("percentage", 2, pytest.raises(TypeError)),
+        ("percentage", "a", pytest.raises(TypeError)),
+        ("percentage", (1, 2), pytest.raises(TypeError)),
+        ("logging_fn", 2, pytest.raises(TypeError)),
+        ("logging_fn", "a", pytest.raises(TypeError)),
+        ("logging_fn", (1, 2), pytest.raises(TypeError)),
+        ("percentage", 2.0, pytest.raises(ValueError)),
+        ("percentage", -1.0, pytest.raises(ValueError)),
+        ("percentage", 0.0, does_not_raise()),
+        ("percentage", 0.5, does_not_raise()),
+        ("percentage", 1.0, does_not_raise()),
+        ("logging_fn", print, does_not_raise()),
+    ],
+)
+def test_params(base_add, arg_name, value, context):
+    """
+    Tests that memory_limit raises an error if invalid parameter is passed.
+    """
+
+    with context:
+        memory_limit(base_add, **{arg_name: value})
 
 
 @pytest.mark.parametrize(
-    "x, expected",
-    [("hello world", MemoryError)],
+    "percentage, context",
+    [
+        (0.01, pytest.raises(MemoryError)),
+        (0.02, pytest.raises(MemoryError)),
+        (0.95, does_not_raise()),
+        (1.0, does_not_raise()),
+    ],
 )
-def test_limited(x, expected):
+def test_memory_limit(capsys, percentage, context):
     """Tests that memory limited function raises MemoryError exception"""
 
-    @memory_limit(percentage=0.05)
+    @memory_limit(percentage=percentage, logging_fn=print)
     def limited(x):
 
         for i in list(range(10**7)):
             _ = 1 + 1
         return x
 
-    with pytest.raises(expected):
-        limited(x)
+    with context:
+        limited(42)
 
-
-@pytest.mark.parametrize(
-    "x, expected",
-    [("hello world", "hello world"), (42, 42)],
-)
-def test_unlimited(x, expected):
-    """Tests that without limiting memory the test passes"""
-
-    @memory_limit(percentage=1.0)
-    def unlimited(x):
-        for i in list(range(10**7)):
-            _ = 1 + 1
-        return x
-
-    assert unlimited(x) == expected
-
-
-@pytest.mark.parametrize(
-    "p, expected",
-    [("a", TypeError), ("0.99", TypeError), (-1.0, ValueError), (1.1, ValueError)],
-)
-def test_invalid_percentage(base_add, p, expected):
-    """Tests that memory_limit raises TypeError if percentage is not a float"""
-
-    with pytest.raises(expected):
-        memory_limit(base_add, percentage=p)
+        sys_out = capsys.readouterr().out
+        assert f"Setting memory limit for {limited.__name__} to" in sys_out

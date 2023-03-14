@@ -393,6 +393,9 @@ def memory_limit(
     if not 0.0 <= percentage <= 1.0:
         raise ValueError("`percentage` should be between 0 and 1")
 
+    if not callable(logging_fn):
+        raise TypeError("`logging_fn` should be a callable")
+
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
 
@@ -447,6 +450,8 @@ def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Calla
     # Function has finished
     ```
     """
+    if not isinstance(notifier, BaseNotifier):
+        raise TypeError("`notifier` should be an instance of a BaseNotifier")
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
@@ -478,8 +483,8 @@ def retry(
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Raises:
-        ValueError: if `n_tries` is not a positive integer, or if `delay` is not a \
-            positive number
+        ValueError: if `n_tries` is not a positive integer, `delay` is not a \
+            positive number, or `logging_fn` is not a callable
 
     Returns:
         decorated function
@@ -504,6 +509,9 @@ def retry(
 
     if not isinstance(delay, (int, float)) or delay < 0:
         raise ValueError("`delay` should be a positive number")
+
+    if not callable(logging_fn):
+        raise TypeError("`logging_fn` should be a callable")
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
@@ -829,14 +837,16 @@ def timeout(
         func: function to decorate
         time_limit: max time (in seconds) for function to run, 0 means no time limit
         signal_handler: custom signal handler
-        signum: signal number to be used, default=signal.SIGALRM (14)
+        signum: signal number to be used, default=signal.SIGALRM (14), unused if custom 
+            signal handler is provided
 
     Returns:
         decorated function
 
     Raises:
         ValueError: if `time_limit` is not a positive number
-        TypeError: if `signal_handler` is not a callable
+        TypeError: if `signum` is not an int or an Enum, or if `signal_handler` is not a \
+            callable
 
     Usage:
     ```python
@@ -861,8 +871,11 @@ def timeout(
     ```
     """
 
-    if not isinstance(time_limit, (int, float)) or time_limit < 0:
-        raise ValueError("`time_limit` should be a positive number")
+    if not isinstance(time_limit, (int, float)) or time_limit <= 0:
+        raise ValueError("`time_limit` should be a strictly positive number")
+
+    if not isinstance(signum, (int, Enum)):
+        raise TypeError("`signum` should be an int or an Enum")
 
     if signal_handler is None:
 
@@ -875,7 +888,8 @@ def timeout(
         raise TypeError("`signal_handler` should be a callable")
 
     else:
-        pass
+        # custome signal handler provided -> bind it to the signal
+        signal.signal(signum, signal_handler)
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
