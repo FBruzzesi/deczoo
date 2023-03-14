@@ -26,11 +26,15 @@ def check_parens(decorator: Callable) -> Callable:
     - If called without parens, the decorator is called with the function as the first
         argument, and the decorator's default arguments.
 
+    This function is used internally to endow every decorator of the above property.
+
     Arguments:
         decorator: decorator to wrap
 
-    Usage:
+    Returns:
+        Wrapped decorator.
 
+    Usage:
     ```python
     @check_parens
     def decorator(func, k1="default1", k2="default2"):

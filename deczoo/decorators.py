@@ -20,26 +20,32 @@ def call_counter(
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
-    Counts how many times a function has been called in the `_calls` attribute
+    Counts how many times a function has been called by setting and tracking a `_calls`
+    attribute to the decorated function.
+
+    `_calls` is set from a given `seed` value, and incremented by 1 each time the
+    function is called.
 
     Arguments:
-        func: function to decorate
-        seed: counter start
-        log_counter: whether display count number
-        logging_fn: log function (e.g. print, logger.info, rich console.print)
+        func: Function to decorate
+        seed: Counter start
+        log_counter: Whether or not to log `_calls` value each time the function is called
+        logging_fn: Log function (e.g. print, logger.info, rich console.print)
 
     Raises:
-        TypeError: if `seed` is not an int, or `log_counter` is not a bool
+        TypeError: If `seed` is not an int, `log_counter` is not a bool, or `logging_fn`
+            is not a callable wjhen `log_counter` is True.
 
     Returns:
-        decorated function
+        Decorated function
 
     Usage:
     ```python
     from deczoo import call_counter
 
-    @call_counter
-    def add(a, b): return a+b
+    @call_counter(seed=0, log_counter=False)
+    def add(a, b):
+        return a+b
 
     for _ in range(3):
         add(1,2)
@@ -55,7 +61,7 @@ def call_counter(
     if not isinstance(log_counter, bool):
         raise TypeError("`log_counter` argument must be a bool")
 
-    if not callable(logging_fn):
+    if (log_counter is True) and (not callable(logging_fn)):
         raise TypeError("`logging_fn` argument must be a callable")
 
     @wraps(func)  # type: ignore
@@ -89,23 +95,24 @@ def catch(
     `return_on_exception` will be used.
 
     Arguments:
-        func: function to decorate
-        return_on_exception: value to return on exception
-        raise_on_exception: error to raise on exception
-        logging_fn: log function (e.g. print, logger.info, rich console.print)
+        func: Function to decorate
+        return_on_exception: Value to return on exception
+        raise_on_exception: Error to raise on exception
+        logging_fn: Log function (e.g. print, logger.info, rich console.print)
 
     Returns:
-        decorated function
+        Decorated function
 
     Raises:
-        TypeError: if `logging_fn` is not a callable
+        TypeError: If `logging_fn` is not a callable
 
     Usage:
     ```python
     from deczoo import catch
 
     @catch(return_on_exception=-999)
-    def add(a, b): return a+b
+    def add(a, b):
+        return a+b
 
     add(1, 2)
     3
@@ -146,19 +153,23 @@ def check_args(
     func: Optional[Callable] = None, **rules: Callable[[Any], bool]
 ) -> Callable:
     """
-    Checks that function arguments satisfy given rules, if not raises a ValueError
+    Checks that function arguments satisfy given rules, if not a `ValueError` is raised.
+
+    Each `rule` should be a keyword argument with the name of the argument to check,
+    and the value should be a function/callable that takes the argument value and
+    returns a boolean.
 
     Arguments:
-        func: function to decorate
-        rules: rules to be satisfied, each rule is a function that takes the argument
+        func: Function to decorate
+        rules: Rules to be satisfied, each rule is a callable that takes the argument
             value and returns a boolean
 
     Returns:
-        decorated function
+        Decorated function
 
     Raises:
-        ValueError: if any rule is not a callable
-        ValueError: if decorated function argument doesn't satisfy its rule
+        ValueError: If any rule is not a callable
+        ValueError: If any decorated function argument doesn't satisfy its rule
 
     Usage:
     ```python
@@ -171,7 +182,7 @@ def check_args(
     3
 
     add(-2, 2)
-    # ValueError: Argument a doesn't satisfy its rule
+    # ValueError: Argument `a` doesn't satisfy its rule
     ```
     """
     if not all(callable(rule) for rule in rules.values()):
@@ -190,7 +201,7 @@ def check_args(
             if rule is not None:
 
                 if not rule(v):
-                    raise ValueError(f"Argument {k} doesn't satisfy its rule")
+                    raise ValueError(f"Argument `{k}` doesn't satisfy its rule")
 
         res = func(*args, **kwargs)  # type: ignore
         return res
@@ -203,15 +214,15 @@ def chime_on_end(
     func: Optional[Callable] = None, theme: Optional[str] = "mario"
 ) -> Callable:
     """
-    Notify with [chime](https://github.com/MaxHalford/chime) sound on when function
+    Notify with [chime](https://github.com/MaxHalford/chime) sound when function
     ends successfully or fails.
 
     Arguments:
-        func: function to decorate
-        theme: chime theme to use
+        func: Function to decorate
+        theme: Chime theme to use
 
     Returns:
-        decorated function
+        Decorated function
 
     Usage:
     ```python
@@ -253,22 +264,23 @@ def log(
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
-    Tracks function time taken, arguments and errors
+    Tracks function time taken, arguments and errors. If `log_file` is provided, logs
+    are written to file. In any case, logs are passed to `logging_fn`.
 
     Arguments:
-        func: function to decorate
-        log_time: whether or not to log time taken
-        log_args: whether or not to log arguments
-        log_error: whether or not to log error
-        log_file: filepath where to write log
-        logging_fn: log function (e.g. print, logger.info, rich console.print)
+        func: Function to decorate
+        log_time: Whether or not to track time taken
+        log_args: Whether or not to track arguments
+        log_error: Whether or not to track error
+        log_file: Filepath where to write/save log string
+        logging_fn: Log function (e.g. print, logger.info, rich console.print)
 
     Returns:
-        decorated function with logging capabilities
+        Decorated function with logging capabilities
 
     Raises:
         TypeError: if `log_time`, `log_args` or `log_error` are not `bool` or `log_file` \
-        is not `None`, `str` or `Path`
+            is not `None`, `str` or `Path`
 
     Usage:
     ```python
@@ -346,22 +358,22 @@ def memory_limit(
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
-    Sets a memory limit while running a function.
+    Sets a memory limit while running the decorated function.
 
     **Warning**: This decorator is supported on unix-based systems only!
 
     Arguments:
-        func: function to decorate
-        percentage: percentage of the currently available memory to use
-        logging_fn: log function (e.g. print, logger.info, rich console.print)
+        func: Function to decorate
+        percentage: Percentage of the currently available memory to use
+        logging_fn: Log function (e.g. print, logger.info, rich console.print)
 
     Raises:
-        TypeError: if `percentage` is not a `float`
-        ValueError: if `percentage` is not between 0 and 1
-        MemoryError: if memory limit is reached when decorated function is called
+        TypeError: If `percentage` is not a `float`
+        ValueError: If `percentage` is not between 0 and 1
+        MemoryError: If memory limit is reached when decorated function is called
 
     Returns:
-        decorated function
+        Decorated function
 
     Usage:
     ```python
@@ -369,7 +381,7 @@ def memory_limit(
 
     # Running on WSL2 with 12 Gb RAM
 
-    @memory_limit(percentage=0.2)
+    @memory_limit(percentage=0.05)
     def limited():
         for i in list(range(10 ** 8)):
             _ = 1 + 1
@@ -424,14 +436,16 @@ def memory_limit(
 def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Callable:
     """
     Notify when func has finished running using the notifier `notify` method.
-    `notifier` object should inherit from BaseNotifier
+
+    `notifier` object should inherit from BaseNotifier and implement any custom `notify`
+    method.
 
     Arguments:
-        func: function to decorate
-        notifier: instance of a Notifier that implements `notify` method
+        func: Function to decorate
+        notifier: Instance of a Notifier that implements `notify` method
 
     Returns:
-        decorated function
+        Decorated function
 
     Usage:
     ```python
@@ -474,20 +488,25 @@ def retry(
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
-    Wraps a function with a retry block
+    Wraps a function within a "retry" block. If the function fails, it will be retried
+    `n_tries` times with a delay of `delay` seconds between each attempt.
+
+    The function will be retried until it succeeds or the maximum number of attempts
+    is reached. Either the first successful result will be returned or the last error
+    will be raised.
 
     Arguments:
-        func: function to decorate
-        n_tries: max number of attempts to try
-        delay: time to wait before a retry
-        logging_fn: log function (e.g. print, logger.info, rich console.print)
+        func: Function to decorate
+        n_tries: Max number of attempts to try
+        delay: Time to wait before a retry
+        logging_fn: Log function (e.g. print, logger.info, rich console.print)
 
     Raises:
-        ValueError: if `n_tries` is not a positive integer, `delay` is not a \
+        ValueError: If `n_tries` is not a positive integer, `delay` is not a \
             positive number, or `logging_fn` is not a callable
 
     Returns:
-        decorated function
+        Decorated function
 
     Usage:
     ```python
@@ -548,21 +567,32 @@ def shape_tracker(
 ) -> Callable:
     """
     Tracks the shape of a dataframe/array-like object.
-    It's possible to track input, output shapes, delta from input and output, and raise
-    an error if resulting output is empty.
+    It's possible to track input and output shape(s), delta from input and output, and
+    raise an error if resulting output is empty.
+
+    This is particularly suitable to decorate functions that are used in a
+    (pandas/polars/dask/...) pipe(line).
+
+    The decorator will track the shape of the first argument of the function, unless
+    `arg_to_track` is specified.
+
+    If `arg_to_track` can be:
+
+    - a non-negative integer corresponding to the index of the argument to track
+    - a string indicating the name of the argument to track.
 
     Parameters:
-        func: function to decorate
-        shape_in: track input shape
-        shape_out: track output shape
-        shape_delta: track shape delta between input and output
-        raise_if_empty: raise error if output is empty
-        arg_to_track: index or name of the argument to track, used only if `shape_in` is\
+        func: Function to decorate
+        shape_in: Track input shape
+        shape_out: Track output shape
+        shape_delta: Track shape delta between input and output
+        raise_if_empty: Raise error if output is empty
+        arg_to_track: Index or name of the argument to track, used only if `shape_in` is\
             `True`
-        logging_fn: log function (e.g. print, logger.info, rich console.print)
+        logging_fn: Log function (e.g. print, logger.info, rich console.print)
 
     Returns:
-        decorated function
+        Decorated function
 
     Raises:
         TypeError: if any of the parameters is not of the correct type
@@ -574,35 +604,24 @@ def shape_tracker(
     import numpy as np
     from deczoo import shape_tracker
 
-    @shape_tracker(shape_in=True, shape_out=True, shape_delta=True)
-    def n_vstack(a: np.ndarray, n: int) -> np.ndarray:
-        return np.vstack(n*[a])
+    @shape_tracker(shape_in=True, shape_out=True, shape_delta=True, raise_if_empty=True)
+    def tracked_vstack(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+        return np.vstack([a, b])
 
-    a = np.random.randn(10, 20, 30)
-    _ = n_vstack(a, 3)
+    _ = tracked_vstack(np.ones((1, 2)), np.ones((10, 2)))
+    # Input: `a` has shape (1, 2)
+    # Output: result has shape (11, 2)
+    # Shape delta: (-10, 0)
 
-    # Input shape: (10, 20, 30)
-    # Output shape: (30, 20, 30)
-    # Shape delta: (-20, 0, 0)
+    _ = tracked_vstack(np.ones((0, 2)), np.ones((0, 2)))
+    # Input: `a` has shape (0, 2)
+    # Output: result has shape (0, 2)
+    # Shape delta: (0, 0)
+    > EmptyShapeError: Result from tracked_vstack is empty
     ```
-    Now if the array to track is not the first argument, we can explicitely specify the
-    index of the argument to track using `idx_to_track` parameter:
 
-    ```python
-    import numpy as np
-    from deczoo import shape_tracker
-
-    @shape_tracker(shape_in=True, shape_out=True, shape_delta=True, idx_to_track=1)
-    def n_vstack(n: int, a: np.ndarray) -> np.ndarray:
-        return np.vstack(n*[a])
-
-    a = np.random.randn(10, 20, 30)
-    _ = n_vstack(n=3, a=a)
-
-    # Input: b has shape (10, 20, 30)
-    # Output: result has shape (30, 20, 30)
-    # Shape delta: (-20, 0, 0)
-    ```
+    Now if the array to track is not the first argument, we can explicitely set
+    `arg_to_track` to the value of 1 or "b".
     """
     if not isinstance(shape_in, bool):
         raise TypeError("`shape_in` should be a boolean")
@@ -638,7 +657,7 @@ def shape_tracker(
             raise ValueError("arg_to_track should be a string or a positive integer")
 
         if shape_in:
-            logging_fn(f"Input: {_arg_name} has shape {_arg_value.shape}")
+            logging_fn(f"Input: `{_arg_name}` has shape {_arg_value.shape}")
 
         res = func(*args, **kwargs)  # type: ignore
 
@@ -675,15 +694,22 @@ def multi_shape_tracker(
     Tracks the shape(s) of a dataframe/array-like objects both in input and output of
     a given function.
 
+    This decorator differs from `shape_tracker` in that it can track the shape of
+    multiple arguments and outputs. In particular it can track the shape of all the
+    arguments and outputs of a function, and raise an error if _any_ of the tracked
+    outputs is empty.
+
     Arguments:
-        func: function to decorate
-        shapes_in: sequence of argument positions OR argument names to track
-        shapes_out: sequence of argument positions to track, or "all" to track all
-        raise_if_empty: raise error if output is empty (strategy: "any" or "all")
+        func: Function to decorate
+        shapes_in: Sequence of argument positions OR argument names to track
+        shapes_out: Sequence of output positions to track, "all" to track all, None to\
+            disable
+        raise_if_empty: Raise error if tracked output results is/are empty \
+            (strategy: "any", "all", None)
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Returns:
-        decorated function
+        Decorated function
 
     Raises:
         TypeError: if any of the parameters is not of the correct type
@@ -695,18 +721,22 @@ def multi_shape_tracker(
     import numpy as np
     from deczoo import multi_shape_tracker
 
-    @multi_shape_tracker(shapes_in=(0,1), shapes_out="all")
-    def add_multi(a: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-        return a + b, a * b
+    @multi_shape_tracker(shapes_in=(0, 1), shapes_out="all")
+    def add_mult(a: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, ...]:
+        return a + b, a * b, a@b.T
 
-    a = np.random.randn(10, 20, 30)
-    b = np.random.randn(10, 20, 30)
-    _ = add_multi(a, b)
-
-    # Input shapes: a.shape=(10, 20, 30), b.shape=(10, 20, 30)
-    # Output shapes: (10, 20, 30), (10, 20, 30)
+    a = b = np.ones((1, 2))
+    _ = add_mult(a, b)
+    # Input shapes: a.shape=(1, 2) b.shape=(1, 2)
+    # Output shapes: (1, 2) (1, 2) (1, 1)
     ```
+    `@multi_shape_tracker(shapes_in=(0, 1), shapes_out="all")` is equivalent to
+    `@multi_shape_tracker(shapes_in=("a", "b"), shapes_out=(0, 1, 2))`.
+    However we can choose to track a subset of inputs and outputs by using the
+    `shapes_in` and `shapes_out` parameters. This is particularly useful when
+    some inputs/outputs are not dataframe/array-like objects.
     """
+
     if not callable(logging_fn):
         raise TypeError("`logging_fn` should be a callable")
 
@@ -852,19 +882,19 @@ def timeout(
     only on UNIX.
 
     Arguments:
-        func: function to decorate
-        time_limit: max time (in seconds) for function to run, 0 means no time limit
-        signal_handler: custom signal handler
-        signum: signal number to be used, default=signal.SIGALRM (14)
+        func: Function to decorate
+        time_limit: Max time (in seconds) for function to run, 0 means no time limit
+        signal_handler: Custom signal handler raising a TimeoutError
+        signum: Signal number to be used, default=signal.SIGALRM (14)
 
     Returns:
-        decorated function
+        Decorated function
 
     Raises:
-        ValueError: if `time_limit` is not a positive number
-        TypeError: if `signum` is not an int or an Enum, or if `signal_handler` is not a \
+        ValueError: If `time_limit` is not a positive number
+        TypeError: If `signum` is not an int or an Enum, or if `signal_handler` is not a \
             callable
-        TimeoutError: if `time_limit` is reached without decorated function finishing
+        TimeoutError: If `time_limit` is reached without decorated function finishing
 
     Usage:
     ```python
@@ -885,7 +915,7 @@ def timeout(
         return a+b
 
     add(1, 2)
-    # Exception: Reached time limit, terminating add
+    > TimeoutError: Reached time limit, terminating add
     ```
     """
 

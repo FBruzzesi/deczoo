@@ -1,5 +1,6 @@
 from importlib import metadata
 
+from ._base_notifier import BaseNotifier
 from ._utils import check_parens
 from .decorators import (
     call_counter,
@@ -21,6 +22,7 @@ __version__ = metadata.version(__title__)
 
 __all__ = (
     "check_parens",
+    "BaseNotifier",
     "call_counter",
     "catch",
     "check_args",

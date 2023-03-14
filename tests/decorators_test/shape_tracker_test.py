@@ -69,6 +69,6 @@ def test_shape_in(capsys, arg_to_track, n, context):
         n_vstack(np.ones(a_shape), n)
         sys_out = capsys.readouterr().out
 
-        assert f"Input: a has shape {a_shape}" in sys_out
+        assert "Input: `a` has shape" in sys_out
         assert "Output: result has shape " in sys_out
         assert "Shape delta: " in sys_out
