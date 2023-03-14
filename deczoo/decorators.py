@@ -837,8 +837,7 @@ def timeout(
         func: function to decorate
         time_limit: max time (in seconds) for function to run, 0 means no time limit
         signal_handler: custom signal handler
-        signum: signal number to be used, default=signal.SIGALRM (14), unused if custom 
-            signal handler is provided
+        signum: signal number to be used, default=signal.SIGALRM (14)
 
     Returns:
         decorated function
@@ -847,6 +846,7 @@ def timeout(
         ValueError: if `time_limit` is not a positive number
         TypeError: if `signum` is not an int or an Enum, or if `signal_handler` is not a \
             callable
+        TimeoutError: if `time_limit` is reached without decorated function finishing 
 
     Usage:
     ```python
@@ -871,7 +871,7 @@ def timeout(
     ```
     """
 
-    if not isinstance(time_limit, (int, float)) or time_limit <= 0:
+    if (not isinstance(time_limit, int)) or time_limit < 0:
         raise ValueError("`time_limit` should be a strictly positive number")
 
     if not isinstance(signum, (int, Enum)):
@@ -880,7 +880,7 @@ def timeout(
     if signal_handler is None:
 
         def signal_handler(signum, frame):
-            raise Exception(f"Reached time limit, terminating {func.__name__}")
+            raise TimeoutError(f"Reached time limit, terminating {func.__name__}")
 
         signal.signal(signum, signal_handler)  # type: ignore
 
@@ -898,9 +898,12 @@ def timeout(
 
         try:
             res = func(*args, **kwargs)
-            signal.alarm(0)
             return res
+        except TimeoutError as e:
+            raise e
         except Exception as e:
             raise e
+        finally:
+            signal.alarm(0)
 
     return wrapper
