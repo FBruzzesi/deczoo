@@ -557,7 +557,8 @@ def shape_tracker(
         shape_out: track output shape
         shape_delta: track shape delta between input and output
         raise_if_empty: raise error if output is empty
-        arg_to_track: index or name of the argument to track
+        arg_to_track: index or name of the argument to track, used only if `shape_in` is\
+            `True`
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Returns:
@@ -598,27 +599,29 @@ def shape_tracker(
     a = np.random.randn(10, 20, 30)
     _ = n_vstack(n=3, a=a)
 
-    # Input shape: (10, 20, 30)
-    # Output shape: (30, 20, 30)
+    # Input: b has shape (10, 20, 30)
+    # Output: result has shape (30, 20, 30)
     # Shape delta: (-20, 0, 0)
     ```
     """
     if not isinstance(shape_in, bool):
-        raise TypeError("shape_in should be a boolean")
+        raise TypeError("`shape_in` should be a boolean")
 
     if not isinstance(shape_out, bool):
-        raise TypeError("shape_out should be a boolean")
+        raise TypeError("`shape_out` should be a boolean")
 
     if not isinstance(shape_delta, bool):
-        raise TypeError("shape_delta should be a boolean")
+        raise TypeError("`shape_delta` should be a boolean")
 
     if not isinstance(raise_if_empty, bool):
-        raise TypeError("raise_if_empty should be a boolean")
+        raise TypeError("`raise_if_empty` should be a boolean")
 
     if (not isinstance(arg_to_track, (str, int))) or (
         isinstance(arg_to_track, int) and arg_to_track < 0
     ):
-        raise TypeError("arg_to_track should be a string or a positive integer")
+        raise TypeError("`arg_to_track` should be a string or a positive integer")
+    if not callable(logging_fn):
+        raise TypeError("`logging_fn` should be a callable")
 
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
@@ -663,9 +666,9 @@ def shape_tracker(
 @check_parens
 def multi_shape_tracker(
     func: Optional[Callable[[HasShape, Sequence[Any]], Tuple[HasShape, ...]]] = None,
-    shapes_in: Optional[Union[str, int, Sequence[str], Sequence[int]]] = None,
-    shapes_out: Optional[Union[int, Sequence[int], Literal["all"]]] = "all",
-    raise_if_empty: Optional[Literal["any", "all"]] = "any",
+    shapes_in: Optional[Union[str, int, Sequence[str], Sequence[int], None]] = None,
+    shapes_out: Optional[Union[int, Sequence[int], Literal["all"], None]] = "all",
+    raise_if_empty: Optional[Literal["any", "all", None]] = "any",
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -704,6 +707,8 @@ def multi_shape_tracker(
     # Output shapes: (10, 20, 30), (10, 20, 30)
     ```
     """
+    if not callable(logging_fn):
+        raise TypeError("`logging_fn` should be a callable")
 
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
@@ -739,7 +744,7 @@ def multi_shape_tracker(
 
             # case: sequence of something else! (raise error)
             else:
-                raise TypeError("shapes_in values must all be str or positive int")
+                raise TypeError("`shapes_in` values must all be str or positive int")
 
         # case: None
         elif shapes_in is None:
@@ -748,7 +753,7 @@ def multi_shape_tracker(
         # case: something else, not in Union[int, str, Sequence[int], Sequence[str], None]
         else:
             raise TypeError(
-                "shapes_in must be either a str, a positive int, a sequence of str's, \
+                "`shapes_in` must be either a str, a positive int, a sequence of str's, \
                     a sequence of positive int's or None"
             )
 
@@ -789,26 +794,39 @@ def multi_shape_tracker(
         # case: something else, not in Union[int, Sequence[int], Literal["all"], None]
         else:
             raise TypeError(
-                "shapes_out must be positive int, sequence of positive int or 'all'"
+                "`shapes_out` must be positive int, sequence of positive int, 'all' \
+                    or None"
             )
 
         if shapes_out is not None:
             logging_fn("Output shapes: " + " ".join(f"{s}" for s in _res_shapes))
 
         # parse raise_if_empty
+        if (shapes_out is None) and (raise_if_empty is not None):  # type: ignore
+            _raise_if_empty = None
+
+            logging_fn(
+                "Overwriting `raise_if_empty` to None because `shapes_out` \
+                is None. Please specify `shapes_out` if you want to use `raise_if_empty`"
+            )
+        else:
+            _raise_if_empty = raise_if_empty
+
         # case: None
-        if raise_if_empty is None:
+        if _raise_if_empty is None:
             pass
         # case: "any"
-        elif raise_if_empty == "any" and any(x[0] == 0 for x in _res_shapes):
-            raise EmptyShapeError(
-                f"At least one result from {func.__name__} is empty"  # type: ignore
-            )
+        elif _raise_if_empty == "any":
+            if any(x[0] == 0 for x in _res_shapes):
+                raise EmptyShapeError(
+                    f"At least one result from {func.__name__} is empty"  # type: ignore
+                )
         # case: "all"
-        elif raise_if_empty == "all" and all(x[0] == 0 for x in _res_shapes):
-            raise EmptyShapeError(
-                f"All results from {func.__name__} are empty"  # type: ignore
-            )
+        elif _raise_if_empty == "all":
+            if all(x[0] == 0 for x in _res_shapes):
+                raise EmptyShapeError(
+                    f"All results from {func.__name__} are empty"  # type: ignore
+                )
         # case: something else, not in Union[Literal["any"], Literal["all"], None]
         else:
             raise TypeError("raise_if_empty must be either 'any', 'all' or None")
@@ -889,7 +907,7 @@ def timeout(
 
     else:
         # custome signal handler provided -> bind it to the signal
-        signal.signal(signum, signal_handler)
+        signal.signal(signum, signal_handler)  # type: ignore
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):

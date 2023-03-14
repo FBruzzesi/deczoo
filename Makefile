@@ -20,7 +20,7 @@ style:
 	black --target-version py38 --line-length 90 deczoo tests
 
 test:
-	pytest tests -vv
+	pytest tests -vv -n 8
 
 test-coverage:
 	coverage run -m pytest
