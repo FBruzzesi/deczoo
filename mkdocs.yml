@@ -54,9 +54,7 @@ theme:
 
 # Plugins
 plugins:
-  - mkdocstrings:
-      setup_commands:
-        - import deczoo
+  - mkdocstrings
   - search:
       separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
 

@@ -27,7 +27,7 @@ This codebase is experimental and is working for my use cases. It is very probab
 
 ## Installation
 
-**deczoo** is published as a Python package on [pypi](https://pypi.org/), and it can be installed with pip, ideally by using a virtual environment (suggested option), or directly from source using git, or with a local clone:
+**deczoo** is published as a Python package on [pypi](https://pypi.org/), and it can be installed with pip, directly from source using git, or with a local clone:
 
 === "pip (pypi)"
 
@@ -48,6 +48,11 @@ This codebase is experimental and is working for my use cases. It is very probab
     cd deczoo
     python -m pip install .
     ```
+
+As of now, the library has no additional required dependencies, however:
+
+- some functionalities works only on UNIX systems (`@memory_limit` and `@timeout`)
+- to use some decorators you may need to install additional dependencies (e.g. install `chime` to use `@chime_on_end`) 
 
 ## License
 
