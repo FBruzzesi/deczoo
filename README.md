@@ -24,6 +24,14 @@ I found myself implementing over and over in different projects. The hope is to 
 
 This codebase is experimental and is working for my use cases. It is very probable that there are cases not covered and for which it breaks (badly). If you find them, please feel free to open an issue in the [issue page](https://github.com/FBruzzesi/deczoo/issues) of the repo.
 
+## What is a decorator?
+
+In short a python decorator is a way to modify or enhance the behavior of a function or a class without actually modifying the source code of the function or class.
+
+Decorators are implemented as functions (or classes) that take a function or a class as input and return a new function or class that has some additional functionality.
+
+To have a more in-depth explanation you can check the [decorators docs page](https://fbruzzesi.github.io/deczoo/decorators/intro/).
+
 ## Installation
 
 **deczoo** is published as a Python package on [pypi](https://pypi.org/), and it can be installed with pip, or directly from source using git, or with a local clone:
@@ -48,10 +56,12 @@ cd deczoo
 python -m pip install .
 ```
 
+### Dependencies
+
 As of now, the library has no additional required dependencies, however:
 
 - some functionalities works only on UNIX systems (`@memory_limit` and `@timeout`)
-- to use some decorators you may need to install additional dependencies (e.g. install `chime` to use `@chime_on_end`) 
+- to use some decorators you may need to install additional dependencies (e.g. install [`chime`](https://github.com/MaxHalford/chime) to use `@chime_on_end`)
 
 ## Getting started
 

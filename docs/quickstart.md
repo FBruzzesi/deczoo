@@ -48,7 +48,6 @@ The library implements the following decorators:
 - `multi_shape_tracker`: tracks the shapes of input(s) and/or output(s) of a function.
 - `timeout`: sets a time limit for the function, terminates the process if it hasn't finished within such time limit.
 
-
 ## Examples
 
 Please refer to the [api page](api/decorators.md) to see a basic example for each decorator.
