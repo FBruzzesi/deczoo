@@ -109,6 +109,9 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Decorators:
+    - Introduction: decorators/intro.md
+    - Advanced Usage: decorators/advanced.md
   - Quickstart: quickstart.md
   - API:
     - Decorators: api/decorators.md
