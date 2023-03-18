@@ -20,13 +20,13 @@ style:
 	black --target-version py38 --line-length 90 deczoo tests
 
 test:
-	pytest tests -vv -n 8
+	pytest tests -n auto
 
 test-coverage:
 	coverage run -m pytest
 	coverage report -m
 
-check: interrogate style test-coverage clean-folders
+check: interrogate style test clean-folders
 
 docs-serve:
 	mkdocs serve

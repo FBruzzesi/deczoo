@@ -51,4 +51,4 @@ The library implements the following decorators:
 
 ## Examples
 
-Please refer to the [api page](https://fbruzzesi.github.io/deczoo/api/decorators/) to see a basic example for each decorator.
+Please refer to the [api page](api/decorators.md) to see a basic example for each decorator.

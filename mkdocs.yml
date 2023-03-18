@@ -7,11 +7,12 @@ site_description: Deczoo - A zoo for decorators
 # Repository information
 repo_name: FBruzzesi/deczoo
 repo_url: https://github.com/fbruzzesi/deczoo
+edit_uri: edit/main/docs/
 
 # Configuration
 watch:
   - deczoo
-use_directory_urls: false
+use_directory_urls: true
 theme:
   name: material
   font:

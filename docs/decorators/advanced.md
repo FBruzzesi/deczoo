@@ -65,7 +65,7 @@ Let's assume that we want to run a function twice, or 3-times, or 4-times and so
 
 Instead of writing differnt decorators that run the input function N times, we can go one level deeper, and define a function that takes the decorator arguments and returns the actual decorator function.
 
-```python
+```python title="repeat_n_times"
 from functools import wraps
 from typing import Callable
 
@@ -84,12 +84,12 @@ def repeat_n_times(n: int) -> Callable:
 
     return decorator
 
-@repeat_n_times(n=3)
+@repeat_n_times(n=2)
 def say_hello(name: str) -> str:
-    return f"Hello, {name}!"
+    return f"Hello {name}!"
 
-print(say_hello("Francesco"))
-# ['Hello, Francesco!', 'Hello, Francesco!', 'Hello, Francesco!']
+print(say_hello("Fra"))
+# ['Hello Fra!', 'Hello Fra!']
 ```
 
 <img src="../img/confused.gif" width=230 height=230 align="right">
@@ -102,6 +102,93 @@ This decorator function takes a function as an argument and returns a new functi
 
 The key difference between a decorator with arguments and a regular decorator is that the decorator with arguments has an extra layer of nested functions. The outer function takes the arguments and returns the actual decorator function, while the inner function takes the original function as an argument and returns the modified function.
 
-Can we do it differently??? Sure we can, and that's how all decorators in **deczoo** are implemented.
+Remark that even if we define `repeat_n_times` to have a default value for `n`, when we decorate a function we need to _call_ the decorator, since that returns the actual decorator that we want, namely we need to:
+
+```python
+def repeat_n_times(n: int = 3) -> Callable:
+    ...
+
+@repeat_n_times()
+def say_hello(name: str) -> str:
+    return f"Hello {name}!"
+
+@repeat_n_times
+def say_goodbye(name: str) -> str:
+    return f"Goodbye {name}!"
+
+
+print(say_hello("Fra"))
+# ['Hello Fra!', 'Hello Fra!', 'Hello Fra!']
+
+print(say_goodbye("Fra"))
+# <function __main__.repeat_n_times.<locals>.decorator.<locals>.wrapper>
+```
+
+Which is not really what we want for the `say_goodbye` function!
+
+Can we do it differently??? Sure we can! And that's how all decorators in **deczoo** are implemented.
 
 ## Decorators with arguments, pt.2
+
+In the [introduction](intro.md) we saw how a decorator is defined, let's stuck to such implementation but let's see how to add additional parameters and control flow without the need to have more level of indentation.
+
+Here is a different impementation of `repeat_n_times`, this time without a triple level of indentation:
+
+```python title="repeat_n_times definition"
+from functools import wraps, partial
+from typing import Callable
+
+def repeat_n_times(func: Callable = None, n: int = 2) -> Callable:
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+
+        results = [func(*args, **kwargs) for _ in range(n)]
+
+        return results
+
+    if func is None:
+         return partial(repeat_n_times, n=n)
+    else:
+         return wrapper
+```
+
+Let's see what happens here:
+
+- `repeat_n_times` takes as input the function to decorate (`func`) as first argument, and any additional input right after.
+- To use this trick, every additional argument must have a default value (which can be `None`).
+- Within the decorator we implement a `wrapper` as usual, where we use any additional decorator argument (`n` in this example).
+- Since `wrapper` is not run until execution time, we can then check what is the value of `func`:
+    - if it is `None`, then it means that only additional arguments have been provided to the decorator, and therefore we return a [partial](https://docs.python.org/3/library/functools.html#functools.partial) decorator with the given arguments that will decorate our function.
+    - Otherwise, the function is provided and we return the `wrapper`.
+
+This "trick" allows us to use the decorator with parens, providing custom arguments, or without parens, using defaults, i.e.
+
+```python title="repeat_n_times example"
+
+@repeat_n_times(n=3)  # uses custom argument value
+def say_hello(name: str) -> str:
+    return f"Hello {name}!"
+
+@repeat_n_times  # uses default argument value
+def say_goodbye(name: str) -> str:
+    return f"Goodbye {name}!"
+
+print(say_hello("Fra"))
+# ["Hello Fra!", "Hello Fra!", "Hello Fra!"]
+
+print(say_goodbye("Fra"))
+# ['Goodbye Fra!', 'Goodbye Fra!']
+```
+
+Neat! This was possible to achive using the control flow and `partial` block at the end of the decorator.
+
+Since in [deczoo](../index.md) every decorator is implemented using this strategy, we wrote a sort of "meta-decorator", called [check_parens](../api/utils.md#check_parens) that adds such block to every decorator!
+
+```python
+...
+if func is None:
+    return partial(repeat_n_times, n=n)
+else:
+    return wrapper
+```
