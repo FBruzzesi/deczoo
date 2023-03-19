@@ -1,5 +1,64 @@
 # Advanced Usage
 
+## Stacks
+
+We're not limited to a single decorator per function, we can _stack_ how many we want.
+
+Let's see how that works:
+
+```python
+def decorator1(func):
+    def wrapper(*args, **kwargs):
+
+        print("Decorator 1")
+        return func(*args, **kwargs)
+
+    return wrapper
+
+def decorator2(func):
+    def wrapper(*args, **kwargs):
+
+        print("Decorator 2")
+        return func(*args, **kwargs)
+
+    return wrapper
+```
+
+Remark that the _order_ in which we stack decorators matter:
+
+=== "\@d1 \@d2"
+
+    ```python hl_lines="1 2 8 9"
+
+    @decorator1
+    @decorator2
+    def func():
+        print("Hello world!")
+        return 42
+
+    func()
+    # Decorator 1
+    # Decorator 2
+    # Hello world!
+    ```
+
+=== "\@d2 \@d1"
+
+    ```python hl_lines="1 2 8 9"
+
+    @decorator2
+    @decorator1
+    def func():
+        print("Hello world!")
+        return 42
+
+    func()
+    # Decorator 2
+    # Decorator 1
+    # Hello world!
+    ```
+
+
 ## Wraps
 
 [`functools.wraps`](https://docs.python.org/3/library/functools.html#functools.wraps) is a utility function in the Python standard library that is often used in decorators to preserve the original function's metadata (such as its name, docstring, and annotations) in the wrapper function.
@@ -57,7 +116,7 @@ When we print the `__name__` and `__doc__` attributes of the function in the two
 
 ## Decorators with arguments
 
-<img src="../img/deeper-meme.jpg" width=230 height=230 align="right">
+<img src="../../img/deeper-meme.jpg" width=230 height=230 align="right">
 
 Sometimes we have more complexity to model and to achieve that we need to be able to pass arguments to our decorator.
 
@@ -92,7 +151,7 @@ print(say_hello("Fra"))
 # ['Hello Fra!', 'Hello Fra!']
 ```
 
-<img src="../img/confused.gif" width=230 height=230 align="right">
+<img src="../../img/confused.gif" width=230 height=230 align="right">
 
 Do you feel confused? If the answer is yes, it is because it is kinda confusing!
 
@@ -128,7 +187,7 @@ Which is not really what we want for the `say_goodbye` function!
 
 Can we do it differently??? Sure we can! And that's how all decorators in **deczoo** are implemented.
 
-## Decorators with arguments, pt.2
+## Decorators with arguments, and a trick!
 
 In the [introduction](intro.md) we saw how a decorator is defined, let's stuck to such implementation but let's see how to add additional parameters and control flow without the need to have more level of indentation.
 
