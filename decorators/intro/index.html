@@ -547,6 +547,7 @@
 <h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h1>
 <h2 id="what-is-a-decorator">What is a decorator?<a class="headerlink" href="#what-is-a-decorator" title="Permanent link">&para;</a></h2>
 <p>In Python, a decorator is a way to modify or enhance the behavior of a function or a class without actually modifying the source code of the function or class.</p>
+<p>Defining this <em>additional behaviour</em> in a decorator, instead of within the original function itself, allows us to re-use it every time we need it, without a tedious <em>copy-pasting</em>.</p>
 <p>Decorators are implemented as functions (or classes) that take a function or a class as input and return a new function or class that has some additional functionality.</p>
 <p>Here is a simple example in order to illustrate the concept:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
@@ -568,31 +569,31 @@
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
 <a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="k">return</span> <span class="n">wrapper</span>
 </code></pre></div>
-<p>Here, <code>my_decorator</code> is a function that takes a function, denoted as <code>func</code> here, as input and returns a new function called <code>wrapper</code>. In this case, <code>wrapper</code> contains some additional functionalities (in this case, the <code>print</code> statements) that are executed before and after the original function call.</p>
+<p>Here, <code>my_decorator</code> is a function that takes a function as input, denoted as <code>func</code>, and returns a new function called <code>wrapper</code> defined within the inner scope. In this case, <code>wrapper</code> contains some additional functionalities (in this case, the <code>print</code> statements) that are executed before and after the original function call.</p>
 <p><code>wrapper</code> function takes any number of positional and keyword arguments (<code>*args</code> and <code>**kwargs</code>), calls the original function <code>func</code> with those arguments, and returns the orignal result of the function call <code>res</code>.</p>
 <h2 id="decorator-syntax">Decorator syntax<a class="headerlink" href="#decorator-syntax" title="Permanent link">&para;</a></h2>
 <p>We just saw what is a decorator and how to code one, but how can we use it?</p>
 <p>There are two equivalent options available:</p>
 <ul>
 <li>
-<p>The <code>@</code>-syntax ("decorator syntax" or "decorator notation"), this is a shorthand way of applying a decorator to a function or a class, without having to explicitly call the decorator function and passing the function or class as an argument:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@my_decorator</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="k">return</span> <span class="mi">42</span>
+<p><em>Functional assignment</em>, we assign the output of the decorator to a new function:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="k">return</span> <span class="mi">42</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">my_func</span> <span class="o">=</span> <span class="n">my_decorator</span><span class="p">(</span><span class="n">my_func</span><span class="p">)</span>
 </code></pre></div>
 </li>
 <li>
-<p>Alternatively:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="k">return</span> <span class="mi">42</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">my_func</span> <span class="o">=</span> <span class="n">my_decorator</span><span class="p">(</span><span class="n">my_func</span><span class="p">)</span>
+<p>The (more pythonic) <em><code>@</code>-syntax</em> (also called <em>decorator syntax</em> or <em>decorator notation</em>), this is a shorthand way of applying a decorator to a function or a class, without having to explicitly call the decorator function and passing the function or class as an argument:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nd">@my_decorator</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="k">return</span> <span class="mi">42</span>
 </code></pre></div>
 </li>
 </ul>
-<p>In both cases, when calling the function we will get:</p>
+<p>In both cases, calling the function results in the following:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">my_func</span><span class="p">()</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># Starting to run my_func</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Hello world!</span>
