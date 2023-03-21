@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "deczoo"
-version = "0.5.0"
+version = "0.5.1"
 description = "Zoo for Python decorators"
 
 license = {file = "LICENSE"}
@@ -45,6 +45,8 @@ all = ["deczoo[chime,rich,dev,docs]"]
 include = ["deczoo*"]
 exclude = ["docs", "tests", "data", "docker", "results", "notebooks", "kubernetes"]
 
+[tool.setuptools.package-data]
+deczoo = ["py.typed"]
 
 [tool.black]
 line-length = 90
