@@ -10,7 +10,7 @@ clean-notebooks:
 
 clean-folders:
 	rm -rf .ipynb_checkpoints __pycache__ .pytest_cache */.ipynb_checkpoints */__pycache__ */.pytest_cache
-	rm -rf site build dist htmlcov .coverage
+	rm -rf site build dist htmlcov .coverage .tox .mypy_cache
 
 interrogate:
 	interrogate -vv --ignore-nested-functions --ignore-module --ignore-init-method --ignore-private --ignore-magic --ignore-property-decorators --fail-under=90 deczoo tests

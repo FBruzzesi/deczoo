@@ -26,7 +26,7 @@ def test_check_parens(capsys):
     assert _with_default() == "default"
     assert _with_custom() == "custom"
 
-    all_args = ["default1", "default2", "custom1", "custom2"]
+    all_args = ("default1", "default2", "custom1", "custom2")
     sys_out = capsys.readouterr().out
 
     assert all(a in sys_out for a in all_args)
