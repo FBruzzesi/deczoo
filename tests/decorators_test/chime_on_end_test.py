@@ -9,7 +9,6 @@ def test_success(base_add):
     """Tests that chime.success is called when function finishes successfully."""
 
     with patch("chime.success") as mock_success:
-
         _ = chime_on_end(base_add)(1, 2)
         mock_success.assert_called_once()
 

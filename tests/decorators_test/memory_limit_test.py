@@ -45,7 +45,6 @@ def test_memory_limit(capsys, percentage, context):
 
     @memory_limit(percentage=percentage, logging_fn=print)
     def limited(x):
-
         for i in list(range(10**7)):
             _ = 1 + 1
         return x

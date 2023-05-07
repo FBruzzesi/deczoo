@@ -17,6 +17,7 @@ interrogate:
 
 style:
 	isort --profile black -l 90 deczoo tests
+	ruff .
 	black --target-version py38 --line-length 90 deczoo tests
 
 test:

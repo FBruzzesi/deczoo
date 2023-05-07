@@ -10,7 +10,6 @@ class TestShape:
 
     @property
     def shape(self) -> Tuple[int, ...]:
-
         return (1, 2)
 
 

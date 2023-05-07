@@ -66,7 +66,6 @@ def call_counter(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         wrapper._calls += 1
 
         if log_counter:
@@ -127,12 +126,10 @@ def catch(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         try:
             return func(*args, **kwargs)
 
         except Exception as e:
-
             if return_on_exception is not None:
                 logging_fn(f"Failed with error {e}, returning {return_on_exception}")
                 return return_on_exception
@@ -190,7 +187,6 @@ def check_args(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs) -> Callable:
-
         func_args = (
             inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
         )
@@ -199,7 +195,6 @@ def check_args(
             rule = rules.get(k)
 
             if rule is not None:
-
                 if not rule(v):
                     raise ValueError(f"Argument `{k}` doesn't satisfy its rule")
 
@@ -241,7 +236,6 @@ def chime_on_end(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         try:
             res = func(*args, **kwargs)
             chime.success()
@@ -305,11 +299,9 @@ def log(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         tic = time.perf_counter()
 
         if log_args:
-
             func_args = inspect.signature(func).bind(*args, **kwargs).arguments
             func_args_str = ", ".join(f"{k}={v}" for k, v in func_args.items())
 
@@ -328,7 +320,6 @@ def log(
             return res
 
         except Exception as e:
-
             toc = time.perf_counter()
             optional_strings += [
                 f"time={toc - tic}" if log_time else None,
@@ -341,7 +332,6 @@ def log(
             logging_fn(log_string)
 
             if log_file is not None:
-
                 with open(log_file, "a") as f:
                     f.write(f"{tic} {log_string}\n")
 
@@ -410,7 +400,6 @@ def memory_limit(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         _, hard = resource.getrlimit(resource.RLIMIT_AS)
         free_memory = _get_free_memory() * 1024
 
@@ -469,7 +458,6 @@ def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Calla
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         try:
             return func(*args, **kwargs)
         except Exception as e:
@@ -534,11 +522,9 @@ def retry(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         attempt = 0
 
         while attempt < n_tries:
-
             try:
                 res = func(*args, **kwargs)
                 logging_fn(f"Attempt {attempt+1}/{n_tries}: Successed")
@@ -644,7 +630,6 @@ def shape_tracker(
 
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
-
         func_args = (
             inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
         )
@@ -742,7 +727,6 @@ def multi_shape_tracker(
 
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
-
         func_args = (
             inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
         )
@@ -759,7 +743,6 @@ def multi_shape_tracker(
 
         # case: sequence
         elif isinstance(shapes_in, Sequence):
-
             # case: sequence of str's
             if all(isinstance(x, str) for x in shapes_in):
                 _arg_names, _arg_values = tuple(shapes_in), tuple(  # type: ignore
@@ -788,7 +771,6 @@ def multi_shape_tracker(
             )
 
         if shapes_in is not None:
-
             logging_fn(
                 "Input shapes: "
                 + " ".join(
@@ -941,7 +923,6 @@ def timeout(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         signal.alarm(time_limit)
 
         try:
