@@ -6,7 +6,7 @@ from enum import Enum
 from functools import partial, wraps
 from itertools import zip_longest
 from pathlib import Path
-from typing import Any, Callable, Literal, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Literal, Sequence, Tuple, Union
 
 from ._base_notifier import BaseNotifier
 from ._utils import LOGGING_FN, EmptyShapeError, HasShape, _get_free_memory, check_parens
@@ -14,7 +14,7 @@ from ._utils import LOGGING_FN, EmptyShapeError, HasShape, _get_free_memory, che
 
 @check_parens
 def call_counter(
-    func: Optional[Callable] = None,
+    func: Union[Callable, None] = None,
     seed: int = 0,
     log_counter: bool = True,
     logging_fn: Callable = LOGGING_FN,
@@ -66,7 +66,6 @@ def call_counter(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         wrapper._calls += 1
 
         if log_counter:
@@ -82,9 +81,9 @@ def call_counter(
 
 @check_parens
 def catch(
-    func: Optional[Callable] = None,
-    return_on_exception: Optional[Any] = None,
-    raise_on_exception: Optional[Any] = None,
+    func: Union[Callable, None] = None,
+    return_on_exception: Union[Any, None] = None,
+    raise_on_exception: Union[Any, None] = None,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -127,12 +126,10 @@ def catch(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         try:
             return func(*args, **kwargs)
 
         except Exception as e:
-
             if return_on_exception is not None:
                 logging_fn(f"Failed with error {e}, returning {return_on_exception}")
                 return return_on_exception
@@ -150,7 +147,7 @@ def catch(
 
 @check_parens
 def check_args(
-    func: Optional[Callable] = None, **rules: Callable[[Any], bool]
+    func: Union[Callable, None] = None, **rules: Callable[[Any], bool]
 ) -> Callable:
     """
     Checks that function arguments satisfy given rules, if not a `ValueError` is raised.
@@ -190,7 +187,6 @@ def check_args(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs) -> Callable:
-
         func_args = (
             inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
         )
@@ -199,7 +195,6 @@ def check_args(
             rule = rules.get(k)
 
             if rule is not None:
-
                 if not rule(v):
                     raise ValueError(f"Argument `{k}` doesn't satisfy its rule")
 
@@ -210,9 +205,7 @@ def check_args(
 
 
 @check_parens
-def chime_on_end(
-    func: Optional[Callable] = None, theme: Optional[str] = "mario"
-) -> Callable:
+def chime_on_end(func: Union[Callable, None] = None, theme: str = "mario") -> Callable:
     """
     Notify with [chime](https://github.com/MaxHalford/chime) sound when function
     ends successfully or fails.
@@ -241,7 +234,6 @@ def chime_on_end(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         try:
             res = func(*args, **kwargs)
             chime.success()
@@ -256,11 +248,11 @@ def chime_on_end(
 
 @check_parens
 def log(
-    func: Optional[Callable] = None,
+    func: Union[Callable, None] = None,
     log_time: bool = True,
     log_args: bool = True,
     log_error: bool = True,
-    log_file: Optional[Union[Path, str]] = None,
+    log_file: Union[Path, str, None] = None,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -305,11 +297,9 @@ def log(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         tic = time.perf_counter()
 
         if log_args:
-
             func_args = inspect.signature(func).bind(*args, **kwargs).arguments
             func_args_str = ", ".join(f"{k}={v}" for k, v in func_args.items())
 
@@ -328,7 +318,6 @@ def log(
             return res
 
         except Exception as e:
-
             toc = time.perf_counter()
             optional_strings += [
                 f"time={toc - tic}" if log_time else None,
@@ -341,7 +330,6 @@ def log(
             logging_fn(log_string)
 
             if log_file is not None:
-
                 with open(log_file, "a") as f:
                     f.write(f"{tic} {log_string}\n")
 
@@ -353,7 +341,7 @@ timer = partial(log, log_time=True, log_args=False, log_error=False)
 
 @check_parens
 def memory_limit(
-    func: Optional[Callable] = None,
+    func: Union[Callable, None] = None,
     percentage: float = 0.99,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
@@ -410,7 +398,6 @@ def memory_limit(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         _, hard = resource.getrlimit(resource.RLIMIT_AS)
         free_memory = _get_free_memory() * 1024
 
@@ -433,7 +420,9 @@ def memory_limit(
 
 
 @check_parens
-def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Callable:
+def notify_on_end(
+    func: Union[Callable, None] = None, notifier: Union[BaseNotifier, None] = None
+) -> Callable:
     """
     Notify when func has finished running using the notifier `notify` method.
 
@@ -469,7 +458,6 @@ def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Calla
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         try:
             return func(*args, **kwargs)
         except Exception as e:
@@ -482,7 +470,7 @@ def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Calla
 
 @check_parens
 def retry(
-    func: Optional[Callable] = None,
+    func: Union[Callable, None] = None,
     n_tries: int = 3,
     delay: float = 0.0,
     logging_fn: Callable = LOGGING_FN,
@@ -534,11 +522,9 @@ def retry(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         attempt = 0
 
         while attempt < n_tries:
-
             try:
                 res = func(*args, **kwargs)
                 logging_fn(f"Attempt {attempt+1}/{n_tries}: Successed")
@@ -557,12 +543,12 @@ def retry(
 
 @check_parens
 def shape_tracker(
-    func: Optional[Callable[[HasShape, Sequence[Any]], HasShape]] = None,
+    func: Union[Callable[[HasShape, Sequence[Any]], HasShape], None] = None,
     shape_in: bool = False,
     shape_out: bool = True,
     shape_delta: bool = False,
     raise_if_empty: bool = True,
-    arg_to_track: Optional[Union[int, str]] = 0,
+    arg_to_track: Union[int, str] = 0,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -644,7 +630,6 @@ def shape_tracker(
 
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
-
         func_args = (
             inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
         )
@@ -684,10 +669,10 @@ def shape_tracker(
 
 @check_parens
 def multi_shape_tracker(
-    func: Optional[Callable[[HasShape, Sequence[Any]], Tuple[HasShape, ...]]] = None,
-    shapes_in: Optional[Union[str, int, Sequence[str], Sequence[int], None]] = None,
-    shapes_out: Optional[Union[int, Sequence[int], Literal["all"], None]] = "all",
-    raise_if_empty: Optional[Literal["any", "all", None]] = "any",
+    func: Union[Callable[[HasShape, Sequence[Any]], Tuple[HasShape, ...]], None] = None,
+    shapes_in: Union[str, int, Sequence[str], Sequence[int], None] = None,
+    shapes_out: Union[int, Sequence[int], Literal["all"], None] = "all",
+    raise_if_empty: Literal["any", "all", None] = "any",
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -742,7 +727,6 @@ def multi_shape_tracker(
 
     @wraps(func)  # type: ignore
     def wrapper(*args: Any, **kwargs: Any) -> HasShape:
-
         func_args = (
             inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
         )
@@ -759,7 +743,6 @@ def multi_shape_tracker(
 
         # case: sequence
         elif isinstance(shapes_in, Sequence):
-
             # case: sequence of str's
             if all(isinstance(x, str) for x in shapes_in):
                 _arg_names, _arg_values = tuple(shapes_in), tuple(  # type: ignore
@@ -788,7 +771,6 @@ def multi_shape_tracker(
             )
 
         if shapes_in is not None:
-
             logging_fn(
                 "Input shapes: "
                 + " ".join(
@@ -868,9 +850,9 @@ def multi_shape_tracker(
 
 @check_parens
 def timeout(
-    func: Optional[Callable] = None,
-    time_limit: Optional[int] = None,
-    signal_handler: Optional[Callable] = None,
+    func: Union[Callable, None] = None,
+    time_limit: Union[int, None] = None,
+    signal_handler: Union[Callable, None] = None,
     signum: Union[int, Enum] = signal.SIGALRM,
 ) -> Callable:
     """
@@ -941,7 +923,6 @@ def timeout(
 
     @wraps(func)  # type: ignore
     def wrapper(*args, **kwargs):
-
         signal.alarm(time_limit)
 
         try:

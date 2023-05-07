@@ -27,7 +27,6 @@ def test_params(base_add, arg_name, value, context):
     """
 
     with context:
-
         if arg_name != "time_limit":
             timeout(base_add, time_limit=1, **{arg_name: value})
         else:

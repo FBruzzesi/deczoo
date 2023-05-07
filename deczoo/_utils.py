@@ -1,5 +1,5 @@
 from functools import partial, wraps
-from typing import Callable, Protocol, Tuple, runtime_checkable
+from typing import Callable, Protocol, Tuple, Union, runtime_checkable
 
 LOGGING_FN: Callable[[str], None]
 
@@ -13,7 +13,6 @@ try:
     LOGGING_FN = console.log
 
 except ImportError:
-
     LOGGING_FN = print
 
 
@@ -54,8 +53,7 @@ def check_parens(decorator: Callable) -> Callable:
     """
 
     @wraps(decorator)
-    def wrapper(func: Callable = None, *args, **kwargs) -> Callable:
-
+    def wrapper(func: Union[Callable, None] = None, *args, **kwargs) -> Callable:
         if func is None:
             return partial(decorator, *args, **kwargs)
         else:
