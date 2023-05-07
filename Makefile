@@ -16,9 +16,10 @@ interrogate:
 	interrogate -vv --ignore-nested-functions --ignore-module --ignore-init-method --ignore-private --ignore-magic --ignore-property-decorators --fail-under=90 deczoo tests
 
 style:
-	isort --profile black -l 90 deczoo tests
-	ruff .
 	black --target-version py38 --line-length 90 deczoo tests
+	isort --profile black -l 90 deczoo tests
+	ruff deczoo tests
+
 
 test:
 	pytest tests -n auto

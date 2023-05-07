@@ -6,7 +6,7 @@ from enum import Enum
 from functools import partial, wraps
 from itertools import zip_longest
 from pathlib import Path
-from typing import Any, Callable, Literal, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Literal, Sequence, Tuple, Union
 
 from ._base_notifier import BaseNotifier
 from ._utils import LOGGING_FN, EmptyShapeError, HasShape, _get_free_memory, check_parens
@@ -14,7 +14,7 @@ from ._utils import LOGGING_FN, EmptyShapeError, HasShape, _get_free_memory, che
 
 @check_parens
 def call_counter(
-    func: Optional[Callable] = None,
+    func: Union[Callable, None] = None,
     seed: int = 0,
     log_counter: bool = True,
     logging_fn: Callable = LOGGING_FN,
@@ -81,9 +81,9 @@ def call_counter(
 
 @check_parens
 def catch(
-    func: Optional[Callable] = None,
-    return_on_exception: Optional[Any] = None,
-    raise_on_exception: Optional[Any] = None,
+    func: Union[Callable, None] = None,
+    return_on_exception: Union[Any, None] = None,
+    raise_on_exception: Union[Any, None] = None,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -147,7 +147,7 @@ def catch(
 
 @check_parens
 def check_args(
-    func: Optional[Callable] = None, **rules: Callable[[Any], bool]
+    func: Union[Callable, None] = None, **rules: Callable[[Any], bool]
 ) -> Callable:
     """
     Checks that function arguments satisfy given rules, if not a `ValueError` is raised.
@@ -205,9 +205,7 @@ def check_args(
 
 
 @check_parens
-def chime_on_end(
-    func: Optional[Callable] = None, theme: Optional[str] = "mario"
-) -> Callable:
+def chime_on_end(func: Union[Callable, None] = None, theme: str = "mario") -> Callable:
     """
     Notify with [chime](https://github.com/MaxHalford/chime) sound when function
     ends successfully or fails.
@@ -250,11 +248,11 @@ def chime_on_end(
 
 @check_parens
 def log(
-    func: Optional[Callable] = None,
+    func: Union[Callable, None] = None,
     log_time: bool = True,
     log_args: bool = True,
     log_error: bool = True,
-    log_file: Optional[Union[Path, str]] = None,
+    log_file: Union[Path, str, None] = None,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -343,7 +341,7 @@ timer = partial(log, log_time=True, log_args=False, log_error=False)
 
 @check_parens
 def memory_limit(
-    func: Optional[Callable] = None,
+    func: Union[Callable, None] = None,
     percentage: float = 0.99,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
@@ -422,7 +420,9 @@ def memory_limit(
 
 
 @check_parens
-def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Callable:
+def notify_on_end(
+    func: Union[Callable, None] = None, notifier: Union[BaseNotifier, None] = None
+) -> Callable:
     """
     Notify when func has finished running using the notifier `notify` method.
 
@@ -470,7 +470,7 @@ def notify_on_end(func: Callable = None, notifier: BaseNotifier = None) -> Calla
 
 @check_parens
 def retry(
-    func: Optional[Callable] = None,
+    func: Union[Callable, None] = None,
     n_tries: int = 3,
     delay: float = 0.0,
     logging_fn: Callable = LOGGING_FN,
@@ -543,12 +543,12 @@ def retry(
 
 @check_parens
 def shape_tracker(
-    func: Optional[Callable[[HasShape, Sequence[Any]], HasShape]] = None,
+    func: Union[Callable[[HasShape, Sequence[Any]], HasShape], None] = None,
     shape_in: bool = False,
     shape_out: bool = True,
     shape_delta: bool = False,
     raise_if_empty: bool = True,
-    arg_to_track: Optional[Union[int, str]] = 0,
+    arg_to_track: Union[int, str] = 0,
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -669,10 +669,10 @@ def shape_tracker(
 
 @check_parens
 def multi_shape_tracker(
-    func: Optional[Callable[[HasShape, Sequence[Any]], Tuple[HasShape, ...]]] = None,
-    shapes_in: Optional[Union[str, int, Sequence[str], Sequence[int], None]] = None,
-    shapes_out: Optional[Union[int, Sequence[int], Literal["all"], None]] = "all",
-    raise_if_empty: Optional[Literal["any", "all", None]] = "any",
+    func: Union[Callable[[HasShape, Sequence[Any]], Tuple[HasShape, ...]], None] = None,
+    shapes_in: Union[str, int, Sequence[str], Sequence[int], None] = None,
+    shapes_out: Union[int, Sequence[int], Literal["all"], None] = "all",
+    raise_if_empty: Literal["any", "all", None] = "any",
     logging_fn: Callable = LOGGING_FN,
 ) -> Callable:
     """
@@ -850,9 +850,9 @@ def multi_shape_tracker(
 
 @check_parens
 def timeout(
-    func: Optional[Callable] = None,
-    time_limit: Optional[int] = None,
-    signal_handler: Optional[Callable] = None,
+    func: Union[Callable, None] = None,
+    time_limit: Union[int, None] = None,
+    signal_handler: Union[Callable, None] = None,
     signum: Union[int, Enum] = signal.SIGALRM,
 ) -> Callable:
     """
