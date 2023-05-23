@@ -16,7 +16,7 @@ interrogate:
 	interrogate -vv --ignore-nested-functions --ignore-module --ignore-init-method --ignore-private --ignore-magic --ignore-property-decorators --fail-under=90 deczoo tests
 
 style:
-	black --target-version py38 --line-length 90 deczoo tests
+	black --target-version py310 --line-length 90 --workers 4 deczoo tests
 	isort --profile black -l 90 deczoo tests
 	ruff deczoo tests
 
@@ -25,8 +25,10 @@ test:
 	pytest tests -n auto
 
 test-coverage:
+	rm -rf .coverage
 	coverage run -m pytest
 	coverage report -m
+	coverage-badge -o docs/img/coverage.svg
 
 check: interrogate style test clean-folders
 

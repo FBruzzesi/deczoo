@@ -1,4 +1,4 @@
-name: Python Code Checks
+name: PR Checks
 
 on:
   pull_request:
@@ -78,7 +78,7 @@ jobs:
           python -m pip install black==23.3.0 isort==5.12.0 --no-cache-dir
 
       - name: Sort
-        run: isort --profile black -l 90 .
+        run: isort --profile black -l 90 deczoo tests
 
       - name: Format
         run: black --target-version py310 --line-length 90 deczoo tests

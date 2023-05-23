@@ -30,6 +30,7 @@ dev = [
     "pytest==7.2.0",
     "pytest-xdist==3.2.1",
     "coverage==7.2.1",
+    "coverage-badge==1.1.0",
     "numpy", # required for testing
     "ruff"
 ]
