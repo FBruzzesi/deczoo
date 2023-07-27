@@ -37,25 +37,15 @@ To have a more in-depth explanation you can check the [decorators docs page](htt
 
 **deczoo** is published as a Python package on [pypi](https://pypi.org/), and it can be installed with pip, or directly from source using git, or with a local clone:
 
-### pip
+- **pip**: `python -m pip install deczoo` (suggested)
+- **pip + source/git**: `python -m pip install git+https://github.com/FBruzzesi/deczoo.git`
+- **local clone**:
 
-```bash
-python -m pip install deczoo
-```
-
-### source/git
-
-```bash
-python -m pip install git+https://github.com/FBruzzesi/deczoo.git
-```
-
-### local clone
-
-```bash
-git clone https://github.com/FBruzzesi/deczoo.git
-cd deczoo
-python -m pip install .
-```
+    ```bash
+    git clone https://github.com/FBruzzesi/deczoo.git
+    cd deczoo
+    python -m pip install .
+    ```
 
 ### Dependencies
 
