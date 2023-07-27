@@ -1,5 +1,7 @@
 from functools import partial, wraps
-from typing import Callable, Protocol, Tuple, Union, runtime_checkable
+from typing import Callable, Union
+
+from deczoo._types import PS, FuncType
 
 LOGGING_FN: Callable[[str], None]
 
@@ -16,7 +18,7 @@ except ImportError:
     LOGGING_FN = print
 
 
-def check_parens(decorator: Callable) -> Callable:
+def check_parens(decorator: FuncType) -> FuncType:
     """
     Check whether or not a decorator function gets called with parens:
 
@@ -53,7 +55,9 @@ def check_parens(decorator: Callable) -> Callable:
     """
 
     @wraps(decorator)
-    def wrapper(func: Union[Callable, None] = None, *args, **kwargs) -> Callable:
+    def wrapper(
+        func: Union[FuncType, None] = None, *args: PS.args, **kwargs: PS.kwargs
+    ) -> FuncType:
         if func is None:
             return partial(decorator, *args, **kwargs)
         else:
@@ -76,18 +80,6 @@ def _get_free_memory() -> int:
             if str(sline[0]) in ("MemFree:", "Buffers:", "Cached:"):
                 free_memory += int(sline[1])
     return free_memory
-
-
-@runtime_checkable
-class HasShape(Protocol):
-    """
-    Protocol for objects that have a shape attribute.
-    In this context, a "dataframe"-like object.
-    """
-
-    @property
-    def shape(self) -> Tuple[int, ...]:
-        pass
 
 
 class EmptyShapeError(Exception):
