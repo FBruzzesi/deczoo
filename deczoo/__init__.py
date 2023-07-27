@@ -1,8 +1,8 @@
 from importlib import metadata
 
-from ._base_notifier import BaseNotifier
-from ._utils import check_parens
-from .decorators import (
+from deczoo._base_notifier import BaseNotifier
+from deczoo._utils import check_parens
+from deczoo.decorators import (
     call_counter,
     catch,
     check_args,

@@ -8,17 +8,24 @@ from itertools import zip_longest
 from pathlib import Path
 from typing import Any, Callable, Literal, Sequence, Tuple, Union
 
-from ._base_notifier import BaseNotifier
-from ._utils import LOGGING_FN, EmptyShapeError, HasShape, _get_free_memory, check_parens
+from deczoo._base_notifier import BaseNotifier
+from deczoo._types import (
+    PS,
+    FuncReturnType,
+    FuncType,
+    ReturnOnExceptionType,
+    SupportShape,
+)
+from deczoo._utils import LOGGING_FN, EmptyShapeError, _get_free_memory, check_parens
 
 
 @check_parens
 def call_counter(
-    func: Union[Callable, None] = None,
+    func: Union[FuncType, None] = None,
     seed: int = 0,
     log_counter: bool = True,
     logging_fn: Callable = LOGGING_FN,
-) -> Callable:
+) -> FuncType:
     """
     Counts how many times a function has been called by setting and tracking a `_calls`
     attribute to the decorated function.
@@ -65,7 +72,7 @@ def call_counter(
         raise TypeError("`logging_fn` argument must be a callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
         wrapper._calls += 1
 
         if log_counter:
@@ -81,11 +88,11 @@ def call_counter(
 
 @check_parens
 def catch(
-    func: Union[Callable, None] = None,
-    return_on_exception: Union[Any, None] = None,
+    func: Union[FuncType, None] = None,
+    return_on_exception: Union[ReturnOnExceptionType, None] = None,
     raise_on_exception: Union[Any, None] = None,
     logging_fn: Callable = LOGGING_FN,
-) -> Callable:
+) -> FuncType:
     """
     Wraps a function in a try-except block, potentially prevent exception to be raised by
     returning a given value or raises custom exception.
@@ -125,7 +132,9 @@ def catch(
         raise TypeError("`logging_fn` argument must be a callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args, **kwargs):
+    def wrapper(
+        *args: PS.args, **kwargs: PS.kwargs
+    ) -> Union[FuncReturnType, ReturnOnExceptionType]:
         try:
             return func(*args, **kwargs)
 
@@ -147,8 +156,8 @@ def catch(
 
 @check_parens
 def check_args(
-    func: Union[Callable, None] = None, **rules: Callable[[Any], bool]
-) -> Callable:
+    func: Union[FuncType, None] = None, **rules: Callable[[Any], bool]
+) -> FuncType:
     """
     Checks that function arguments satisfy given rules, if not a `ValueError` is raised.
 
@@ -186,7 +195,7 @@ def check_args(
         raise ValueError("All rules must be callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args, **kwargs) -> Callable:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
         func_args = (
             inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
         )
@@ -205,7 +214,7 @@ def check_args(
 
 
 @check_parens
-def chime_on_end(func: Union[Callable, None] = None, theme: str = "mario") -> Callable:
+def chime_on_end(func: Union[FuncType, None] = None, theme: str = "mario") -> FuncType:
     """
     Notify with [chime](https://github.com/MaxHalford/chime) sound when function
     ends successfully or fails.
@@ -233,7 +242,7 @@ def chime_on_end(func: Union[Callable, None] = None, theme: str = "mario") -> Ca
     chime.theme(theme)
 
     @wraps(func)  # type: ignore
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
         try:
             res = func(*args, **kwargs)
             chime.success()
@@ -248,13 +257,13 @@ def chime_on_end(func: Union[Callable, None] = None, theme: str = "mario") -> Ca
 
 @check_parens
 def log(
-    func: Union[Callable, None] = None,
+    func: Union[FuncType, None] = None,
     log_time: bool = True,
     log_args: bool = True,
     log_error: bool = True,
     log_file: Union[Path, str, None] = None,
     logging_fn: Callable = LOGGING_FN,
-) -> Callable:
+) -> FuncType:
     """
     Tracks function time taken, arguments and errors. If `log_file` is provided, logs
     are written to file. In any case, logs are passed to `logging_fn`.
@@ -296,7 +305,7 @@ def log(
         raise TypeError("`logging_fn` must be callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
         tic = time.perf_counter()
 
         if log_args:
@@ -341,10 +350,10 @@ timer = partial(log, log_time=True, log_args=False, log_error=False)
 
 @check_parens
 def memory_limit(
-    func: Union[Callable, None] = None,
+    func: Union[FuncType, None] = None,
     percentage: float = 0.99,
     logging_fn: Callable = LOGGING_FN,
-) -> Callable:
+) -> FuncType:
     """
     Sets a memory limit while running the decorated function.
 
@@ -397,7 +406,7 @@ def memory_limit(
         raise TypeError("`logging_fn` should be a callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
         _, hard = resource.getrlimit(resource.RLIMIT_AS)
         free_memory = _get_free_memory() * 1024
 
@@ -421,8 +430,8 @@ def memory_limit(
 
 @check_parens
 def notify_on_end(
-    func: Union[Callable, None] = None, notifier: Union[BaseNotifier, None] = None
-) -> Callable:
+    func: Union[FuncType, None] = None, notifier: Union[BaseNotifier, None] = None
+) -> FuncType:
     """
     Notify when func has finished running using the notifier `notify` method.
 
@@ -457,7 +466,7 @@ def notify_on_end(
         raise TypeError("`notifier` should be an instance of a BaseNotifier")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
         try:
             return func(*args, **kwargs)
         except Exception as e:
@@ -470,11 +479,11 @@ def notify_on_end(
 
 @check_parens
 def retry(
-    func: Union[Callable, None] = None,
+    func: Union[FuncType, None] = None,
     n_tries: int = 3,
     delay: float = 0.0,
     logging_fn: Callable = LOGGING_FN,
-) -> Callable:
+) -> FuncType:
     """
     Wraps a function within a "retry" block. If the function fails, it will be retried
     `n_tries` times with a delay of `delay` seconds between each attempt.
@@ -521,7 +530,7 @@ def retry(
         raise TypeError("`logging_fn` should be a callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
         attempt = 0
 
         while attempt < n_tries:
@@ -543,14 +552,14 @@ def retry(
 
 @check_parens
 def shape_tracker(
-    func: Union[Callable[[HasShape, Sequence[Any]], HasShape], None] = None,
+    func: Union[Callable[[SupportShape, Sequence[Any]], SupportShape], None] = None,
     shape_in: bool = False,
     shape_out: bool = True,
     shape_delta: bool = False,
     raise_if_empty: bool = True,
     arg_to_track: Union[int, str] = 0,
     logging_fn: Callable = LOGGING_FN,
-) -> Callable:
+) -> FuncType:
     """
     Tracks the shape of a dataframe/array-like object.
     It's possible to track input and output shape(s), delta from input and output, and
@@ -629,7 +638,7 @@ def shape_tracker(
         raise TypeError("`logging_fn` should be a callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args: Any, **kwargs: Any) -> HasShape:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> SupportShape:
         func_args = (
             inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
         )
@@ -669,12 +678,14 @@ def shape_tracker(
 
 @check_parens
 def multi_shape_tracker(
-    func: Union[Callable[[HasShape, Sequence[Any]], Tuple[HasShape, ...]], None] = None,
+    func: Union[
+        Callable[[SupportShape, Sequence[Any]], Tuple[SupportShape, ...]], None
+    ] = None,
     shapes_in: Union[str, int, Sequence[str], Sequence[int], None] = None,
     shapes_out: Union[int, Sequence[int], Literal["all"], None] = "all",
     raise_if_empty: Literal["any", "all", None] = "any",
     logging_fn: Callable = LOGGING_FN,
-) -> Callable:
+) -> FuncType:
     """
     Tracks the shape(s) of a dataframe/array-like objects both in input and output of
     a given function.
@@ -726,7 +737,7 @@ def multi_shape_tracker(
         raise TypeError("`logging_fn` should be a callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args: Any, **kwargs: Any) -> HasShape:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> SupportShape:
         func_args = (
             inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
         )
@@ -850,11 +861,11 @@ def multi_shape_tracker(
 
 @check_parens
 def timeout(
-    func: Union[Callable, None] = None,
+    func: Union[FuncType, None] = None,
     time_limit: Union[int, None] = None,
     signal_handler: Union[Callable, None] = None,
     signum: Union[int, Enum] = signal.SIGALRM,
-) -> Callable:
+) -> FuncType:
     """
     Sets a time limit to a function, terminates the process if it hasn't finished within
     such time limit.
@@ -922,7 +933,7 @@ def timeout(
         signal.signal(signum, signal_handler)  # type: ignore
 
     @wraps(func)  # type: ignore
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
         signal.alarm(time_limit)
 
         try:

@@ -2,7 +2,7 @@ from typing import Tuple
 
 import pytest
 
-from deczoo._utils import HasShape
+from deczoo._types import SupportShape
 
 
 class TestShape:
@@ -22,17 +22,17 @@ class NoShape:
 def test_protocol():
     """Tests that HasShape is protocol and cannot be instantiated"""
     with pytest.raises(TypeError):
-        HasShape()
+        SupportShape()
 
 
 def test_protocol_implemented():
     """Tests that TestShape is a valid implementation of HasShape"""
-    assert isinstance(TestShape, HasShape)
+    assert isinstance(TestShape, SupportShape)
     assert hasattr(TestShape, "shape")
 
 
 def test_protocol_not_implemented():
     """Tests that NoShape is not a valid implementation of HasShape"""
 
-    assert not isinstance(NoShape, HasShape)
+    assert not isinstance(NoShape, SupportShape)
     assert not hasattr(NoShape, "shape")
