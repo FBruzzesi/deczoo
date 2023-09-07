@@ -33,7 +33,7 @@ def my_decorator(func: Callable) -> Callable:
 
 Here, `my_decorator` is a function that takes a function as input, denoted as `func`, and returns a new function called `wrapper` defined within the inner scope. In this case, `wrapper` contains some additional functionalities (in this case, the `print` statements) that are executed before and after the original function call.
 
-`wrapper` function takes any number of positional and keyword arguments (`*args` and `**kwargs`), calls the original function `func` with those arguments, and returns the orignal result of the function call `res`.
+`wrapper` function takes any number of positional and keyword arguments (`*args` and `**kwargs`), calls the original function `func` with those arguments, and returns the original result of the function call `res`.
 
 ## Decorator syntax
 

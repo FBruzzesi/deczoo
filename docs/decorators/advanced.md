@@ -110,7 +110,7 @@ Here's an example of how `functools.wraps` can be used in a decorator, and how t
     # Docs = 'None'
     ```
 
-As you can see, the two decorators `dec_with_wraps` and `dec_no_wraps` are indentical; the only difference between the two cases is the use of `@wraps` decorator in the former to preserve the metadata of the original function.
+As you can see, the two decorators `dec_with_wraps` and `dec_no_wraps` are identical; the only difference between the two cases is the use of `@wraps` decorator in the former to preserve the metadata of the original function.
 
 When we print the `__name__` and `__doc__` attributes of the function in the two different scenarios, we obtain completely different results! In particular, in the first case the metadata of the decorated `my_func` are maintained, in the latter the metadata we obtain are those of the `wrapper` function inside the decorator.
 
@@ -122,7 +122,7 @@ Sometimes we have more complexity to model and to achieve that we need to be abl
 
 Let's assume that we want to run a function twice, or 3-times, or 4-times and so on.
 
-Instead of writing differnt decorators that run the input function N times, we can go one level deeper, and define a function that takes the decorator arguments and returns the actual decorator function.
+Instead of writing different decorators that run the input function N times, we can go one level deeper, and define a function that takes the decorator arguments and returns the actual decorator function.
 
 ```python title="repeat_n_times"
 from functools import wraps
@@ -191,7 +191,7 @@ Can we do it differently??? Sure we can! And that's how all decorators in **decz
 
 In the [introduction](intro.md) we saw how a decorator is defined, let's stuck to such implementation but let's see how to add additional parameters and control flow without the need to have more level of indentation.
 
-Here is a different impementation of `repeat_n_times`, this time without a triple level of indentation:
+Here is a different implementation of `repeat_n_times`, this time without a triple level of indentation:
 
 ```python title="repeat_n_times definition"
 from functools import wraps, partial

@@ -615,7 +615,7 @@ def shape_tracker(
     > EmptyShapeError: Result from tracked_vstack is empty
     ```
 
-    Now if the array to track is not the first argument, we can explicitely set
+    Now if the array to track is not the first argument, we can explicitly set
     `arg_to_track` to the value of 1 or "b".
     """
     if not isinstance(shape_in, bool):
