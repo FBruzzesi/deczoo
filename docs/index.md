@@ -16,9 +16,7 @@ The hope is to gather them here and use this codebase.
 
 ---
 
-**Documentation**: https://fbruzzesi.github.io/deczoo
-
-**Source Code**: https://github.com/fbruzzesi/deczoo
+[Documentation](https://fbruzzesi.github.io/deczoo) | [Source Code](https://github.com/fbruzzesi/deczoo)
 
 ---
 
@@ -32,7 +30,7 @@ In short a python decorator is a way to modify or enhance the behavior of a func
 
 Decorators are implemented as functions (or classes) that take a function or a class as input and return a new function or class that has some additional functionality.
 
-To have a more in-depth explanation you can check the [next section](decorators/intro/).
+To have a more in-depth explanation you can check the [next section](decorators/intro.md).
 
 ## Installation
 
