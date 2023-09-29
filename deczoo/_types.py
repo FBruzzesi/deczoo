@@ -1,8 +1,9 @@
+import sys
 from typing import Any, Callable, Protocol, Tuple, TypeVar, runtime_checkable
 
-try:
+if sys.version_info >= (3, 10):
     from typing import ParamSpec
-except ImportError:
+else:
     from typing_extensions import ParamSpec
 
 PS = ParamSpec("PS")
