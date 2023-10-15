@@ -4,6 +4,7 @@
 <img src ="docs/img/interrogate-shield.svg">
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 <img src ="docs/img/coverage.svg">
+<img src = "https://img.shields.io/pypi/pyversions/deczoo">
 
 # Deczoo
 
@@ -29,14 +30,24 @@ In short a python decorator is a way to modify or enhance the behavior of a func
 
 Decorators are implemented as functions (or classes) that take a function or a class as input and return a new function or class that has some additional functionality.
 
-To have a more in-depth explanation you can check the [decorators docs page](https://fbruzzesi.github.io/deczoo/decorators/intro/).
+To have a more in-depth explanation you can check the [decorators docs section](https://fbruzzesi.github.io/deczoo/decorators/intro/).
 
 ## Installation
 
 **deczoo** is published as a Python package on [pypi](https://pypi.org/), and it can be installed with pip, or directly from source using git, or with a local clone:
 
-- **pip**: `python -m pip install deczoo` (suggested)
-- **pip + source/git**: `python -m pip install git+https://github.com/FBruzzesi/deczoo.git`
+- **pip** (suggested):
+
+    ```bash
+    python -m pip install deczoo
+    ```
+
+- **pip + source/git**:
+
+    ```bash
+    python -m pip install git+https://github.com/FBruzzesi/deczoo.git
+    ```
+
 - **local clone**:
 
     ```bash
