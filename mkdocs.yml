@@ -18,6 +18,10 @@ theme:
   font:
     text: Ubuntu
     code: Ubuntu Mono
+  highlightjs: true
+  hljs_languages:
+    - bash
+    - python
   palette:
   - media: '(prefers-color-scheme: light)'
     scheme: default
@@ -34,22 +38,26 @@ theme:
       icon: material/lightbulb-outline
       name: Switch to dark mode
   features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.indexes
+    - navigation.footer
+    - navigation.top
+    - navigation.tracking
     - content.action.edit
     - content.action.view
     - content.code.annotate
     - content.code.copy
     - content.tooltips
-    - search.suggest
-    - search.highlight
     - content.tabs.link
-    - navigation.footer
-    - navigation.indexes
-    - navigation.top
-    - navigation.tracking
+    - search.suggest
     - search.highlight
     - search.share
-    - search.suggest
     - toc.follow
+    - toc.integrate
   logo: img/deczoo-logo.png
   favicon: img/deczoo-logo.png
 
