@@ -1,11 +1,11 @@
 import sys
 from functools import partial, wraps
-from typing import Callable, Protocol, Tuple, TypeAlias, TypeVar, Union, runtime_checkable
+from typing import Callable, Protocol, Tuple, TypeVar, Union, runtime_checkable
 
 if sys.version_info >= (3, 10):
-    from typing import ParamSpec
+    from typing import ParamSpec, TypeAlias
 else:
-    from typing_extensions import ParamSpec
+    from typing_extensions import ParamSpec, TypeAlias
 
 if sys.version_info >= (3, 11):
     from typing import Self
