@@ -1,31 +1,32 @@
+import sys
 from functools import partial, wraps
-from typing import Callable, Union
+from typing import Callable, Protocol, Tuple, TypeAlias, TypeVar, Union, runtime_checkable
 
-from deczoo._types import PS, FuncType
+if sys.version_info >= (3, 10):
+    from typing import ParamSpec
+else:
+    from typing_extensions import ParamSpec
 
-LOGGING_FN: Callable[[str], None]
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
-try:
-    from rich.console import Console
-    from rich.theme import Theme
+PS = ParamSpec("PS")
+R = TypeVar("R")
+F: TypeAlias = Callable[PS, R]
 
-    custom_theme = Theme({"good": "bold green", "bad": "bold red"})
-    console = Console(theme=custom_theme)
-
-    LOGGING_FN = console.log
-
-except ImportError:
-    LOGGING_FN = print
+# DPS = ParamSpec("DPS")
+# DecoratorType: TypeAlias = Callable[[F, DPS.args, DPS.kwargs], F]
 
 
-def check_parens(decorator: FuncType) -> FuncType:
-    """
-    Check whether or not a decorator function gets called with parens:
+def check_parens(decorator: F) -> F:
+    """Check whether or not a decorator function gets called with parens:
 
-    - If called with parens, the decorator is called without the function as the first
-        argument, but necessarely with decorator keyword arguments.
-    - If called without parens, the decorator is called with the function as the first
-        argument, and the decorator's default arguments.
+    - If called with parens, the decorator is called without the function as the first argument, but necessarely with
+        decorator keyword arguments.
+    - If called without parens, the decorator is called with the function as the first argument, and the decorator's
+        default arguments.
 
     This function is used internally to endow every decorator of the above property.
 
@@ -55,7 +56,7 @@ def check_parens(decorator: FuncType) -> FuncType:
     """
 
     @wraps(decorator)
-    def wrapper(func: Union[FuncType, None] = None, *args: PS.args, **kwargs: PS.kwargs) -> FuncType:
+    def wrapper(func: Union[F, None] = None, *args: PS.args, **kwargs: PS.kwargs) -> F:
         if func is None:
             return partial(decorator, *args, **kwargs)
         else:
@@ -65,10 +66,10 @@ def check_parens(decorator: FuncType) -> FuncType:
 
 
 def _get_free_memory() -> int:
-    """
-    Computes machine free memory via `/proc/meminfo` file (linux only).
+    """Computes machine free memory via `/proc/meminfo` file (linux only).
 
-    **Warning**: This functionality is supported on unix-based systems only!
+    !!! warning
+        This functionality is supported on unix-based systems only!
     """
 
     with open("/proc/meminfo", "r") as mem:
@@ -80,7 +81,32 @@ def _get_free_memory() -> int:
     return free_memory
 
 
+@runtime_checkable
+class SupportShape(Protocol):
+    """Protocol for objects that have a `.shape()` attribute. In this context, a dataframe or array like object."""
+
+    @property
+    def shape(self: Self) -> Tuple[int, ...]:
+        ...
+
+
 class EmptyShapeError(Exception):
     """Exception raised when a dataframe/array-like object has an empty shape."""
 
     ...
+
+
+LoggerType: TypeAlias = Callable[[str], None]
+LOGGING_FN: LoggerType
+
+try:
+    from rich.console import Console
+    from rich.theme import Theme
+
+    custom_theme = Theme({"good": "bold green", "bad": "bold red"})
+    console = Console(theme=custom_theme)
+
+    LOGGING_FN = console.log
+
+except ImportError:
+    LOGGING_FN = print
