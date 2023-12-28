@@ -58,7 +58,6 @@ Remark that the _order_ in which we stack decorators matter:
     # Hello world!
     ```
 
-
 ## Wraps
 
 [`functools.wraps`](https://docs.python.org/3/library/functools.html#functools.wraps) is a utility function in the Python standard library that is often used in decorators to preserve the original function's metadata (such as its name, docstring, and annotations) in the wrapper function.
@@ -240,7 +239,7 @@ print(say_goodbye("Fra"))
 # ['Goodbye Fra!', 'Goodbye Fra!']
 ```
 
-Neat! This was possible to achive using the control flow and `partial` block at the end of the decorator.
+Neat! This was possible to achieve using the control flow and `partial` block at the end of the decorator.
 
 Since in [deczoo](../index.md) every decorator is implemented using this strategy, we wrote a sort of "meta-decorator", called [check_parens](../api/utils.md#check_parens) that adds such block to every decorator!
 

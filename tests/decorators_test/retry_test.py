@@ -35,7 +35,7 @@ def test_params(base_add, arg_name, value, context):
 def test_retry_no_exceptions(base_add, capsys, n_tries, delay):
     """Tests that retry decorator works"""
     _ = retry(base_add, n_tries=n_tries, delay=delay, logging_fn=print)(a=1, b=2)
-    assert f"Attempt 1/{n_tries}: Successed" in capsys.readouterr().out
+    assert f"Attempt 1/{n_tries}: Succeeded" in capsys.readouterr().out
 
 
 @pytest.mark.parametrize("n_tries", list(range(2, 5)))

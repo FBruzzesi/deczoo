@@ -43,7 +43,7 @@ def test_return(base_add, b, return_on_exception, expected):
     ],
 )
 def test_raise(base_add, raise_on_exception, context):
-    """Tests that catch raises the raise_on_execption exception"""
+    """Tests that catch raises the raise_on_exception exception"""
     add = catch(base_add, raise_on_exception=raise_on_exception)
 
     with context:

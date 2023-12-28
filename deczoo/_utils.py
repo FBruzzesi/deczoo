@@ -55,9 +55,7 @@ def check_parens(decorator: FuncType) -> FuncType:
     """
 
     @wraps(decorator)
-    def wrapper(
-        func: Union[FuncType, None] = None, *args: PS.args, **kwargs: PS.kwargs
-    ) -> FuncType:
+    def wrapper(func: Union[FuncType, None] = None, *args: PS.args, **kwargs: PS.kwargs) -> FuncType:
         if func is None:
             return partial(decorator, *args, **kwargs)
         else:

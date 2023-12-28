@@ -5,9 +5,7 @@ import pytest
 from deczoo._utils import _get_free_memory
 
 
-@pytest.mark.skipif(
-    os.name != "posix", reason="This test runs only on Unix-based systems"
-)
+@pytest.mark.skipif(os.name != "posix", reason="This test runs only on Unix-based systems")
 def test_get_free_memory():
     """
     Tests _get_free_memory function

@@ -9,19 +9,24 @@ clean-notebooks:
 	jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace notebooks/*.ipynb
 
 clean-folders:
-	rm -rf .ipynb_checkpoints __pycache__ .pytest_cache */.ipynb_checkpoints */__pycache__ */.pytest_cache
-	rm -rf site build dist htmlcov .coverage .tox .mypy_cache
+	rm -rf __pycache__ */__pycache__ */**/__pycache__ \
+		.pytest_cache */.pytest_cache */**/.pytest_cache \
+		.ruff_cache */.ruff_cache */**/.ruff_cache \
+		.mypy_cache */.mypy_cache */**/.mypy_cache \
+		site build dist htmlcov .coverage .tox
 
 lint:
-	black deczoo tests
-	isort deczoo tests
-	ruff deczoo tests
+	ruff version
+	ruff check deczoo tests --fix
+	ruff format deczoo tests
+	ruff clean
 
 test:
 	pytest tests -n auto
 
 coverage:
 	rm -rf .coverage
+	(rm docs/img/coverage.svg) || (echo "No coverage.svg file found")
 	coverage run -m pytest
 	coverage report -m
 	coverage-badge -o docs/img/coverage.svg
@@ -32,7 +37,7 @@ interrogate:
 interrogate-badge:
 	interrogate --generate-badge docs/img/interrogate-shield.svg
 
-check: lint test clean-folders
+check: interrogate lint test clean-folders
 
 docs-serve:
 	mkdocs serve
@@ -42,6 +47,8 @@ docs-deploy:
 
 pypi-push:
 	rm -rf dist
-	python -m pip install twine hatch --no-cache-dir
 	hatch build
-	twine upload dist/*
+	hatch publish
+
+get-version :
+	@echo $(shell grep -m 1 version pyproject.toml | tr -s ' ' | tr -d '"' | tr -d "'" | cut -d' ' -f3)

@@ -16,9 +16,7 @@ def add_multi(a: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     return a + b, a * b
 
 
-@pytest.mark.parametrize(
-    "arg_name", ["shapes_in", "shapes_out", "raise_if_empty", "logging_fn"]
-)
+@pytest.mark.parametrize("arg_name", ["shapes_in", "shapes_out", "raise_if_empty", "logging_fn"])
 @pytest.mark.parametrize("value", [1.1, {1: 2}, ("a", 1), (0, "b"), "a"])
 def test_invalid_args(arg_name, value):
     """Tests that multi_shape_tracker raises a TyperError any invalid args are passed"""
