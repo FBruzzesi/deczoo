@@ -928,7 +928,7 @@ def raise_if(
     condition: Callable[[], bool],
     exception: Type[Exception] = Exception,
     message: str = "Condition is not satisfied",
-):
+) -> Callable[[Callable[PS, FuncReturnType]], Callable[PS, FuncReturnType]]:
     """
     Raises an exception if `condition` is satisfied.
 
