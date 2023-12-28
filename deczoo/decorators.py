@@ -1,31 +1,44 @@
 import inspect
 import resource
 import signal
+import sys
 import time
 from enum import Enum
 from functools import partial, wraps
 from itertools import zip_longest
 from pathlib import Path
-from typing import Any, Callable, Literal, Sequence, Tuple, Type, Union
+from typing import Any, Callable, List, Literal, Sequence, Tuple, Type, TypeVar, Union
 
 from deczoo._base_notifier import BaseNotifier
-from deczoo._types import PS, FuncReturnType, FuncType, ReturnOnExceptionType, SupportShape
-from deczoo._utils import LOGGING_FN, EmptyShapeError, _get_free_memory, check_parens
+from deczoo._utils import (
+    LOGGING_FN,
+    EmptyShapeError,
+    SupportShape,
+    _get_free_memory,
+    check_parens,
+)
+
+if sys.version_info >= (3, 10):
+    from typing import ParamSpec
+else:
+    from typing_extensions import ParamSpec
+
+PS = ParamSpec("PS")
+R = TypeVar("R")
+RE = TypeVar("RE")
 
 
 @check_parens
 def call_counter(
-    func: Union[FuncType, None] = None,
+    func: Union[Callable[PS, R], None] = None,
     seed: int = 0,
     log_counter: bool = True,
-    logging_fn: Callable = LOGGING_FN,
-) -> FuncType:
-    """
-    Counts how many times a function has been called by setting and tracking a `_calls`
-    attribute to the decorated function.
+    logging_fn: Callable[[str], None] = LOGGING_FN,
+) -> Callable[PS, R]:
+    """Counts how many times a function has been called by setting and tracking a `_calls` attribute to the decorated
+    function.
 
-    `_calls` is set from a given `seed` value, and incremented by 1 each time the
-    function is called.
+    `_calls` is set from a given `seed` value, and incremented by 1 each time the function is called.
 
     Arguments:
         func: Function to decorate
@@ -34,8 +47,8 @@ def call_counter(
         logging_fn: Log function (e.g. print, logger.info, rich console.print)
 
     Raises:
-        TypeError: If `seed` is not an int, `log_counter` is not a bool, or `logging_fn`
-            is not a callable wjhen `log_counter` is True.
+        TypeError: If `seed` is not an int, `log_counter` is not a bool, or `logging_fn` is not a callable when
+            `log_counter` is True.
 
     Returns:
         Decorated function
@@ -66,13 +79,13 @@ def call_counter(
         raise TypeError("`logging_fn` argument must be a callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
-        wrapper._calls += 1
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> R:
+        wrapper._calls += 1  # type: ignore
 
         if log_counter:
-            logging_fn(f"{func.__name__} called {wrapper._calls} times")
+            logging_fn(f"{func.__name__} called {wrapper._calls} times")  # type: ignore
 
-        return func(*args, **kwargs)
+        return func(*args, **kwargs)  # type: ignore
 
     # set counter dynamically
     wrapper._calls = seed  # type: ignore
@@ -82,17 +95,15 @@ def call_counter(
 
 @check_parens
 def catch(
-    func: Union[FuncType, None] = None,
-    return_on_exception: Union[ReturnOnExceptionType, None] = None,
-    raise_on_exception: Union[Any, None] = None,
-    logging_fn: Callable = LOGGING_FN,
-) -> FuncType:
-    """
-    Wraps a function in a try-except block, potentially prevent exception to be raised by
-    returning a given value or raises custom exception.
+    func: Union[Callable[PS, R], None] = None,
+    return_on_exception: Union[RE, None] = None,
+    raise_on_exception: Union[Type[Exception], None] = None,
+    logging_fn: Callable[[str], None] = LOGGING_FN,
+) -> Callable[PS, Union[R, RE]]:
+    """Wraps a function in a try-except block, potentially prevent exception to be raised by returning a given value or
+    raises custom exception.
 
-    Remark that if both `return_on_exception` and `raise_on_exception` are provided,
-    `return_on_exception` will be used.
+    Remark that if both `return_on_exception` and `raise_on_exception` are provided, `return_on_exception` will be used.
 
     Arguments:
         func: Function to decorate
@@ -126,9 +137,9 @@ def catch(
         raise TypeError("`logging_fn` argument must be a callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> Union[FuncReturnType, ReturnOnExceptionType]:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> Union[R, RE]:
         try:
-            return func(*args, **kwargs)
+            return func(*args, **kwargs)  # type: ignore
 
         except Exception as e:
             if return_on_exception is not None:
@@ -147,18 +158,15 @@ def catch(
 
 
 @check_parens
-def check_args(func: Union[FuncType, None] = None, **rules: Callable[[Any], bool]) -> FuncType:
-    """
-    Checks that function arguments satisfy given rules, if not a `ValueError` is raised.
+def check_args(func: Union[Callable[PS, R], None] = None, **rules: Callable[[Any], bool]) -> Callable[PS, R]:
+    """Checks that function arguments satisfy given rules, if not a `ValueError` is raised.
 
-    Each `rule` should be a keyword argument with the name of the argument to check,
-    and the value should be a function/callable that takes the argument value and
-    returns a boolean.
+    Each `rule` should be a keyword argument with the name of the argument to check, and the value should be a
+    function/callable that takes the argument value and returns a boolean.
 
     Arguments:
         func: Function to decorate
-        rules: Rules to be satisfied, each rule is a callable that takes the argument
-            value and returns a boolean
+        rules: Rules to be satisfied, each rule is a callable that takes the argument value and returns a boolean
 
     Returns:
         Decorated function
@@ -172,7 +180,8 @@ def check_args(func: Union[FuncType, None] = None, **rules: Callable[[Any], bool
     from deczoo import check_args
 
     @check_args(a=lambda t: t>0)
-    def add(a, b): return a+b
+    def add(a, b):
+        return a+b
 
     add(1,2)
     3
@@ -185,10 +194,8 @@ def check_args(func: Union[FuncType, None] = None, **rules: Callable[[Any], bool
         raise ValueError("All rules must be callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
-        func_args = (
-            inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
-        )
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> R:
+        func_args = inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
 
         for k, v in func_args.items():
             rule = rules.get(k)
@@ -197,17 +204,14 @@ def check_args(func: Union[FuncType, None] = None, **rules: Callable[[Any], bool
                 if not rule(v):
                     raise ValueError(f"Argument `{k}` doesn't satisfy its rule")
 
-        res = func(*args, **kwargs)  # type: ignore
-        return res
+        return func(*args, **kwargs)  # type: ignore
 
     return wrapper
 
 
 @check_parens
-def chime_on_end(func: Union[FuncType, None] = None, theme: str = "mario") -> FuncType:
-    """
-    Notify with [chime](https://github.com/MaxHalford/chime) sound when function
-    ends successfully or fails.
+def chime_on_end(func: Union[Callable[PS, R], None] = None, theme: str = "mario") -> Callable[PS, R]:
+    """Notify with [chime](https://github.com/MaxHalford/chime) sound when function ends successfully or fails.
 
     Arguments:
         func: Function to decorate
@@ -232,9 +236,9 @@ def chime_on_end(func: Union[FuncType, None] = None, theme: str = "mario") -> Fu
     chime.theme(theme)
 
     @wraps(func)  # type: ignore
-    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> R:
         try:
-            res = func(*args, **kwargs)
+            res = func(*args, **kwargs)  # type: ignore
             chime.success()
             return res
 
@@ -247,16 +251,15 @@ def chime_on_end(func: Union[FuncType, None] = None, theme: str = "mario") -> Fu
 
 @check_parens
 def log(
-    func: Union[FuncType, None] = None,
+    func: Union[Callable[PS, R], None] = None,
     log_time: bool = True,
     log_args: bool = True,
     log_error: bool = True,
     log_file: Union[Path, str, None] = None,
-    logging_fn: Callable = LOGGING_FN,
-) -> FuncType:
-    """
-    Tracks function time taken, arguments and errors. If `log_file` is provided, logs
-    are written to file. In any case, logs are passed to `logging_fn`.
+    logging_fn: Callable[[str], None] = LOGGING_FN,
+) -> Callable[PS, R]:
+    """Tracks function time taken, arguments and errors. If `log_file` is provided, logs are written to file.
+    In any case, logs are passed to `logging_fn`.
 
     Arguments:
         func: Function to decorate
@@ -270,8 +273,7 @@ def log(
         Decorated function with logging capabilities
 
     Raises:
-        TypeError: if `log_time`, `log_args` or `log_error` are not `bool` or `log_file` \
-            is not `None`, `str` or `Path`
+        TypeError: if `log_time`, `log_args` or `log_error` are not `bool` or `log_file` is not `None`, `str` or `Path`
 
     Usage:
     ```python
@@ -295,11 +297,12 @@ def log(
         raise TypeError("`logging_fn` must be callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> R:
         tic = time.perf_counter()
 
+        optional_strings: List[Union[str, None]]
         if log_args:
-            func_args = inspect.signature(func).bind(*args, **kwargs).arguments
+            func_args = inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
             func_args_str = ", ".join(f"{k}={v}" for k, v in func_args.items())
 
             optional_strings = [f"args=({func_args_str})"]
@@ -308,7 +311,7 @@ def log(
             optional_strings = []
 
         try:
-            res = func(*args, **kwargs)
+            res = func(*args, **kwargs)  # type: ignore
             toc = time.perf_counter()
             optional_strings += [
                 f"time={toc - tic}" if log_time else None,
@@ -325,7 +328,7 @@ def log(
             raise e
 
         finally:
-            log_string = f"{func.__name__} {' '.join([s for s in optional_strings if s])}"
+            log_string = f"{func.__name__} {' '.join([s for s in optional_strings if s])}"  # type: ignore
             logging_fn(log_string)
 
             if log_file is not None:
@@ -340,14 +343,14 @@ timer = partial(log, log_time=True, log_args=False, log_error=False)
 
 @check_parens
 def memory_limit(
-    func: Union[FuncType, None] = None,
+    func: Union[Callable[PS, R], None] = None,
     percentage: float = 0.99,
-    logging_fn: Callable = LOGGING_FN,
-) -> FuncType:
-    """
-    Sets a memory limit while running the decorated function.
+    logging_fn: Callable[[str], None] = LOGGING_FN,
+) -> Callable[PS, R]:
+    """Sets a memory limit while running the decorated function.
 
-    **Warning**: This decorator is supported on unix-based systems only!
+    !!! warning
+        This decorator is supported on unix-based systems only!
 
     Arguments:
         func: Function to decorate
@@ -396,16 +399,16 @@ def memory_limit(
         raise TypeError("`logging_fn` should be a callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> R:
         _, hard = resource.getrlimit(resource.RLIMIT_AS)
         free_memory = _get_free_memory() * 1024
 
-        logging_fn(f"Setting memory limit for {func.__name__} to {int(free_memory * percentage)}")
+        logging_fn(f"Setting memory limit for {func.__name__} to {int(free_memory * percentage)}")  # type: ignore
 
         resource.setrlimit(resource.RLIMIT_AS, (int(free_memory * percentage), hard))
 
         try:
-            return func(*args, **kwargs)
+            return func(*args, **kwargs)  # type: ignore
 
         except MemoryError:
             raise MemoryError("Reached memory limit")
@@ -417,12 +420,12 @@ def memory_limit(
 
 
 @check_parens
-def notify_on_end(func: Union[FuncType, None] = None, notifier: Union[BaseNotifier, None] = None) -> FuncType:
-    """
-    Notify when func has finished running using the notifier `notify` method.
+def notify_on_end(
+    func: Union[Callable[PS, R], None] = None, notifier: Union[BaseNotifier, None] = None
+) -> Callable[PS, R]:
+    """Notify when func has finished running using the notifier `notify` method.
 
-    `notifier` object should inherit from BaseNotifier and implement any custom `notify`
-    method.
+    `notifier` object should inherit from BaseNotifier and implement any custom `.notify()` method.
 
     Arguments:
         func: Function to decorate
@@ -452,9 +455,9 @@ def notify_on_end(func: Union[FuncType, None] = None, notifier: Union[BaseNotifi
         raise TypeError("`notifier` should be an instance of a BaseNotifier")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> R:
         try:
-            return func(*args, **kwargs)
+            return func(*args, **kwargs)  # type: ignore
         except Exception as e:
             raise e
         finally:
@@ -465,18 +468,16 @@ def notify_on_end(func: Union[FuncType, None] = None, notifier: Union[BaseNotifi
 
 @check_parens
 def retry(
-    func: Union[FuncType, None] = None,
+    func: Union[Callable[PS, R], None] = None,
     n_tries: int = 3,
     delay: float = 0.0,
-    logging_fn: Callable = LOGGING_FN,
-) -> FuncType:
-    """
-    Wraps a function within a "retry" block. If the function fails, it will be retried
-    `n_tries` times with a delay of `delay` seconds between each attempt.
+    logging_fn: Callable[[str], None] = LOGGING_FN,
+) -> Callable[PS, R]:
+    """Wraps a function within a "retry" block. If the function fails, it will be retried `n_tries` times with a delay
+    of `delay` seconds between each attempt.
 
-    The function will be retried until it succeeds or the maximum number of attempts
-    is reached. Either the first successful result will be returned or the last error
-    will be raised.
+    The function will be retried until it succeeds or the maximum number of attempts is reached. Either the first
+    successful result will be returned or the last error will be raised.
 
     Arguments:
         func: Function to decorate
@@ -485,8 +486,10 @@ def retry(
         logging_fn: Log function (e.g. print, logger.info, rich console.print)
 
     Raises:
-        ValueError: If `n_tries` is not a positive integer, `delay` is not a \
-            positive number, or `logging_fn` is not a callable
+        ValueError: If any of the following holds:
+            - `n_tries` is not a positive integer
+            - `delay` is not a positive number
+            - `logging_fn` is not a callable
 
     Returns:
         Decorated function
@@ -516,12 +519,12 @@ def retry(
         raise TypeError("`logging_fn` should be a callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> R:
         attempt = 0
 
         while attempt < n_tries:
             try:
-                res = func(*args, **kwargs)
+                res = func(*args, **kwargs)  # type: ignore
                 logging_fn(f"Attempt {attempt+1}/{n_tries}: Succeeded")
                 return res
 
@@ -544,20 +547,18 @@ def shape_tracker(
     shape_delta: bool = False,
     raise_if_empty: bool = True,
     arg_to_track: Union[int, str] = 0,
-    logging_fn: Callable = LOGGING_FN,
-) -> FuncType:
-    """
-    Tracks the shape of a dataframe/array-like object.
-    It's possible to track input and output shape(s), delta from input and output, and
-    raise an error if resulting output is empty.
+    logging_fn: Callable[[str], None] = LOGGING_FN,
+) -> Callable[[SupportShape, Sequence[Any]], SupportShape]:
+    """Tracks the shape of a dataframe/array-like object.
 
-    This is particularly suitable to decorate functions that are used in a
-    (pandas/polars/dask/...) pipe(line).
+    It's possible to track input and output shape(s), delta from input and output, and raise an error if resulting
+    output is empty.
 
-    The decorator will track the shape of the first argument of the function, unless
-    `arg_to_track` is specified.
+    This is particularly suitable to decorate functions that are used in a (pandas/polars/dask/...) pipe(line).
 
-    If `arg_to_track` can be:
+    The decorator will track the shape of the first argument of the function, unless `arg_to_track` is specified.
+
+    `arg_to_track` can be:
 
     - a non-negative integer corresponding to the index of the argument to track
     - a string indicating the name of the argument to track.
@@ -568,8 +569,7 @@ def shape_tracker(
         shape_out: Track output shape
         shape_delta: Track shape delta between input and output
         raise_if_empty: Raise error if output is empty
-        arg_to_track: Index or name of the argument to track, used only if `shape_in` is\
-            `True`
+        arg_to_track: Index or name of the argument to track, used only if `shape_in` is `True`
         logging_fn: Log function (e.g. print, logger.info, rich console.print)
 
     Returns:
@@ -577,8 +577,7 @@ def shape_tracker(
 
     Raises:
         TypeError: if any of the parameters is not of the correct type
-        EmptyShapeError: if decorated function output is empty and `raise_if_empty` is\
-            `True`
+        EmptyShapeError: if decorated function output is empty and `raise_if_empty` is `True`
 
     Usage:
     ```python
@@ -664,8 +663,8 @@ def multi_shape_tracker(
     shapes_in: Union[str, int, Sequence[str], Sequence[int], None] = None,
     shapes_out: Union[int, Sequence[int], Literal["all"], None] = "all",
     raise_if_empty: Literal["any", "all", None] = "any",
-    logging_fn: Callable = LOGGING_FN,
-) -> FuncType:
+    logging_fn: Callable[[str], None] = LOGGING_FN,
+) -> Callable[[SupportShape, Sequence[Any]], Tuple[SupportShape, ...]]:
     """
     Tracks the shape(s) of a dataframe/array-like objects both in input and output of
     a given function.
@@ -678,10 +677,8 @@ def multi_shape_tracker(
     Arguments:
         func: Function to decorate
         shapes_in: Sequence of argument positions OR argument names to track
-        shapes_out: Sequence of output positions to track, "all" to track all, None to\
-            disable
-        raise_if_empty: Raise error if tracked output results is/are empty \
-            (strategy: "any", "all", None)
+        shapes_out: Sequence of output positions to track, "all" to track all, None to disable
+        raise_if_empty: Raise error if tracked output results is/are empty (strategy: "any", "all", None)
         logging_fn: log function (e.g. print, logger.info, rich console.print)
 
     Returns:
@@ -689,8 +686,7 @@ def multi_shape_tracker(
 
     Raises:
         TypeError: if any of the parameters is not of the correct type
-        EmptyShapeError: if decorated function output is empty and `raise_if_empty` is\
-            `all` or `any`
+        EmptyShapeError: if decorated function output is empty and `raise_if_empty` is `all` or `any`
 
     Usage:
     ```python
@@ -716,8 +712,11 @@ def multi_shape_tracker(
     if not callable(logging_fn):
         raise TypeError("`logging_fn` should be a callable")
 
+    _arg_names: Union[str, Sequence[str]]
+    _arg_values: Union[SupportShape, Sequence[SupportShape]]
+
     @wraps(func)  # type: ignore
-    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> SupportShape:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> Tuple[SupportShape, ...]:
         func_args = (
             inspect.signature(func).bind(*args, **kwargs).arguments  # type: ignore
         )
@@ -735,11 +734,8 @@ def multi_shape_tracker(
             # case: sequence of str's
             if all(isinstance(x, str) for x in shapes_in):
                 _arg_names, _arg_values = (
-                    tuple(shapes_in),
-                    tuple(  # type: ignore
-                        func_args[x]
-                        for x in shapes_in  # type: ignore
-                    ),
+                    tuple(shapes_in),  # type: ignore
+                    tuple(func_args[x] for x in shapes_in),  # type: ignore
                 )
 
             # case: sequence of positive int's
@@ -758,10 +754,7 @@ def multi_shape_tracker(
 
         # case: something else, not in Union[int, str, Sequence[int], Sequence[str], None]
         else:
-            raise TypeError(
-                "`shapes_in` must be either a str, a positive int, a sequence of str's, \
-                    a sequence of positive int's or None"
-            )
+            raise TypeError("`shapes_in` must be either a str, a positive int, a sequence of those or None")
 
         if shapes_in is not None:
             logging_fn("Input shapes: " + " ".join(f"{k}.shape={v.shape}" for k, v in zip(_arg_names, _arg_values)))
@@ -791,10 +784,7 @@ def multi_shape_tracker(
 
         # case: something else, not in Union[int, Sequence[int], Literal["all"], None]
         else:
-            raise TypeError(
-                "`shapes_out` must be positive int, sequence of positive int, 'all' \
-                    or None"
-            )
+            raise TypeError("`shapes_out` must be positive int, sequence of positive int, 'all' or None")
 
         if shapes_out is not None:
             logging_fn("Output shapes: " + " ".join(f"{s}" for s in _res_shapes))
@@ -804,8 +794,8 @@ def multi_shape_tracker(
             _raise_if_empty = None
 
             logging_fn(
-                "Overwriting `raise_if_empty` to None because `shapes_out` \
-                is None. Please specify `shapes_out` if you want to use `raise_if_empty`"
+                "Overwriting `raise_if_empty` to None because `shapes_out` is None. "
+                "Please specify `shapes_out` if you want to use `raise_if_empty`"
             )
         else:
             _raise_if_empty = raise_if_empty
@@ -816,15 +806,12 @@ def multi_shape_tracker(
         # case: "any"
         elif _raise_if_empty == "any":
             if any(x[0] == 0 for x in _res_shapes):
-                raise EmptyShapeError(
-                    f"At least one result from {func.__name__} is empty"  # type: ignore
-                )
+                raise EmptyShapeError(f"At least one result from {func.__name__} is empty")  # type: ignore
         # case: "all"
         elif _raise_if_empty == "all":
             if all(x[0] == 0 for x in _res_shapes):
-                raise EmptyShapeError(
-                    f"All results from {func.__name__} are empty"  # type: ignore
-                )
+                raise EmptyShapeError(f"All results from {func.__name__} are empty")  # type: ignore
+
         # case: something else, not in Union[Literal["any"], Literal["all"], None]
         else:
             raise TypeError("raise_if_empty must be either 'any', 'all' or None")
@@ -836,18 +823,16 @@ def multi_shape_tracker(
 
 @check_parens
 def timeout(
-    func: Union[FuncType, None] = None,
+    func: Union[Callable[PS, R], None] = None,
     time_limit: Union[int, None] = None,
     signal_handler: Union[Callable, None] = None,
     signum: Union[int, Enum] = signal.SIGALRM,
-) -> FuncType:
-    """
-    Sets a time limit to a function, terminates the process if it hasn't finished within
-    such time limit.
+) -> Callable[PS, R]:
+    """Sets a time limit to a function, terminates the process if it hasn't finished within such time limit.
 
-    **Warning**: This decorator uses the built-in
-    [signal library](https://docs.python.org/3/library/signal.html) which fully supported
-    only on UNIX.
+    !!! warning
+        This decorator uses the built-in [signal library](https://docs.python.org/3/library/signal.html) which fully
+        supported only on UNIX.
 
     Arguments:
         func: Function to decorate
@@ -860,8 +845,7 @@ def timeout(
 
     Raises:
         ValueError: If `time_limit` is not a positive number
-        TypeError: If `signum` is not an int or an Enum, or if `signal_handler` is not a \
-            callable
+        TypeError: If `signum` is not an int or an Enum, or if `signal_handler` is not a callable
         TimeoutError: If `time_limit` is reached without decorated function finishing
 
     Usage:
@@ -908,12 +892,11 @@ def timeout(
         signal.signal(signum, signal_handler)  # type: ignore
 
     @wraps(func)  # type: ignore
-    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> R:
         signal.alarm(time_limit)
 
         try:
-            res = func(*args, **kwargs)
-            return res
+            return func(*args, **kwargs)  # type: ignore
         except TimeoutError as e:
             raise e
         except Exception as e:
@@ -928,9 +911,8 @@ def raise_if(
     condition: Callable[[], bool],
     exception: Type[Exception] = Exception,
     message: str = "Condition is not satisfied",
-) -> Callable[[Callable[PS, FuncReturnType]], Callable[PS, FuncReturnType]]:
-    """
-    Raises an exception if `condition` is satisfied.
+) -> Callable[[Callable[PS, R]], Callable[PS, R]]:
+    """Raises an exception if `condition` is satisfied.
 
     Arguments:
         condition: Condition to be satisfied
@@ -964,9 +946,9 @@ def raise_if(
     ```
     """
 
-    def decorator(func: Callable[PS, FuncReturnType]) -> Callable[PS, FuncReturnType]:
+    def decorator(func: Callable[PS, R]) -> Callable[PS, R]:
         @wraps(func)
-        def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
+        def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> R:
             if condition():
                 raise exception(message)
             return func(*args, **kwargs)
