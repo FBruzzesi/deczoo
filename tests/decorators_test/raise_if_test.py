@@ -13,6 +13,7 @@ from deczoo import raise_if
     ],
 )
 def raise_if_test(condition, context):
+    """Test raise_if decorator."""
     err_msg = "Test exception"
 
     @raise_if(condition, exception=ValueError, message=err_msg)

@@ -929,6 +929,41 @@ def raise_if(
     exception: Type[Exception] = Exception,
     message: str = "Condition is not satisfied",
 ):
+    """
+    Raises an exception if `condition` is satisfied.
+
+    Arguments:
+        condition: Condition to be satisfied
+        exception: Exception to raise
+        message: Exception message
+
+    Returns:
+        Decorated function
+
+    Usage:
+    ```python
+    import os
+    from deczoo import raise_if
+
+    def is_prod():
+        '''Returns True if environment is prod'''
+        return os.environ.get("ENV", "").lower() in {"prod", "production"}
+
+    @raise_if(condition=is_prod, message="Do not run in production!")
+    def add(a, b):
+        '''Adds two numbers'''
+        return a+b
+
+    os.environ["ENV"] = "staging"
+    add(1, 2)
+    3
+
+    os.environ["ENV"] = "prod"
+    add(1, 2)
+    > Exception: Do not run in production!
+    ```
+    """
+
     def decorator(func: Callable[PS, FuncReturnType]) -> Callable[PS, FuncReturnType]:
         @wraps(func)
         def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
