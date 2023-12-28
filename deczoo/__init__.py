@@ -11,6 +11,7 @@ from deczoo.decorators import (
     memory_limit,
     multi_shape_tracker,
     notify_on_end,
+    raise_if,
     retry,
     shape_tracker,
     timeout,
@@ -33,6 +34,7 @@ __all__ = (
     "notify_on_end",
     "shape_tracker",
     "multi_shape_tracker",
+    "raise_if",
     "retry",
     "timeout",
 )

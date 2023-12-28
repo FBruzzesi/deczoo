@@ -6,7 +6,7 @@ from enum import Enum
 from functools import partial, wraps
 from itertools import zip_longest
 from pathlib import Path
-from typing import Any, Callable, Literal, Sequence, Tuple, Union
+from typing import Any, Callable, Literal, Sequence, Tuple, Type, Union
 
 from deczoo._base_notifier import BaseNotifier
 from deczoo._types import PS, FuncReturnType, FuncType, ReturnOnExceptionType, SupportShape
@@ -922,3 +922,20 @@ def timeout(
             signal.alarm(0)
 
     return wrapper
+
+
+def raise_if(
+    condition: Callable[[], bool],
+    exception: Type[Exception] = Exception,
+    message: str = "Condition is not satisfied",
+):
+    def decorator(func: Callable[PS, FuncReturnType]) -> Callable[PS, FuncReturnType]:
+        @wraps(func)
+        def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> FuncReturnType:
+            if condition():
+                raise exception(message)
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
