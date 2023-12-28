@@ -900,7 +900,7 @@
 <a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">say_goodbye</span><span class="p">(</span><span class="s2">&quot;Fra&quot;</span><span class="p">))</span>
 <a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="c1"># [&#39;Goodbye Fra!&#39;, &#39;Goodbye Fra!&#39;]</span>
 </code></pre></div>
-<p>Neat! This was possible to achive using the control flow and <code>partial</code> block at the end of the decorator.</p>
+<p>Neat! This was possible to achieve using the control flow and <code>partial</code> block at the end of the decorator.</p>
 <p>Since in <a href="../../">deczoo</a> every decorator is implemented using this strategy, we wrote a sort of "meta-decorator", called <a href="../../api/utils/#check_parens">check_parens</a> that adds such block to every decorator!</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="o">...</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
