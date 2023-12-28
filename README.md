@@ -1,10 +1,10 @@
 <img src="docs/img/deczoo-logo.png" width=185 height=185 align="right">
 
 ![](https://img.shields.io/github/license/FBruzzesi/deczoo)
-<img src ="docs/img/interrogate-shield.svg">
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-<img src ="docs/img/coverage.svg">
-<img src = "https://img.shields.io/pypi/pyversions/deczoo">
+<img src="docs/img/interrogate-shield.svg">
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+<img src="docs/img/coverage.svg">
+<img src= "https://img.shields.io/pypi/pyversions/deczoo">
 
 # Deczoo
 
@@ -108,6 +108,7 @@ The library implements the following decorators:
 - `timer`: tracks function time taken.
 - `memory_limit`: sets a memory limit while running the function.
 - `notify_on_end`: notifies when function finished running with a custom notifier.
+- `raise_if`: raises a custom exception if a condition is met.
 - `retry`: wraps a function with a "retry" block.
 - `shape_tracker`: tracks the shape of a dataframe/array-like object, in input and/or output.
 - `multi_shape_tracker`: tracks the shapes of input(s) and/or output(s) of a function.
