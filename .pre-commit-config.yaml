@@ -12,18 +12,13 @@ repos:
     -   id: check-yaml
     -   id: check-ast
     -   id: check-added-large-files
--   repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        name: isort (python)
-        args: [--profile, black, -l, "90", deczoo, tests]
--   repo: https://github.com/psf/black
-    rev: 23.11.0
-    hooks:
-      - id: black
-        language_version: python3.10
-        args: [--target-version, py310, --line-length, "90", deczoo, tests]
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.1.6 # Ruff version.
+  hooks:
+    - id: ruff  # Run the linter.
+      args: [--fix, deczoo, tests]
+    - id: ruff-format # Run the formatter.
+      args: [deczoo, tests]
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
     rev: v1.0.6
     hooks:

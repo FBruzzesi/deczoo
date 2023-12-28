@@ -9,13 +9,7 @@ from pathlib import Path
 from typing import Any, Callable, Literal, Sequence, Tuple, Union
 
 from deczoo._base_notifier import BaseNotifier
-from deczoo._types import (
-    PS,
-    FuncReturnType,
-    FuncType,
-    ReturnOnExceptionType,
-    SupportShape,
-)
+from deczoo._types import PS, FuncReturnType, FuncType, ReturnOnExceptionType, SupportShape
 from deczoo._utils import LOGGING_FN, EmptyShapeError, _get_free_memory, check_parens
 
 
@@ -132,9 +126,7 @@ def catch(
         raise TypeError("`logging_fn` argument must be a callable")
 
     @wraps(func)  # type: ignore
-    def wrapper(
-        *args: PS.args, **kwargs: PS.kwargs
-    ) -> Union[FuncReturnType, ReturnOnExceptionType]:
+    def wrapper(*args: PS.args, **kwargs: PS.kwargs) -> Union[FuncReturnType, ReturnOnExceptionType]:
         try:
             return func(*args, **kwargs)
 
@@ -155,9 +147,7 @@ def catch(
 
 
 @check_parens
-def check_args(
-    func: Union[FuncType, None] = None, **rules: Callable[[Any], bool]
-) -> FuncType:
+def check_args(func: Union[FuncType, None] = None, **rules: Callable[[Any], bool]) -> FuncType:
     """
     Checks that function arguments satisfy given rules, if not a `ValueError` is raised.
 
@@ -410,9 +400,7 @@ def memory_limit(
         _, hard = resource.getrlimit(resource.RLIMIT_AS)
         free_memory = _get_free_memory() * 1024
 
-        logging_fn(
-            f"Setting memory limit for {func.__name__} to {int(free_memory * percentage)}"
-        )
+        logging_fn(f"Setting memory limit for {func.__name__} to {int(free_memory * percentage)}")
 
         resource.setrlimit(resource.RLIMIT_AS, (int(free_memory * percentage), hard))
 
@@ -429,9 +417,7 @@ def memory_limit(
 
 
 @check_parens
-def notify_on_end(
-    func: Union[FuncType, None] = None, notifier: Union[BaseNotifier, None] = None
-) -> FuncType:
+def notify_on_end(func: Union[FuncType, None] = None, notifier: Union[BaseNotifier, None] = None) -> FuncType:
     """
     Notify when func has finished running using the notifier `notify` method.
 
@@ -513,7 +499,7 @@ def retry(
     def add(a, b): return a+b
 
     _ = add(1, 2)
-    # Attempt 1/2: Successed
+    # Attempt 1/2: Succeeded
 
     _ = add(1, "a")
     # Attempt 1/2: Failed with error: unsupported operand type(s) for +: 'int' and 'str'
@@ -536,7 +522,7 @@ def retry(
         while attempt < n_tries:
             try:
                 res = func(*args, **kwargs)
-                logging_fn(f"Attempt {attempt+1}/{n_tries}: Successed")
+                logging_fn(f"Attempt {attempt+1}/{n_tries}: Succeeded")
                 return res
 
             except Exception as e:
@@ -630,9 +616,7 @@ def shape_tracker(
     if not isinstance(raise_if_empty, bool):
         raise TypeError("`raise_if_empty` should be a boolean")
 
-    if (not isinstance(arg_to_track, (str, int))) or (
-        isinstance(arg_to_track, int) and arg_to_track < 0
-    ):
+    if (not isinstance(arg_to_track, (str, int))) or (isinstance(arg_to_track, int) and arg_to_track < 0):
         raise TypeError("`arg_to_track` should be a string or a positive integer")
     if not callable(logging_fn):
         raise TypeError("`logging_fn` should be a callable")
@@ -662,9 +646,7 @@ def shape_tracker(
 
         if shape_delta:
             input_shape = _arg_value.shape
-            delta = tuple(
-                d1 - d2 for d1, d2 in zip_longest(input_shape, output_shape, fillvalue=0)
-            )
+            delta = tuple(d1 - d2 for d1, d2 in zip_longest(input_shape, output_shape, fillvalue=0))
 
             logging_fn(f"Shape delta: {delta}")
 
@@ -678,9 +660,7 @@ def shape_tracker(
 
 @check_parens
 def multi_shape_tracker(
-    func: Union[
-        Callable[[SupportShape, Sequence[Any]], Tuple[SupportShape, ...]], None
-    ] = None,
+    func: Union[Callable[[SupportShape, Sequence[Any]], Tuple[SupportShape, ...]], None] = None,
     shapes_in: Union[str, int, Sequence[str], Sequence[int], None] = None,
     shapes_out: Union[int, Sequence[int], Literal["all"], None] = "all",
     raise_if_empty: Literal["any", "all", None] = "any",
@@ -748,16 +728,18 @@ def multi_shape_tracker(
 
         # case: int
         elif isinstance(shapes_in, int) and shapes_in >= 0:
-            _arg_names, _arg_values = tuple(
-                x for x in tuple(func_args.items())[shapes_in]
-            )
+            _arg_names, _arg_values = tuple(x for x in tuple(func_args.items())[shapes_in])
 
         # case: sequence
         elif isinstance(shapes_in, Sequence):
             # case: sequence of str's
             if all(isinstance(x, str) for x in shapes_in):
-                _arg_names, _arg_values = tuple(shapes_in), tuple(  # type: ignore
-                    func_args[x] for x in shapes_in  # type: ignore
+                _arg_names, _arg_values = (
+                    tuple(shapes_in),
+                    tuple(  # type: ignore
+                        func_args[x]
+                        for x in shapes_in  # type: ignore
+                    ),
                 )
 
             # case: sequence of positive int's
@@ -782,12 +764,7 @@ def multi_shape_tracker(
             )
 
         if shapes_in is not None:
-            logging_fn(
-                "Input shapes: "
-                + " ".join(
-                    f"{k}.shape={v.shape}" for k, v in zip(_arg_names, _arg_values)
-                )
-            )
+            logging_fn("Input shapes: " + " ".join(f"{k}.shape={v.shape}" for k, v in zip(_arg_names, _arg_values)))
 
         # finally run the function!
         orig_res = func(*args, **kwargs)  # type: ignore
@@ -801,9 +778,7 @@ def multi_shape_tracker(
             _res_shapes = (res[shapes_out].shape,)
 
         # case: sequence of positive int's
-        elif isinstance(shapes_out, Sequence) and all(
-            isinstance(x, int) and x >= 0 for x in shapes_out
-        ):
+        elif isinstance(shapes_out, Sequence) and all(isinstance(x, int) and x >= 0 for x in shapes_out):
             _res_shapes = tuple(res[x].shape for x in shapes_out)  # type: ignore
 
         # case: "all"
@@ -929,7 +904,7 @@ def timeout(
         raise TypeError("`signal_handler` should be a callable")
 
     else:
-        # custome signal handler provided -> bind it to the signal
+        # custom signal handler provided -> bind it to the signal
         signal.signal(signum, signal_handler)  # type: ignore
 
     @wraps(func)  # type: ignore

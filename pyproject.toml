@@ -13,7 +13,7 @@ requires-python = ">=3.8"
 authors = [{name = "Francesco Bruzzesi"}]
 
 dependencies = [
-    "typing-extensions",
+    "typing-extensions>=4.4.0",
 ]
 
 classifiers = [
@@ -42,9 +42,7 @@ dev = [
 ]
 
 lint = [
-    "black>=23.3.0",
-    "isort>=5.12.0",
-    "ruff>=0.0.291"
+    "ruff>=0.1.6"
 ]
 
 test = [
@@ -65,7 +63,7 @@ docs = [
 all = ["deczoo[chime,rich]"]
 all-dev = ["deczoo[chime,rich,dev,lint,test,docs]"]
 
-[tool.hatch.build]
+[tool.setuptools.packages.find]
 include = ["deczoo*"]
 exclude = [
     "data",
@@ -77,21 +75,18 @@ exclude = [
     "tests",
 ]
 
-[tool.hatch.package-data]
+[tool.setuptools.package-data]
 deczoo = ["py.typed"]
 
-[tool.black]
-line-length = 90
-target_version = ["py310"]
-workers = 4
-
-[tool.isort]
-py_version = 310
-profile = "black"
-line_length = 90
-
 [tool.ruff]
-line-length = 90
+line-length = 120
+extend-select = ["I"]
+ignore = [
+    "E731",  # do not assign a `lambda` expression, use a `def`
+    ]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.interrogate]
 ignore-nested-functions = true
@@ -105,3 +100,6 @@ verbose = 2 # 0 (minimal output), 1 (-v), 2 (-vv)
 
 [tool.mypy]
 ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["deczoo/"]
