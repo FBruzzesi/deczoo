@@ -2,7 +2,7 @@ from typing import Tuple
 
 import pytest
 
-from deczoo._types import SupportShape
+from deczoo._utils import SupportShape
 
 
 class TestShape:
