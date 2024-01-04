@@ -16,7 +16,7 @@ I found myself implementing over and over in different projects. The hope is to 
 
 ---
 
-[Documentation](https://fbruzzesi.github.io/deczoo) | [Source Code](https://github.com/fbruzzesi/deczoo)
+[Documentation](https://fbruzzesi.github.io/deczoo/) | [Source Code](https://github.com/fbruzzesi/deczoo)
 
 ---
 

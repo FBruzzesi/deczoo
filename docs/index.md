@@ -18,7 +18,7 @@ The hope is to gather them here and use this codebase.
 
 ---
 
-[Documentation](https://fbruzzesi.github.io/deczoo) | [Source Code](https://github.com/fbruzzesi/deczoo)
+[Documentation](https://fbruzzesi.github.io/deczoo/) | [Source Code](https://github.com/fbruzzesi/deczoo)
 
 ---
 
