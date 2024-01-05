@@ -63,20 +63,11 @@ docs = [
 all = ["deczoo[chime,rich]"]
 all-dev = ["deczoo[chime,rich,dev,lint,test,docs]"]
 
-[tool.setuptools.packages.find]
-include = ["deczoo*"]
-exclude = [
-    "data",
-    "docs",
-    "docker",
-    "kubernetes",
-    "notebooks",
-    "results",
-    "tests",
-]
+[tool.hatch.build.targets.sdist]
+only-include = ["deczoo"]
 
-[tool.setuptools.package-data]
-deczoo = ["py.typed"]
+[tool.hatch.build.targets.wheel]
+packages = ["deczoo"]
 
 [tool.ruff]
 line-length = 120
