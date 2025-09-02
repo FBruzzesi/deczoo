@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Configure Git Credentials
         run: |
           git config user.name github-actions[bot]
@@ -50,7 +50,7 @@ jobs:
 #     steps:
 
 #     - name: Checkout gh-pages
-#       uses: actions/checkout@v4
+#       uses: actions/checkout@v5
 #       with:
 #         ref: gh-pages
 #         fetch-depth: 0  # Fetch all history for all branches and tags.
@@ -61,7 +61,7 @@ jobs:
 #         LATEST_VERSION=$(git show gh-pages:versions.json | python -c "import sys, json; print(max([d['version'] for d in json.load(sys.stdin) if d['version']!='latest']))")
 
 #     - name: Checkout current branch
-#       uses: actions/checkout@v4
+#       uses: actions/checkout@v5
 #       with:
 #         fetch-depth: 0  # Fetch all history for all branches and tags.
 
